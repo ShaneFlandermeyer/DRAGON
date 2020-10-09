@@ -1,0 +1,282 @@
+% Simulate a GNU Radio sync block
+% Author: Shane Flandermeyer
+%% Driver
+close all;clear;clc;
+addpath('Functions')
+[radar,tags] = setup_data();
+global nitems_read is_burst pulse_count;
+nitems_read = 0;
+is_burst = 0;
+pulse_count = 0;
+out = [];
+while nitems_read < length(radar.sig_data_rx)
+    noutput_items = randi([4095,4096],1);
+    in = radar.sig_data_rx(nitems_read+1:...
+        min(nitems_read+noutput_items,length(radar.sig_data_rx)));
+    out = [out;work(radar,noutput_items,in,tags)];
+end
+plot_rd_map(radar,out);
+clear nitems_read is_burst pulse_count in noutput_items;
+
+%% Functions
+
+% Usage: out = work(radar,noutput_items,in,[tags])
+% Emulates the work() function in a gnuradio block, which takes an input
+% buffer, performs operations on it, and 
+function out = work(radar,noutput_items,in,tags)
+    global nitems_read is_burst pulse_count;
+    % If the tag vector wasn't specified, make an empty placeholder
+    if ~exist('tags','var')
+        tags = [];
+    end
+    % Get the offsets for all tags
+    offsets = zeros(length(tags),1);
+    for ii = 1:length(tags)
+        offsets(ii) = tags(ii).offset;
+    end
+    % Using the offsets above, get the tags that are in the current input
+    % buffer
+    tags = get_tags_in_range(nitems_read+1,nitems_read+noutput_items,tags,offsets);
+    switch length(tags)
+        
+        % No tags in buffer. If we're currently in a burst, then the pulse
+        % is longer than the buffer size. If not, nothing is being
+        % transmitted. For now, I'm assuming the pulse width (in samples)
+        % is less than the buffer length, so this should never execute
+        %                    _______________
+        %     No pulse          pulse
+        % _______________ or 
+        
+        case 0
+            if ~is_burst
+                % Nothing to do here. Send the input straight to the output
+                out = [];
+                nitems_read = nitems_read+length(in);
+                return
+            else
+                % Scale by doppler shift, but since this isn't the start of
+                % the burst then don't delay    
+            end
+            
+        % If only one tag is found, two options are possible
+        % 1) We have the end of one pulse and then nothing
+        % 2) We have nothing and then the beginning of one pulse
+        % _______                    _______   
+        %        |                  |
+        %  pulse |_______ or _______|  pulse
+        
+        case 1
+            if ~is_burst
+                % Not in a burst at the start of the buffer. Therefore
+                % option 2 is occurring
+                pulse_count = pulse_count+1;
+                sf = simulate_targets(radar,pulse_count);
+            else
+                % In a burst at the start of the buffer. Therefore option 1
+                % is occurring
+            end
+            
+        % If two tags are found in the buffer, two options are possible:
+        % 1) We have a full pulse
+        % 2) We have the ending of one pulse and then the beginning of
+        % another
+        %      ______         ______        _____
+        %     |      |         pulse|      |pulse
+        % ____| pulse|_____ or      |______|
+        
+        case 2
+            if ~is_burst
+                % The first tag signals the start of the burst, so option 1
+                % is occurring (we have the full pulse)
+                pulse_count = pulse_count+1;
+                sf = simulate_targets(radar,pulse_count);
+                pulse = in(1+tags(1).offset-nitems_read:tags(2).offset-nitems_read);
+                
+            else
+                % The first tag signals the end of the burst, so option 2
+                % is occurring (we have the end of one pulse and the start
+                % of the next)
+            end
+            out = pulse*sf;
+            nitems_read = nitems_read+length(in);
+        
+        % If more than two tags are found in the buffer, things get a
+        % little more complicated since the processing changes depending on
+        % the number of tags. Consider the two scenarios below with three
+        % tags. For (1), the block should operate on the full pulse and
+        % then stop (the next call to work() would handle the rest). For
+        % (2), the block should process the first half pulse and then
+        % stop.
+        %  _______      ____      ____       _______
+        % |       |    |              |     |       |
+        % |       |____|       or     |_____|       |___
+            
+        otherwise
+            if ~is_burst
+                % The first sample is not part of a pulse, so scenario (1)
+                % occurs
+                pulse_count = pulse_count+1;
+                sf = simulate_targets(radar,pulse_count);
+                if nitems_read == 0
+                    pulse = in(1:tags(2).offset-tags(1).offset+1);
+                else
+                    rel_start = tags(1).offset-nitems_read;
+                    rel_stop  = tags(2).offset-nitems_read;
+                    pulse = in(1+rel_start:rel_stop);
+%                     pulse = in(1:tags(2).offset-tags(1).offset);
+                end
+                nitems_read = tags(2).offset;
+            else
+                % The first sample is part of a previous pulse. Process
+                % only the remainder of the pulse and return
+                pulse = in(1:tags(1).offset);
+                nitems_read = nitems_read+length(pulse);
+            end
+            out = pulse*sf;
+            
+            return
+            
+    end
+end
+
+% Usage: [radar,tags] = setup_data()
+% Creates a radar parameter object and a set of stream tag objects with the
+% given properties. These properties are hard-coded for now.
+function [radar,tags] = setup_data()
+input_path = '/home/shane/chirpTx.dat';
+output_path = '/home/shane/chirpRx.dat';
+%% Initialize Waveform Parameters
+radar = param_manager;
+radar.sig_freq_tx = 2.4e9;
+radar.sig_bandwidth = 5e6; % Waveform bandwidth
+radar.sig_comp_pulsewidth = 100e-6; % Waveform compressed pulsewidth
+% radar.sig_pri = 200e-6; % Waveform PRI
+radar.sig_prf = 5e3;
+radar.samp_rate = 20e6; % Radar Sampling rate (samps/s)
+% Generate the waveform to be transmitted and zero pad according to the
+% specified PRI
+radar.sig_data_tx = UpChirp(radar.sig_bandwidth,radar.sig_comp_pulsewidth,...
+    radar.samp_rate/radar.sig_bandwidth);
+padding_zeros = zeros(round((radar.sig_pri-radar.sig_comp_pulsewidth)*radar.samp_rate),1);
+radar.sig_data_tx = [radar.sig_data_tx;padding_zeros];
+write_complex_binary(radar.sig_data_tx,input_path); % Write to a file
+%% Initialize System Parameters
+usrpGainTx = 44.9; % SDR Tx front-end gain used in GNU Radio flowgraph(dB)
+usrpGainRx = 38; % SDR Rx front-end gain used in GNU Radio flowgraph(dB)
+radar.noise_fig = 8; % SDR maximum noise figure (from manufacturer, dB)
+% Receiver noise power, including hardware imperfections256
+radar.pwr_noise = radar.pwr_noise * 10^((radar.noise_fig+usrpGainTx+...
+    usrpGainRx)/10);
+radar.pfa = 1e-6; % Probability of false alarm
+% Read GNU Radio receive data
+radar.num_pulses = 64;
+radar.sig_data_rx = read_complex_binary(output_path);
+radar.sig_data_rx = radar.sig_data_rx(1:radar.num_pulses*...
+    (length(radar.sig_data_tx)));
+%% Initialize Target Parameters
+radar.num_tgts = 1;
+radar.tgt_pos = [1000];
+radar.tgt_vel = [100];
+radar.tgt_rcs = [1];
+%% Setup tags
+% Generate tag objects demarcating the start and end of bursts
+num_pulse_samps = length(radar.sig_data_tx)-length(padding_zeros);
+offsets = 0:num_pulse_samps:length(radar.sig_data_rx);
+offsets(1) = 1;
+offsets(end) = [];
+tags = stream_tag.empty(length(offsets),0);
+for ii = 1:length(offsets)
+    if mod(ii,2)
+        tags(ii) = stream_tag("SOB","SOB",offsets(ii));
+    else
+        tags(ii) = stream_tag("EOB","EOB",offsets(ii));
+    end
+end
+end
+
+
+% Usage: tags_in_range = get_tags_in_range(start,stop,tags,offsets)
+% Return the array of tags for which start<tags.offsets<stop
+function tags_in_range = get_tags_in_range(start,stop,tags,offsets)
+    tag_idx = offsets>=start & offsets<=stop;
+    tags_in_range = tags(tag_idx);
+end
+
+
+% Usage sf = simulate_targets(radar,pulse_count)
+% Updates the position for each target in the radar parameter object, then
+% returns a scale factor that consists of an amplitude term (from the radar
+% range equation) and a doppler shift.
+function sf = simulate_targets(radar,pulse_count)
+    sf = zeros(radar.num_tgts,1);
+    radar.tgt_pos = radar.tgt_pos+(radar.tgt_vel*radar.sig_pri);
+    for tgt_idx = 1:length(sf)
+        if radar.tgt_pos(tgt_idx) < 0
+            amplitude_scaling = 0;
+        else
+            amplitude_scaling = sqrt(radar.sig_wavelength^2*radar.tgt_rcs(tgt_idx)/...
+                ((4*pi)^3*radar.tgt_pos(tgt_idx)^4));
+        end
+        dopp_freq = 2*radar.tgt_vel(tgt_idx)/radar.sig_wavelength;
+        dopp_shift = exp(1i*2*pi*dopp_freq*radar.sig_pri*pulse_count);
+        sf(tgt_idx) = amplitude_scaling*dopp_shift;
+    end
+    
+end
+
+
+% Usage: function delay_samps = get_tgt_delay_samps(radar)
+% Get the number p
+function delay_samps = get_tgt_delay_samps(radar)
+    delay_samps
+end
+
+% Usage: plot_rd_map()
+% Form a pulse train from the data then do pulse compression and do
+% doppler processing
+function rd_map = plot_rd_map(radar,data_vec)
+% Reshape the output vector into a train of pulses. For now, I'm adding
+% in the padding zeros here rather than reading them in from work()
+padding_zeros = zeros(round((radar.sig_pri-...
+    radar.sig_comp_pulsewidth)*radar.samp_rate),1);
+pulse_length = length(radar.sig_data_tx)-length(padding_zeros);
+pulse_train = reshape(data_vec,pulse_length,radar.num_pulses);
+pulse_train = [pulse_train;repmat(padding_zeros,1,radar.num_pulses)];
+% Set up the matched filter and its response for each pulse
+match_filt = flipud(conj(radar.sig_data_tx(1:end-length(padding_zeros))));
+mf_resp = zeros(length(radar.sig_data_tx)+length(match_filt)-1,...
+    radar.num_pulses);
+% Zero pad the filter and data vector, then convolve
+N = size(mf_resp,1);
+padded_mf = [match_filt; zeros(N-length(match_filt),1)];
+padded_pulse_train = [pulse_train;zeros(N-size(pulse_train,1),size(pulse_train,2))];
+for ii = 1:radar.num_pulses
+    mf_resp(:,ii) = ifft(fft(padded_mf).*fft(padded_pulse_train(:,ii)));
+end
+%% Plots
+% TODO: Add these into the object (maybe???)
+radar = struct(radar);
+radar.max_range = round(radar.const.c*radar.sig_pri/2);
+radar.max_vel = (radar.sig_prf/2)*radar.sig_wavelength/2;
+dopp_os = 2;
+% Generate a range-doppler map
+rd_map = fftshift(fft(mf_resp,dopp_os*radar.num_pulses,2),2);
+rd_map_db = db(abs(rd_map));
+max_val = max(rd_map_db(:));
+dynamic_rng = 80;
+figure()
+% Shift the range axis so that 0 m is the first location at which the full
+% pulse has been emitted
+range_offset = (pulse_length)*radar.const.c/(2*radar.samp_rate);
+r_scale = linspace(-range_offset,length(mf_resp)*radar.const.c/(2*radar.samp_rate)-range_offset, size(rd_map,1));
+d_scale = linspace(-radar.max_vel, radar.max_vel-(1/size(rd_map,2)), size(rd_map,2));
+imagesc(d_scale, r_scale, rd_map_db);
+
+caxis([max_val-dynamic_rng max_val])
+set(gca, 'fontweight', 'bold', 'fontsize', 18);
+title("Range-Doppler Map");
+xlabel("Velocity (m/s)");
+ylabel("Range (m)");
+h = colorbar;
+h.Label.String = 'Signal Power (db)';
+end
