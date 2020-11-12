@@ -32,6 +32,5 @@ except ImportError:
     pass
 
 # import any pure python here
-from .moving_target_sim_py import moving_target_sim_py
-
+from .lfm_source import lfm_source
 #

@@ -23,5 +23,10 @@
 ########################################################################
 install(FILES
     api.h
-    DESTINATION include/dragon
+    difference.h
+    phase_code_generator.h
+    dti.h
+    oversample_vector.h
+    complex_exponential.h
+    shaping_filt.h DESTINATION include/dragon
 )

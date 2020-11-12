@@ -22,9 +22,13 @@
 # Setup library
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
-
 list(APPEND dragon_sources
-)
+    difference_impl.cc
+    phase_code_generator_impl.cc
+    dti_impl.cc
+    oversample_vector_impl.cc
+    complex_exponential_impl.cc
+    shaping_filt_impl.cc )
 
 set(dragon_sources "${dragon_sources}" PARENT_SCOPE)
 if(NOT dragon_sources)

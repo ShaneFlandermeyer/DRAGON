@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Shane Flandermeyer.
+# Copyright 2020 gr-dragon author.
 #
 # This is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,9 +21,9 @@
 
 from gnuradio import gr, gr_unittest
 from gnuradio import blocks
-from moving_target_sim_py import moving_target_sim_py
+from lfm_source import lfm_source
 
-class qa_moving_target_sim_py(gr_unittest.TestCase):
+class qa_lfm_source(gr_unittest.TestCase):
 
     def setUp(self):
         self.tb = gr.top_block()
@@ -38,4 +38,4 @@ class qa_moving_target_sim_py(gr_unittest.TestCase):
 
 
 if __name__ == '__main__':
-    gr_unittest.run(qa_moving_target_sim_py)
+    gr_unittest.run(qa_lfm_source)

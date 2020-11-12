@@ -1,7 +1,6 @@
 options:
   parameters:
     author: ''
-    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -23,6 +22,7 @@ options:
     sizing_mode: fixed
     thread_safe_setters: ''
     title: Not titled yet
+    window_size: ''
   states:
     bus_sink: false
     bus_source: false
@@ -41,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 17]
+    coordinate: [199, 32]
     rotation: 0
     state: enabled
 - name: sig_freq_tx
@@ -53,7 +53,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [589, 11]
+    coordinate: [626, 14]
     rotation: 0
     state: true
 - name: sig_prf
@@ -65,7 +65,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [689, 16]
+    coordinate: [759, 11]
     rotation: 0
     state: true
 - name: tgt_rcs
@@ -77,19 +77,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [478, 20]
+    coordinate: [510, 20]
     rotation: 0
     state: true
 - name: tgt_rng
   id: variable
   parameters:
     comment: ''
-    value: '[1000,14000]'
+    value: '[1000,25000]'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [272, 15]
+    coordinate: [290, 30]
     rotation: 0
     state: true
 - name: tgt_vel
@@ -101,7 +101,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [371, 19]
+    coordinate: [404, 16]
     rotation: 0
     state: true
 - name: analog_noise_source_x_0
@@ -122,7 +122,7 @@ blocks:
     bus_structure: null
     coordinate: [667, 300]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_add_const_vxx_0
   id: blocks_add_const_vxx
   parameters:
@@ -158,7 +158,7 @@ blocks:
     bus_structure: null
     coordinate: [837, 217]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_burst_tagger_0
   id: blocks_burst_tagger
   parameters:
@@ -210,7 +210,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1239, 242]
+    coordinate: [1230, 199]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -277,7 +277,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    end_tag_key: '"EOB"'
+    end_tag_key: EOB
     maxoutbuf: '0'
     minoutbuf: '0'
     pad_pulses: 'True'
@@ -285,7 +285,7 @@ blocks:
     sig_comp_pulsewidth: 100e-6
     sig_freq_tx: sig_freq_tx
     sig_prf: sig_prf
-    start_tag_key: '"SOB"'
+    start_tag_key: SOB
     tgt_rcs: tgt_rcs
     tgt_rng: tgt_rng
     tgt_vel: tgt_vel
@@ -293,7 +293,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [933, 140]
+    coordinate: [917, 144]
     rotation: 0
     state: true
 
@@ -302,6 +302,7 @@ connections:
 - [blocks_add_const_vxx_0, '0', blocks_float_to_short_0, '0']
 - [blocks_add_xx_0, '0', dragon_moving_target_sim_py_0, '0']
 - [blocks_burst_tagger_0, '0', blocks_add_xx_0, '0']
+- [blocks_burst_tagger_0, '0', dragon_moving_target_sim_py_0, '0']
 - [blocks_complex_to_mag_0, '0', blocks_add_const_vxx_0, '0']
 - [blocks_file_source_0, '0', blocks_burst_tagger_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']

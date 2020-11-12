@@ -18,5 +18,11 @@
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
 install(FILES
-    dragon_moving_target_sim_py.block.yml DESTINATION share/gnuradio/grc/blocks
+    dragon_difference.block.yml
+    dragon_phase_code_generator.block.yml
+    dragon_lfm_source.block.yml
+    dragon_dti.block.yml
+    dragon_oversample_vector.block.yml
+    dragon_complex_exponential.block.yml
+    dragon_shaping_filt.block.yml DESTINATION share/gnuradio/grc/blocks
 )

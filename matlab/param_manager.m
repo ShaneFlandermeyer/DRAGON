@@ -71,6 +71,11 @@ methods
 end
 %% Setter functions
 methods
+    %% System Parameter Setters
+    function set.duty_cycle(obj,val)
+        obj.duty_cycle = val;
+        obj.checkIfUpdated('duty_cycle',val);
+    end
     %% Target Parameter Setters
     function set.tgt_rng(obj,val)
         obj.tgt_rng = val;
@@ -88,6 +93,10 @@ methods
     function set.sig_bandwidth(obj,val)
         obj.sig_bandwidth = val;
         obj.checkIfUpdated('sig_bandwidth',val);
+    end
+    function set.sig_comp_pulsewidth(obj,val)
+        obj.sig_comp_pulsewidth = val;
+        obj.checkIfUpdated('sig_comp_pulsewidth',val);
     end
     function set.sig_freq_tx(obj,val)
         obj.sig_freq_tx = val;
@@ -121,6 +130,14 @@ methods (Access = private)
             obj.initial_param = paramName;
         end
         switch paramName
+            %% System Parameter Updates
+            case 'duty_cycle'
+                if ~isempty(obj.sig_comp_pulsewidth)
+                    obj.sig_pri = obj.sig_comp_pulsewidth/obj.duty_cycle;
+                end
+                if ~isempty(obj.sig_pri)
+                    obj.sig_comp_pulsewidth = obj.sig_pri*obj.duty_cycle;
+                end
             %% Waveform Parameter Updates
             % Waveform bandwidth changed
             case 'sig_bandwidth'
@@ -128,7 +145,11 @@ methods (Access = private)
                     obj.sig_pulse_comp_gain = obj.sig_bandwidth*obj.sig_comp_pulsewidth;
                 end
                 obj.pwr_noise = obj.const.k*obj.const.T0_k*obj.sig_bandwidth;
-                
+            % Compressed pulse width changed
+            case 'sig_comp_pulsewidth'
+                if ~isempty(obj.sig_pri)
+                    obj.duty_cycle = obj.sig_comp_pulsewidth/obj.sig_pri;
+                end
             % Center frequency changed
             case 'sig_freq_tx'
                 obj.sig_wavelength = obj.const.c/obj.sig_freq_tx;
