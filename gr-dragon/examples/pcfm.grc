@@ -1,9 +1,13 @@
 options:
   parameters:
-    author: shane
+    author: Shane Flandermeyer
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
-    comment: ''
+    comment: "Modulates a phase code with the PCFM framework, and\nplots a comparison\
+      \ of the phase functions along with the resulting \ncomplex baseband waveform.\n\
+      \nNOTE: This flowgraph relies on the PCFM Modulator Hierarchical\nblock, which\
+      \ can be used by compiling the flowgraph in \ngrc/PCFM_Modulator.grc then refreshing\
+      \ the block list or \nrestarting GRC."
     copyright: ''
     description: ''
     gen_cmake: 'On'
@@ -21,22 +25,82 @@ options:
     run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
-    title: Not titled yet
+    title: PCFM
     window_size: ''
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 8]
+    coordinate: [16, 12.0]
     rotation: 0
     state: enabled
 
 blocks:
+- name: bandwidth
+  id: variable
+  parameters:
+    comment: ''
+    value: code_len/pulse_width
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 12.0]
+    rotation: 0
+    state: true
+- name: chip_width
+  id: variable
+  parameters:
+    comment: ''
+    value: samp_interval*oversampling
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 12.0]
+    rotation: 0
+    state: true
 - name: code_len
   id: variable
   parameters:
     comment: ''
-    value: '64'
+    value: '200'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [384, 12.0]
+    rotation: 0
+    state: true
+- name: oversampling
+  id: variable
+  parameters:
+    comment: ''
+    value: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 12.0]
+    rotation: 0
+    state: true
+- name: pulse_width
+  id: variable
+  parameters:
+    comment: ''
+    value: chip_width*code_len
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [656, 12.0]
+    rotation: 0
+    state: true
+- name: samp_interval
+  id: variable
+  parameters:
+    comment: ''
+    value: 1/samp_rate
   states:
     bus_sink: false
     bus_source: false
@@ -44,23 +108,11 @@ blocks:
     coordinate: [272, 12.0]
     rotation: 0
     state: true
-- name: oversampling
-  id: variable
-  parameters:
-    comment: ''
-    value: '16'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [352, 12.0]
-    rotation: 0
-    state: true
 - name: samp_rate
   id: variable
   parameters:
     comment: ''
-    value: 20e6
+    value: 500e6
   states:
     bus_sink: false
     bus_source: false
@@ -68,42 +120,6 @@ blocks:
     coordinate: [184, 12]
     rotation: 0
     state: enabled
-- name: blocks_file_sink_0
-  id: blocks_file_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    append: 'False'
-    comment: ''
-    file: pcfm.dat
-    type: float
-    unbuffered: 'False'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [720, 124.0]
-    rotation: 0
-    state: enabled
-- name: blocks_file_sink_0_0
-  id: blocks_file_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    append: 'False'
-    comment: ''
-    file: p4.dat
-    type: float
-    unbuffered: 'False'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [632, 364.0]
-    rotation: 0
-    state: disabled
 - name: blocks_vector_to_stream_0
   id: blocks_vector_to_stream
   parameters:
@@ -119,9 +135,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [304, 192.0]
+    coordinate: [304, 312.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_vector_to_stream_0_0
   id: blocks_vector_to_stream
   parameters:
@@ -137,9 +153,24 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 312.0]
+    coordinate: [496, 448.0]
     rotation: 0
-    state: true
+    state: enabled
+- name: dragon_complex_exponential_0
+  id: dragon_complex_exponential
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [784, 312.0]
+    rotation: 0
+    state: enabled
 - name: dragon_oversample_vector_0
   id: dragon_oversample_vector
   parameters:
@@ -154,9 +185,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [296, 300.0]
+    coordinate: [288, 436.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: dragon_phase_code_generator_0
   id: dragon_phase_code_generator
   parameters:
@@ -174,7 +205,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [56, 212.0]
+    coordinate: [48, 292.0]
     rotation: 0
     state: true
 - name: pcfm_modulator_0
@@ -192,9 +223,38 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [488, 172.0]
+    coordinate: [544, 292.0]
     rotation: 0
-    state: true
+    state: enabled
+- name: qtgui_sink_x_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: Complex-Baseband Waveform
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'False'
+    type: complex
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1032, 292.0]
+    rotation: 0
+    state: enabled
 - name: qtgui_time_sink_x_0
   id: qtgui_time_sink_x
   parameters:
@@ -250,7 +310,7 @@ blocks:
     marker9: '-1'
     name: Phase Function Comparison
     nconnections: '2'
-    size: '1024'
+    size: code_len*oversampling
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -289,18 +349,18 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [728, 220.0]
+    coordinate: [784, 404.0]
     rotation: 0
     state: enabled
 
 connections:
 - [blocks_vector_to_stream_0, '0', pcfm_modulator_0, '0']
-- [blocks_vector_to_stream_0_0, '0', blocks_file_sink_0_0, '0']
 - [blocks_vector_to_stream_0_0, '0', qtgui_time_sink_x_0, '1']
+- [dragon_complex_exponential_0, '0', qtgui_sink_x_0, '0']
 - [dragon_oversample_vector_0, '0', blocks_vector_to_stream_0_0, '0']
 - [dragon_phase_code_generator_0, '0', blocks_vector_to_stream_0, '0']
 - [dragon_phase_code_generator_0, '0', dragon_oversample_vector_0, '0']
-- [pcfm_modulator_0, '0', blocks_file_sink_0, '0']
+- [pcfm_modulator_0, '0', dragon_complex_exponential_0, '0']
 - [pcfm_modulator_0, '0', qtgui_time_sink_x_0, '0']
 
 metadata:

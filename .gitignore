@@ -3,4 +3,5 @@ gr-dragon/.idea/
 gr-dragon/build/
 gr-dragon/cmake-build-debug/
 gr-dragon/.clang-format
+gr-dragon/.idea/workspace.xml
 

@@ -197,7 +197,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    label: Phase Code
+    label: Code
     maxoutbuf: '0'
     minoutbuf: '0'
     num_streams: '1'

@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Not titled yet
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.2.0
 
 from distutils.version import StrictVersion
 
@@ -128,7 +128,7 @@ class p4(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.dragon_p4_encoder_0 = dragon.p4_encoder(code_len, True, [])
+        self.dragon_phase_code_generator_0 = dragon.phase_code_generator("P4", code_len, True, 1, [])
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, code_len)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
 
@@ -139,7 +139,7 @@ class p4(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_throttle_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.dragon_p4_encoder_0, 0), (self.blocks_vector_to_stream_0, 0))
+        self.connect((self.dragon_phase_code_generator_0, 0), (self.blocks_vector_to_stream_0, 0))
 
 
     def closeEvent(self, event):

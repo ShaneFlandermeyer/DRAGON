@@ -5,8 +5,8 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Not titled yet
-# Author: shane
+# Title: PCFM
+# Author: Shane Flandermeyer
 # GNU Radio version: 3.8.2.0
 
 from distutils.version import StrictVersion
@@ -43,9 +43,9 @@ from gnuradio import qtgui
 class pcfm(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Not titled yet")
+        gr.top_block.__init__(self, "PCFM")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Not titled yet")
+        self.setWindowTitle("PCFM")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -76,15 +76,19 @@ class pcfm(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 20e6
-        self.oversampling = oversampling = 16
-        self.code_len = code_len = 64
+        self.samp_rate = samp_rate = 500e6
+        self.samp_interval = samp_interval = 1/samp_rate
+        self.oversampling = oversampling = 5
+        self.code_len = code_len = 200
+        self.chip_width = chip_width = samp_interval*oversampling
+        self.pulse_width = pulse_width = chip_width*code_len
+        self.bandwidth = bandwidth = code_len/pulse_width
 
         ##################################################
         # Blocks
         ##################################################
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
-            1024, #size
+            code_len*oversampling, #size
             samp_rate, #samp_rate
             'Phase Function Comparison', #name
             2 #number of inputs
@@ -130,6 +134,23 @@ class pcfm(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
+        self.qtgui_sink_x_0 = qtgui.sink_c(
+            1024, #fftsize
+            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            samp_rate, #bw
+            'Complex-Baseband Waveform', #name
+            True, #plotfreq
+            True, #plotwaterfall
+            True, #plottime
+            True #plotconst
+        )
+        self.qtgui_sink_x_0.set_update_time(1.0/10)
+        self._qtgui_sink_x_0_win = sip.wrapinstance(self.qtgui_sink_x_0.pyqwidget(), Qt.QWidget)
+
+        self.qtgui_sink_x_0.enable_rf_freq(False)
+
+        self.top_grid_layout.addWidget(self._qtgui_sink_x_0_win)
         self.pcfm_modulator_0 = pcfm_modulator(
             code_len=code_len,
             oversampling=oversampling,
@@ -137,10 +158,9 @@ class pcfm(gr.top_block, Qt.QWidget):
         )
         self.dragon_phase_code_generator_0 = dragon.phase_code_generator("P4", code_len, True, 1, [])
         self.dragon_oversample_vector_0 = dragon.oversample_vector(code_len, oversampling)
+        self.dragon_complex_exponential_0 = dragon.complex_exponential()
         self.blocks_vector_to_stream_0_0 = blocks.vector_to_stream(gr.sizeof_float*1, code_len*oversampling)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, code_len)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_float*1, 'pcfm.dat', False)
-        self.blocks_file_sink_0.set_unbuffered(False)
 
 
 
@@ -149,10 +169,11 @@ class pcfm(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_vector_to_stream_0, 0), (self.pcfm_modulator_0, 0))
         self.connect((self.blocks_vector_to_stream_0_0, 0), (self.qtgui_time_sink_x_0, 1))
+        self.connect((self.dragon_complex_exponential_0, 0), (self.qtgui_sink_x_0, 0))
         self.connect((self.dragon_oversample_vector_0, 0), (self.blocks_vector_to_stream_0_0, 0))
         self.connect((self.dragon_phase_code_generator_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.dragon_phase_code_generator_0, 0), (self.dragon_oversample_vector_0, 0))
-        self.connect((self.pcfm_modulator_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.pcfm_modulator_0, 0), (self.dragon_complex_exponential_0, 0))
         self.connect((self.pcfm_modulator_0, 0), (self.qtgui_time_sink_x_0, 0))
 
 
@@ -166,14 +187,24 @@ class pcfm(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
+        self.set_samp_interval(1/self.samp_rate)
         self.pcfm_modulator_0.set_samp_rate(self.samp_rate)
+        self.qtgui_sink_x_0.set_frequency_range(0, self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
+
+    def get_samp_interval(self):
+        return self.samp_interval
+
+    def set_samp_interval(self, samp_interval):
+        self.samp_interval = samp_interval
+        self.set_chip_width(self.samp_interval*self.oversampling)
 
     def get_oversampling(self):
         return self.oversampling
 
     def set_oversampling(self, oversampling):
         self.oversampling = oversampling
+        self.set_chip_width(self.samp_interval*self.oversampling)
         self.pcfm_modulator_0.set_oversampling(self.oversampling)
 
     def get_code_len(self):
@@ -181,7 +212,29 @@ class pcfm(gr.top_block, Qt.QWidget):
 
     def set_code_len(self, code_len):
         self.code_len = code_len
+        self.set_bandwidth(self.code_len/self.pulse_width)
+        self.set_pulse_width(self.chip_width*self.code_len)
         self.pcfm_modulator_0.set_code_len(self.code_len)
+
+    def get_chip_width(self):
+        return self.chip_width
+
+    def set_chip_width(self, chip_width):
+        self.chip_width = chip_width
+        self.set_pulse_width(self.chip_width*self.code_len)
+
+    def get_pulse_width(self):
+        return self.pulse_width
+
+    def set_pulse_width(self, pulse_width):
+        self.pulse_width = pulse_width
+        self.set_bandwidth(self.code_len/self.pulse_width)
+
+    def get_bandwidth(self):
+        return self.bandwidth
+
+    def set_bandwidth(self, bandwidth):
+        self.bandwidth = bandwidth
 
 
 

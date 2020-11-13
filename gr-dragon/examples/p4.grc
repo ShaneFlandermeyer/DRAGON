@@ -102,22 +102,24 @@ blocks:
     coordinate: [208, 408.0]
     rotation: 0
     state: true
-- name: dragon_p4_encoder_0
-  id: dragon_p4_encoder
+- name: dragon_phase_code_generator_0
+  id: dragon_phase_code_generator
   parameters:
     affinity: ''
     alias: ''
     code_len: code_len
+    code_type: '"P4"'
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     repeat: 'True'
+    repetitions: '1'
     tags: '[]'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [64, 300.0]
+    coordinate: [40, 292.0]
     rotation: 0
     state: true
 - name: qtgui_number_sink_0
@@ -285,7 +287,7 @@ connections:
 - [blocks_throttle_0, '0', qtgui_number_sink_0, '0']
 - [blocks_throttle_0, '0', qtgui_time_sink_x_0, '0']
 - [blocks_vector_to_stream_0, '0', blocks_throttle_0, '0']
-- [dragon_p4_encoder_0, '0', blocks_vector_to_stream_0, '0']
+- [dragon_phase_code_generator_0, '0', blocks_vector_to_stream_0, '0']
 
 metadata:
   file_format: 1
