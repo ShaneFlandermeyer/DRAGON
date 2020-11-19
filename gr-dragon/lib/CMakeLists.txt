@@ -28,7 +28,8 @@ list(APPEND dragon_sources
     dti_impl.cc
     oversample_vector_impl.cc
     complex_exponential_impl.cc
-    shaping_filt_impl.cc )
+    shaping_filt_impl.cc
+    pcfm_modulator_impl.cc )
 
 set(dragon_sources "${dragon_sources}" PARENT_SCOPE)
 if(NOT dragon_sources)

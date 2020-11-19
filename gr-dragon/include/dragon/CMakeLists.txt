@@ -28,5 +28,6 @@ install(FILES
     dti.h
     oversample_vector.h
     complex_exponential.h
-    shaping_filt.h DESTINATION include/dragon
+    shaping_filt.h
+    pcfm_modulator.h DESTINATION include/dragon
 )
