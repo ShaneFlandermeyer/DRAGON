@@ -14,6 +14,7 @@
 #include "dragon/oversample_vector.h"
 #include "dragon/complex_exponential.h"
 #include "dragon/shaping_filt.h"
+#include "dragon/cpm.h"
 %}
 
 %include "dragon/difference.h"
@@ -30,3 +31,4 @@ GR_SWIG_BLOCK_MAGIC2(dragon, complex_exponential);
 %include "dragon/shaping_filt.h"
 GR_SWIG_BLOCK_MAGIC2(dragon, shaping_filt);
 
+%include "dragon/cpm.h"

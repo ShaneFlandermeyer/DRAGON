@@ -29,5 +29,5 @@ install(FILES
     oversample_vector.h
     complex_exponential.h
     shaping_filt.h
-    DESTINATION include/dragon
+    cpm.h DESTINATION include/dragon
 )
