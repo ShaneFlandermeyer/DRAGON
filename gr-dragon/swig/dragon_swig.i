@@ -15,6 +15,7 @@
 #include "dragon/complex_exponential.h"
 #include "dragon/cpm.h"
 #include "dragon/pulse_shaper.h"
+#include "dragon/pcfm_mod.h"
 %}
 
 %include "dragon/difference.h"
@@ -33,3 +34,6 @@ GR_SWIG_BLOCK_MAGIC2(dragon, complex_exponential);
 %include "dragon/cpm.h"
 %include "dragon/pulse_shaper.h"
 GR_SWIG_BLOCK_MAGIC2(dragon, pulse_shaper);
+
+%include "dragon/pcfm_mod.h"
+GR_SWIG_BLOCK_MAGIC2(dragon, pcfm_mod);

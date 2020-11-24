@@ -24,5 +24,6 @@ install(FILES
     dragon_dti.block.yml
     dragon_oversample_vector.block.yml
     dragon_complex_exponential.block.yml
-    dragon_pulse_shaper.block.yml DESTINATION share/gnuradio/grc/blocks
+    dragon_pulse_shaper.block.yml
+    dragon_pcfm_mod.block.yml DESTINATION share/gnuradio/grc/blocks
 )

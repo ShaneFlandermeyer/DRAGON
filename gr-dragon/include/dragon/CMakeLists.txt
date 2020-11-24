@@ -29,5 +29,6 @@ install(FILES
     oversample_vector.h
     complex_exponential.h
     cpm.h
-    pulse_shaper.h DESTINATION include/dragon
+    pulse_shaper.h
+    pcfm_mod.h DESTINATION include/dragon
 )

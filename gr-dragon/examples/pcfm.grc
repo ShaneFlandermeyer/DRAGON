@@ -112,30 +112,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 500e6
+    value: 100e6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
     coordinate: [184, 12]
-    rotation: 0
-    state: enabled
-- name: blocks_vector_to_stream_0
-  id: blocks_vector_to_stream
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_items: code_len
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [304, 312.0]
     rotation: 0
     state: enabled
 - name: blocks_vector_to_stream_0_0
@@ -168,7 +150,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [784, 312.0]
+    coordinate: [832, 312.0]
     rotation: 0
     state: enabled
 - name: dragon_oversample_vector_0
@@ -188,6 +170,25 @@ blocks:
     coordinate: [288, 436.0]
     rotation: 0
     state: enabled
+- name: dragon_pcfm_mod_0
+  id: dragon_pcfm_mod
+  parameters:
+    affinity: ''
+    alias: ''
+    code_len: code_len
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    oversampling: int(oversampling)
+    samp_rate: int(samp_rate)
+    type: dragon.cpm.LREC
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [488, 252.0]
+    rotation: 0
+    state: true
 - name: dragon_phase_code_generator_0
   id: dragon_phase_code_generator
   parameters:
@@ -208,24 +209,6 @@ blocks:
     coordinate: [48, 292.0]
     rotation: 0
     state: true
-- name: pcfm_modulator_0
-  id: pcfm_modulator
-  parameters:
-    affinity: ''
-    alias: ''
-    code_len: code_len
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    oversampling: oversampling
-    samp_rate: samp_rate
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [544, 292.0]
-    rotation: 0
-    state: enabled
 - name: qtgui_sink_x_0
   id: qtgui_sink_x
   parameters:
@@ -354,14 +337,13 @@ blocks:
     state: enabled
 
 connections:
-- [blocks_vector_to_stream_0, '0', pcfm_modulator_0, '0']
 - [blocks_vector_to_stream_0_0, '0', qtgui_time_sink_x_0, '1']
 - [dragon_complex_exponential_0, '0', qtgui_sink_x_0, '0']
 - [dragon_oversample_vector_0, '0', blocks_vector_to_stream_0_0, '0']
-- [dragon_phase_code_generator_0, '0', blocks_vector_to_stream_0, '0']
+- [dragon_pcfm_mod_0, '0', dragon_complex_exponential_0, '0']
+- [dragon_pcfm_mod_0, '0', qtgui_time_sink_x_0, '0']
 - [dragon_phase_code_generator_0, '0', dragon_oversample_vector_0, '0']
-- [pcfm_modulator_0, '0', dragon_complex_exponential_0, '0']
-- [pcfm_modulator_0, '0', qtgui_time_sink_x_0, '0']
+- [dragon_phase_code_generator_0, '0', dragon_pcfm_mod_0, '0']
 
 metadata:
   file_format: 1

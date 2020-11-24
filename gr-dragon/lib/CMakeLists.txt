@@ -29,7 +29,8 @@ list(APPEND dragon_sources
     oversample_vector_impl.cc
     complex_exponential_impl.cc
     cpm.cc
-    pulse_shaper_impl.cc)
+    pulse_shaper_impl.cc
+    pcfm_mod_impl.cc )
 
 set(dragon_sources "${dragon_sources}" PARENT_SCOPE)
 if(NOT dragon_sources)
@@ -74,6 +75,7 @@ include(GrTest)
 #include_directories()
 # List all files that contain Boost.UTF unit tests here
 list(APPEND test_dragon_sources
+qa_pcfm_mod.cc
 qa_pulse_shaper.cc
 qa_cpm.cc
 )

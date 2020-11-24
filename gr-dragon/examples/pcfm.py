@@ -21,21 +21,17 @@ if __name__ == '__main__':
         except:
             print("Warning: failed to XInitThreads()")
 
-import os
-import sys
-sys.path.append(os.environ.get('GRC_HIER_PATH', os.path.expanduser('~/.grc_gnuradio')))
-
 from PyQt5 import Qt
 from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
 from gnuradio import blocks
 from gnuradio import gr
+import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from pcfm_modulator import pcfm_modulator  # grc-generated hier_block
 import dragon
 
 from gnuradio import qtgui
@@ -76,7 +72,7 @@ class pcfm(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.samp_rate = samp_rate = 500e6
+        self.samp_rate = samp_rate = 100e6
         self.samp_interval = samp_interval = 1/samp_rate
         self.oversampling = oversampling = 5
         self.code_len = code_len = 200
@@ -151,30 +147,24 @@ class pcfm(gr.top_block, Qt.QWidget):
         self.qtgui_sink_x_0.enable_rf_freq(False)
 
         self.top_grid_layout.addWidget(self._qtgui_sink_x_0_win)
-        self.pcfm_modulator_0 = pcfm_modulator(
-            code_len=code_len,
-            oversampling=oversampling,
-            samp_rate=samp_rate,
-        )
         self.dragon_phase_code_generator_0 = dragon.phase_code_generator("P4", code_len, True, 1, [])
+        self.dragon_pcfm_mod_0 = dragon.pcfm_mod(dragon.cpm.LREC, code_len, int(oversampling), int(samp_rate))
         self.dragon_oversample_vector_0 = dragon.oversample_vector(code_len, oversampling)
         self.dragon_complex_exponential_0 = dragon.complex_exponential()
         self.blocks_vector_to_stream_0_0 = blocks.vector_to_stream(gr.sizeof_float*1, code_len*oversampling)
-        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, code_len)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_vector_to_stream_0, 0), (self.pcfm_modulator_0, 0))
         self.connect((self.blocks_vector_to_stream_0_0, 0), (self.qtgui_time_sink_x_0, 1))
         self.connect((self.dragon_complex_exponential_0, 0), (self.qtgui_sink_x_0, 0))
         self.connect((self.dragon_oversample_vector_0, 0), (self.blocks_vector_to_stream_0_0, 0))
-        self.connect((self.dragon_phase_code_generator_0, 0), (self.blocks_vector_to_stream_0, 0))
+        self.connect((self.dragon_pcfm_mod_0, 0), (self.dragon_complex_exponential_0, 0))
+        self.connect((self.dragon_pcfm_mod_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.dragon_phase_code_generator_0, 0), (self.dragon_oversample_vector_0, 0))
-        self.connect((self.pcfm_modulator_0, 0), (self.dragon_complex_exponential_0, 0))
-        self.connect((self.pcfm_modulator_0, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.dragon_phase_code_generator_0, 0), (self.dragon_pcfm_mod_0, 0))
 
 
     def closeEvent(self, event):
@@ -188,7 +178,6 @@ class pcfm(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.set_samp_interval(1/self.samp_rate)
-        self.pcfm_modulator_0.set_samp_rate(self.samp_rate)
         self.qtgui_sink_x_0.set_frequency_range(0, self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
 
@@ -205,7 +194,6 @@ class pcfm(gr.top_block, Qt.QWidget):
     def set_oversampling(self, oversampling):
         self.oversampling = oversampling
         self.set_chip_width(self.samp_interval*self.oversampling)
-        self.pcfm_modulator_0.set_oversampling(self.oversampling)
 
     def get_code_len(self):
         return self.code_len
@@ -214,7 +202,6 @@ class pcfm(gr.top_block, Qt.QWidget):
         self.code_len = code_len
         self.set_bandwidth(self.code_len/self.pulse_width)
         self.set_pulse_width(self.chip_width*self.code_len)
-        self.pcfm_modulator_0.set_code_len(self.code_len)
 
     def get_chip_width(self):
         return self.chip_width
