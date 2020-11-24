@@ -25,11 +25,11 @@ description here (python/__init__.py).
 from __future__ import unicode_literals
 
 # import swig generated symbols into the dragon namespace
-try:
+# try:
     # this might fail if the module is python-only
-    from .dragon_swig import *
-except ImportError:
-    pass
+from .dragon_swig import *
+# except ImportError:
+#     pass
 
 # import any pure python here
 from .lfm_source import lfm_source

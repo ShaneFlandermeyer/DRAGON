@@ -29,7 +29,8 @@ list(APPEND dragon_sources
     oversample_vector_impl.cc
     complex_exponential_impl.cc
     shaping_filt_impl.cc
-    cpm.cc )
+    cpm.cc
+    pulse_shaper_impl.cc)
 
 set(dragon_sources "${dragon_sources}" PARENT_SCOPE)
 if(NOT dragon_sources)
@@ -38,7 +39,9 @@ if(NOT dragon_sources)
 endif(NOT dragon_sources)
 
 add_library(gnuradio-dragon SHARED ${dragon_sources})
-target_link_libraries(gnuradio-dragon gnuradio::gnuradio-runtime)
+target_link_libraries(gnuradio-dragon gnuradio::gnuradio-runtime
+        gnuradio::gnuradio-filter gnuradio::gnuradio-fft
+        gnuradio::gnuradio-blocks)
 target_include_directories(gnuradio-dragon
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
@@ -72,6 +75,7 @@ include(GrTest)
 #include_directories()
 # List all files that contain Boost.UTF unit tests here
 list(APPEND test_dragon_sources
+qa_pulse_shaper.cc
 qa_cpm.cc
 )
 # Anything we need to link to for the unit tests go here

@@ -138,6 +138,27 @@ blocks:
     coordinate: [512, 244.0]
     rotation: 0
     state: enabled
+- name: dragon_pulse_shaper_0
+  id: dragon_pulse_shaper
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '0.3'
+    comment: ''
+    filt_len: '1'
+    h: '0.5'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    oversampling: oversampling
+    type: dragon.cpm.LREC
+    vlen: oversampling*code_len
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [680, 100.0]
+    rotation: 0
+    state: disabled
 - name: dragon_shaping_filt_0
   id: dragon_shaping_filt
   parameters:
@@ -234,7 +255,9 @@ connections:
 - [blocks_vector_to_stream_0, '0', pad_sink_0, '0']
 - [dragon_difference_xx_0, '0', dragon_oversample_vector_0, '0']
 - [dragon_dti_0, '0', blocks_vector_to_stream_0, '0']
+- [dragon_oversample_vector_0, '0', dragon_pulse_shaper_0, '0']
 - [dragon_oversample_vector_0, '0', dragon_shaping_filt_0, '0']
+- [dragon_pulse_shaper_0, '0', dragon_dti_0, '0']
 - [dragon_shaping_filt_0, '0', dragon_dti_0, '0']
 - [pad_source_0, '0', blocks_stream_to_vector_0, '0']
 
