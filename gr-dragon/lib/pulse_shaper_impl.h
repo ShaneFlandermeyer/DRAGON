@@ -25,32 +25,30 @@
 #include <gnuradio/filter/fir_filter.h>
 
 namespace gr {
-  namespace dragon {
+namespace dragon {
 
-    class pulse_shaper_impl : public pulse_shaper
-    {
-     private:
-       int d_vlen;
-       int d_filt_len;
-       int d_oversampling;
-       float d_h;
-       double d_beta;
-       gr::filter::kernel::fir_filter_fff *d_fir;
-     protected:
-       std::vector<float> d_taps;
-     public:
-      pulse_shaper_impl(dragon::cpm::cpm_type type, int vlen, int filt_len, int oversampling, float h, double beta);
-      ~pulse_shaper_impl();
+class pulse_shaper_impl : public pulse_shaper {
+private:
+  int d_vlen;
+  int d_filt_len;
+  int d_oversampling;
+  float d_h;
+  double d_beta;
+  gr::filter::kernel::fir_filter_fff *d_fir;
 
-      int work(
-              int noutput_items,
-              gr_vector_const_void_star &input_items,
-              gr_vector_void_star &output_items
-      );
-    };
+protected:
+  std::vector<float> d_taps;
 
-  } // namespace dragon
+public:
+  pulse_shaper_impl(dragon::cpm::cpm_type type, int vlen, int filt_len,
+                    int oversampling, float h, double beta);
+  ~pulse_shaper_impl();
+
+  int work(int noutput_items, gr_vector_const_void_star &input_items,
+           gr_vector_void_star &output_items);
+};
+
+} // namespace dragon
 } // namespace gr
 
 #endif /* INCLUDED_DRAGON_PULSE_SHAPER_IMPL_H */
-

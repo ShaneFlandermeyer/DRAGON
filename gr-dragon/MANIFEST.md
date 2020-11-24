@@ -1,9 +1,14 @@
 title: The DRAGON OOT Module
-brief: Short description of gr-dragon
+
+brief: A module for the DRAGON radar research group at the University of
+ Oklahoma
+
 tags: # Tags are arbitrary, but look at CGRAN what other authors are using
   - sdr
+  
 author:
-  - Author Name <authors@email.address>
+  - Shane Flandermeyer <shaneflandermeyer@gmail.com>
+  
 copyright_owner:
   - Copyright Owner 1
 license:

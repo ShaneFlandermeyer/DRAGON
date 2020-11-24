@@ -26,31 +26,30 @@
 #include <gnuradio/sync_block.h>
 
 namespace gr {
-  namespace dragon {
+namespace dragon {
 
-    /*!
-     * \brief <+description of block+>
-     * \ingroup dragon
-     *
-     */
-    class DRAGON_API pulse_shaper : virtual public gr::sync_block
-    {
-     public:
-      typedef boost::shared_ptr<pulse_shaper> sptr;
+/*!
+ * \brief <+description of block+>
+ * \ingroup dragon
+ *
+ */
+class DRAGON_API pulse_shaper : virtual public gr::sync_block {
+public:
+  typedef boost::shared_ptr<pulse_shaper> sptr;
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of dragon::pulse_shaper.
-       *
-       * To avoid accidental use of raw pointers, dragon::pulse_shaper's
-       * constructor is in a private implementation
-       * class. dragon::pulse_shaper::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(dragon::cpm::cpm_type type, int vlen, int filt_len, int oversampling, float h, double beta);
-    };
+  /*!
+   * \brief Return a shared_ptr to a new instance of dragon::pulse_shaper.
+   *
+   * To avoid accidental use of raw pointers, dragon::pulse_shaper's
+   * constructor is in a private implementation
+   * class. dragon::pulse_shaper::make is the public interface for
+   * creating new instances.
+   */
+  static sptr make(dragon::cpm::cpm_type type, int vlen, int filt_len,
+                   int oversampling, float h, double beta);
+};
 
-  } // namespace dragon
+} // namespace dragon
 } // namespace gr
 
 #endif /* INCLUDED_DRAGON_PULSE_SHAPER_H */
-

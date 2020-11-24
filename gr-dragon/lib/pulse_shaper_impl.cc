@@ -22,62 +22,60 @@
 #include "config.h"
 #endif
 
-#include <gnuradio/io_signature.h>
 #include "pulse_shaper_impl.h"
+#include <gnuradio/io_signature.h>
 #include <gnuradio/math.h>
 namespace gr {
-  namespace dragon {
+namespace dragon {
 
-    pulse_shaper::sptr
-    pulse_shaper::make(dragon::cpm::cpm_type type, int vlen, int filt_len, int oversampling, float h, double beta)
-    {
-      return gnuradio::get_initial_sptr
-        (new pulse_shaper_impl(type, vlen, filt_len, oversampling, h, beta));
-    }
+pulse_shaper::sptr pulse_shaper::make(dragon::cpm::cpm_type type, int vlen,
+                                      int filt_len, int oversampling, float h,
+                                      double beta) {
+  return gnuradio::get_initial_sptr(
+      new pulse_shaper_impl(type, vlen, filt_len, oversampling, h, beta));
+}
 
+/*
+ * The private constructor
+ */
+pulse_shaper_impl::pulse_shaper_impl(dragon::cpm::cpm_type type, int vlen,
+                                     int filt_len, int oversampling, float h,
+                                     double beta)
+    : gr::sync_block("pulse_shaper",
+                     gr::io_signature::make(1, 1, sizeof(float) * vlen),
+                     gr::io_signature::make(1, 1, sizeof(float) * vlen)),
+      d_vlen(vlen), d_filt_len(filt_len), d_oversampling(oversampling), d_h(h),
+      d_beta(beta),
+      d_taps(dragon::cpm::phase_response(type, oversampling, filt_len, beta))
 
-    /*
-     * The private constructor
-     */
-    pulse_shaper_impl::pulse_shaper_impl(dragon::cpm::cpm_type type, int vlen, int filt_len, int oversampling, float h, double beta)
-      : gr::sync_block("pulse_shaper",
-              gr::io_signature::make(1, 1, sizeof(float)*vlen),
-              gr::io_signature::make(1, 1, sizeof(float)*vlen)),
-          d_vlen(vlen),
-          d_filt_len(filt_len),
-          d_oversampling(oversampling),
-          d_h(h),
-          d_beta(beta),
-          d_taps(dragon::cpm::phase_response(type, oversampling, filt_len, beta))
+{
+  d_fir = new gr::filter::kernel::fir_filter_fff(1, d_taps);
+  set_history(oversampling);
+}
 
-    {
-      d_fir = new gr::filter::kernel::fir_filter_fff(1,d_taps);
-      set_history(oversampling);
-    }
+/*
+ * Our virtual destructor.
+ */
+pulse_shaper_impl::~pulse_shaper_impl() { delete d_fir; }
 
-    /*
-     * Our virtual destructor.
-     */
-    pulse_shaper_impl::~pulse_shaper_impl()
-    {
-      delete d_fir;
-    }
+int pulse_shaper_impl::work(int noutput_items,
+                            gr_vector_const_void_star &input_items,
+                            gr_vector_void_star &output_items) {
+  const float *in = (const float *)input_items[0];
+  float *out = (float *)output_items[0];
+  // If we're not dealing with vectors, just filter the entire input array
+  if (d_vlen == 1) {
+    d_fir->filterN(out, in, noutput_items);
+    return noutput_items;
+  }
+  // If we're using vectors, apply the filter to each input vector separately
+  for (int i = 0; i < noutput_items; i++) {
+    d_fir->filterN(out + i * d_vlen, in + i * d_vlen, d_vlen);
+  }
 
-    int
-    pulse_shaper_impl::work(int noutput_items,
-        gr_vector_const_void_star &input_items,
-        gr_vector_void_star &output_items)
-    {
-      const float *in = (const float *) input_items[0];
-      float *out = (float *) output_items[0];
-      for (int i = 0; i < noutput_items; i++) {
-        d_fir->filterN(out+i*d_vlen,in+i*d_vlen,d_vlen);
-      }
+  // Tell runtime system how many output items we produced.
+  return noutput_items;
+}
 
-      // Tell runtime system how many output items we produced.
-      return noutput_items;
-    }
-
-  } /* namespace dragon */
+} /* namespace dragon */
 } /* namespace gr */
-

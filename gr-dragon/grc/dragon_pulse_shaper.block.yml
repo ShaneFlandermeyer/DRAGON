@@ -21,23 +21,28 @@ parameters:
   - id: vlen
     label: vlen
     dtype: int
-#    default: '1'
+    default: '1'
+    hide: 'part'
   - id: filt_len
     label: filt_len
     dtype: int
     default: '1'
+    hide: 'part'
   - id: oversampling
     label: oversampling
     dtype: int
     default: '1'
+    hide: 'part'
   - id: h
     label: Modulation Index
     dtype: real
     default: '0.5'
+    hide: 'part'
   - id: beta
     label: Phase Response Parameter (BT or Beta)
     dtype: real
     default: '0.3'
+    hide: 'part'
 
 
 #  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
