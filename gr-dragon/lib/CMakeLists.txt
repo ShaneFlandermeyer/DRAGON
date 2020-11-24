@@ -28,7 +28,6 @@ list(APPEND dragon_sources
     dti_impl.cc
     oversample_vector_impl.cc
     complex_exponential_impl.cc
-    shaping_filt_impl.cc
     cpm.cc
     pulse_shaper_impl.cc)
 

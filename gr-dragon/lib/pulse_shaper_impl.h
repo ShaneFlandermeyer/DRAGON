@@ -32,7 +32,6 @@ private:
   int d_vlen;
   int d_filt_len;
   int d_oversampling;
-  float d_h;
   double d_beta;
   gr::filter::kernel::fir_filter_fff *d_fir;
 
@@ -41,7 +40,7 @@ protected:
 
 public:
   pulse_shaper_impl(dragon::cpm::cpm_type type, int vlen, int filt_len,
-                    int oversampling, float h, double beta);
+                    int oversampling, double beta);
   ~pulse_shaper_impl();
 
   int work(int noutput_items, gr_vector_const_void_star &input_items,

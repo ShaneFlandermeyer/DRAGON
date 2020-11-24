@@ -46,7 +46,7 @@ public:
    * creating new instances.
    */
   static sptr make(dragon::cpm::cpm_type type, int vlen, int filt_len,
-                   int oversampling, float h, double beta);
+                   int oversampling, double beta);
 };
 
 } // namespace dragon

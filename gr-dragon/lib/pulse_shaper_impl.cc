@@ -29,22 +29,22 @@ namespace gr {
 namespace dragon {
 
 pulse_shaper::sptr pulse_shaper::make(dragon::cpm::cpm_type type, int vlen,
-                                      int filt_len, int oversampling, float h,
+                                      int filt_len, int oversampling,
                                       double beta) {
   return gnuradio::get_initial_sptr(
-      new pulse_shaper_impl(type, vlen, filt_len, oversampling, h, beta));
+      new pulse_shaper_impl(type, vlen, filt_len, oversampling, beta));
 }
 
 /*
  * The private constructor
  */
 pulse_shaper_impl::pulse_shaper_impl(dragon::cpm::cpm_type type, int vlen,
-                                     int filt_len, int oversampling, float h,
+                                     int filt_len, int oversampling,
                                      double beta)
     : gr::sync_block("pulse_shaper",
                      gr::io_signature::make(1, 1, sizeof(float) * vlen),
                      gr::io_signature::make(1, 1, sizeof(float) * vlen)),
-      d_vlen(vlen), d_filt_len(filt_len), d_oversampling(oversampling), d_h(h),
+      d_vlen(vlen), d_filt_len(filt_len), d_oversampling(oversampling),
       d_beta(beta),
       d_taps(dragon::cpm::phase_response(type, oversampling, filt_len, beta))
 

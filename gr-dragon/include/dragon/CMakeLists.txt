@@ -28,7 +28,6 @@ install(FILES
     dti.h
     oversample_vector.h
     complex_exponential.h
-    shaping_filt.h
     cpm.h
     pulse_shaper.h DESTINATION include/dragon
 )

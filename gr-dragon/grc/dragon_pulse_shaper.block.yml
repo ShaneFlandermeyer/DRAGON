@@ -1,10 +1,10 @@
 id: dragon_pulse_shaper
-label: pulse_shaper
+label: Pulse Shaper
 category: '[dragon]'
 
 templates:
   imports: import dragon
-  make: dragon.pulse_shaper(${type}, ${vlen}, ${filt_len}, ${oversampling}, ${h}, ${beta})
+  make: dragon.pulse_shaper(${type}, ${vlen}, ${filt_len}, ${oversampling},${beta})
 
 #  Make one 'parameters' list entry for every parameter you want settable from the GUI.
 #     Keys include:
@@ -13,7 +13,7 @@ templates:
 #     * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
 parameters:
   - id: type
-    label: CPM Type
+    label: Shape
     dtype: enum
     options: [ dragon.cpm.LREC, dragon.cpm.LRC, dragon.cpm.LSRC, dragon.cpm
                                                                    .TFM, dragon.cpm.GAUSSIAN ]
@@ -32,11 +32,6 @@ parameters:
     label: oversampling
     dtype: int
     default: '1'
-    hide: 'part'
-  - id: h
-    label: Modulation Index
-    dtype: real
-    default: '0.5'
     hide: 'part'
   - id: beta
     label: Phase Response Parameter (BT or Beta)

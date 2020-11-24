@@ -145,38 +145,19 @@ blocks:
     alias: ''
     beta: '0.3'
     comment: ''
-    filt_len: '1'
-    h: '0.5'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    oversampling: oversampling
-    type: dragon.cpm.LREC
-    vlen: oversampling*code_len
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [680, 100.0]
-    rotation: 0
-    state: disabled
-- name: dragon_shaping_filt_0
-  id: dragon_shaping_filt
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
     filt_len: oversampling
-    filt_type: '"Rectangular"'
     maxoutbuf: '0'
     minoutbuf: '0'
+    oversampling: '1'
+    type: dragon.cpm.LREC
     vlen: code_len*oversampling
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [688, 236.0]
+    coordinate: [704, 252.0]
     rotation: 0
-    state: enabled
+    state: true
 - name: oversampling
   id: parameter
   parameters:
@@ -256,9 +237,7 @@ connections:
 - [dragon_difference_xx_0, '0', dragon_oversample_vector_0, '0']
 - [dragon_dti_0, '0', blocks_vector_to_stream_0, '0']
 - [dragon_oversample_vector_0, '0', dragon_pulse_shaper_0, '0']
-- [dragon_oversample_vector_0, '0', dragon_shaping_filt_0, '0']
 - [dragon_pulse_shaper_0, '0', dragon_dti_0, '0']
-- [dragon_shaping_filt_0, '0', dragon_dti_0, '0']
 - [pad_source_0, '0', blocks_stream_to_vector_0, '0']
 
 metadata:
