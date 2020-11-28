@@ -22,17 +22,11 @@
 #define INCLUDED_DRAGON_PCFM_MOD_IMPL_H
 
 #include <dragon/pcfm_mod.h>
-//#include <gnuradio/blocks/stream_to_vector.h>
 #include <dragon/difference.h>
 #include <dragon/oversample_vector.h>
 #include <dragon/pulse_shaper.h>
 #include <dragon/dti.h>
 #include <gnuradio/blocks/vector_to_stream.h>
-//
-//#include <gnuradio/analog/frequency_modulator_fc.h>
-//#include <gnuradio/blocks/char_to_float.h>
-//#include <gnuradio/digital/cpmmod_bc.h>
-//#include <gnuradio/filter/interp_fir_filter.h>
 namespace gr {
 namespace dragon {
 

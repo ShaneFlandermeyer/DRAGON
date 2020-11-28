@@ -19,11 +19,11 @@
 # Boston, MA 02110-1301, USA.
 install(FILES
     dragon_difference.block.yml
-    dragon_phase_code_generator.block.yml
     dragon_lfm_source.block.yml
     dragon_dti.block.yml
     dragon_oversample_vector.block.yml
     dragon_complex_exponential.block.yml
     dragon_pulse_shaper.block.yml
-    dragon_pcfm_mod.block.yml DESTINATION share/gnuradio/grc/blocks
+    dragon_pcfm_mod.block.yml
+    dragon_phase_code_generator.block.yml DESTINATION share/gnuradio/grc/blocks
 )

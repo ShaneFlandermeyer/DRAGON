@@ -1,10 +1,10 @@
 id: dragon_phase_code_generator
-label: Phase Code Generator
+label: phase_code_generator
 category: '[dragon]'
 
 templates:
   imports: import dragon
-  make: dragon.phase_code_generator(${code_type}, ${code_len}, ${repeat}, ${repetitions}, ${tags})
+  make: dragon.phase_code_generator(${type}, ${code_len}, ${repeat}, ${tags})
 
 #  Make one 'parameters' list entry for every parameter you want settable from the GUI.
 #     Keys include:
@@ -12,13 +12,11 @@ templates:
 #     * label (label shown in the GUI)
 #     * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
 parameters:
-  # TODO: Add an output type parameter
-  - id: code_type
+  - id: type
     label: Code Type
     dtype: enum
-    default: '"P4"'
-    options: ['"P4"']
-    option_labels: ['P4']
+    options: [ dragon.phase_code.P4 ]
+    option_labels: [ P4 ]
   - id: code_len
     label: Code Length
     dtype: int
@@ -27,18 +25,15 @@ parameters:
     label: Repeat
     dtype: enum
     default: 'True'
-    options: ['True','False']
-    option_labels: ['Yes','No']
+    options: [ 'True','False' ]
+    option_labels: [ 'Yes','No' ]
     hide: ${'part'}
-  - id: repetitions
-    label: (BROKEN) Repetitions
-    dtype: int
-    default: 1
   - id: tags
     label: Tags
     dtype: raw
     default: '[]'
     hide: ${'part'}
+
 
 #  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
 #  Keys include:
@@ -47,6 +42,7 @@ parameters:
 #      * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
 #      * vlen (optional - data stream vector length. Default is 1)
 #      * optional (optional - set to 1 for optional inputs. Default is 0)
+# TODO: Add different output types
 #inputs:
 #- label: ...
 #  domain: ...

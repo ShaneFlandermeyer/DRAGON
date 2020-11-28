@@ -31,7 +31,7 @@
 
 namespace gr {
 namespace dragon {
-std::vector<float> generate_p4_code(unsigned code_len) {
+std::vector<float> generate_p4_code(int code_len) {
     std::vector<float> phi(code_len);
         for (int m = 0; m < code_len; ++m) {
             phi[m] = (2 * GR_M_PI / code_len) * m * ((m - code_len) / 2.0);
@@ -39,7 +39,7 @@ std::vector<float> generate_p4_code(unsigned code_len) {
     return phi;
 }
 
-std::vector<float> generate_barker_code(unsigned code_len) {
+std::vector<float> generate_barker_code(int code_len) {
     // TODO: Implement Me!
     return std::vector<float>(0);
 }
@@ -47,9 +47,9 @@ std::vector<float> generate_barker_code(unsigned code_len) {
 std::vector<float> phase_code::get_code(code_type type, unsigned code_len) {
     switch (type) {
         case P4:
-            return generate_p4_code(code_len);
+            return generate_p4_code(static_cast<int>(code_len));
         case BARKER:
-            return generate_barker_code(code_len);
+            return generate_barker_code(static_cast<int>(code_len));
     }
 } /* function get_code */
 } /* namespace dragon */

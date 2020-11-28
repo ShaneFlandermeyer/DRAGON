@@ -192,13 +192,12 @@ blocks:
     affinity: ''
     alias: ''
     code_len: code_len
-    code_type: '"P4"'
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    repeat: 'True'
-    repetitions: '1'
+    repeat: 'False'
     tags: '[]'
+    type: dragon.phase_code.P4
   states:
     bus_sink: false
     bus_source: false

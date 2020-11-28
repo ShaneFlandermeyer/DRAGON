@@ -24,14 +24,14 @@
 include(GrPlatform) #define LIB_SUFFIX
 list(APPEND dragon_sources
     difference_impl.cc
-    phase_code_generator_impl.cc
     dti_impl.cc
     oversample_vector_impl.cc
     complex_exponential_impl.cc
     cpm.cc
     pulse_shaper_impl.cc
     pcfm_mod_impl.cc
-    phase_code.cc )
+    phase_code.cc
+    phase_code_generator_impl.cc )
 
 set(dragon_sources "${dragon_sources}" PARENT_SCOPE)
 if(NOT dragon_sources)
@@ -76,6 +76,7 @@ include(GrTest)
 #include_directories()
 # List all files that contain Boost.UTF unit tests here
 list(APPEND test_dragon_sources
+qa_phase_code_generator.cc
 qa_phase_code.cc
 qa_pcfm_mod.cc
 qa_pulse_shaper.cc

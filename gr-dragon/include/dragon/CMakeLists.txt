@@ -24,12 +24,12 @@
 install(FILES
     api.h
     difference.h
-    phase_code_generator.h
     dti.h
     oversample_vector.h
     complex_exponential.h
     cpm.h
     pulse_shaper.h
     pcfm_mod.h
-    phase_code.h DESTINATION include/dragon
+    phase_code.h
+    phase_code_generator.h DESTINATION include/dragon
 )

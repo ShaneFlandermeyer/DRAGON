@@ -23,46 +23,36 @@
 
 #include <dragon/phase_code_generator.h>
 
-namespace gr
-{
-    namespace dragon
-    {
+namespace gr {
+namespace dragon {
 
-        class phase_code_generator_impl : public phase_code_generator
-        {
-        private:
-            // Constants
-            const long double PI = 3.141592653589793238L;
-            // Member Variables
-            unsigned int d_code_len; // Length of the code
-            unsigned int d_offset; //
-            bool d_repeat;
-            bool d_set_tags;
-            int d_repetitions;
-            std::string d_code_type;
-            std::vector<tag_t> d_tags;
-            std::vector<float> d_code_vec;
-        public:
-            phase_code_generator_impl(const std::string code_type, int code_len, bool repeat,
-                                      int repetitions, const std::vector<tag_t> tags);
+class phase_code_generator_impl : public phase_code_generator {
+private:
+    dragon::phase_code::code_type d_type;
+    unsigned d_code_len;
+    bool d_repeat;
+    bool d_set_tags;
+    std::vector<tag_t> d_tags;
+    unsigned d_offset;
 
-            ~phase_code_generator_impl() override;
+protected:
+    std::vector<float> d_phase_code;
 
-            void rewind()
-            { d_offset = 0; }
+public:
+    phase_code_generator_impl(dragon::phase_code::code_type type, unsigned code_len,
+                              bool repeat, const std::vector<tag_t> tags);
 
-            std::vector<float> get_code_vector(const std::string code_type, int code_len) const;
+    ~phase_code_generator_impl();
 
+    // Where all the action really happens
+    int work(
+            int noutput_items,
+            gr_vector_const_void_star &input_items,
+            gr_vector_void_star &output_items
+    );
+};
 
-            // Where all the action really happens
-            int work(
-                    int noutput_items,
-                    gr_vector_const_void_star &input_items,
-                    gr_vector_void_star &output_items
-            );
-        };
-
-    } // namespace dragon
+} // namespace dragon
 } // namespace gr
 
 #endif /* INCLUDED_DRAGON_PHASE_CODE_GENERATOR_IMPL_H */

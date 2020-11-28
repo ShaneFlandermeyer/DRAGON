@@ -23,32 +23,33 @@
 
 #include <dragon/api.h>
 #include <gnuradio/sync_block.h>
+#include <dragon/phase_code.h>
 
 namespace gr {
-  namespace dragon {
+namespace dragon {
+
+/*!
+ * \brief <+description of block+>
+ * \ingroup dragon
+ *
+ */
+class DRAGON_API phase_code_generator : virtual public gr::sync_block {
+public:
+    typedef boost::shared_ptr<phase_code_generator> sptr;
 
     /*!
-     * \brief <+description of block+>
-     * \ingroup dragon
+     * \brief Return a shared_ptr to a new instance of dragon::phase_code_generator.
      *
+     * To avoid accidental use of raw pointers, dragon::phase_code_generator's
+     * constructor is in a private implementation
+     * class. dragon::phase_code_generator::make is the public interface for
+     * creating new instances.
      */
-    class DRAGON_API phase_code_generator : virtual public gr::sync_block
-    {
-     public:
-      typedef boost::shared_ptr<phase_code_generator> sptr;
+    static sptr make(dragon::phase_code::code_type type, unsigned code_len, bool repeat,
+                     const std::vector<tag_t> tags);
+};
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of dragon::phase_code_generator.
-       *
-       * To avoid accidental use of raw pointers, dragon::phase_code_generator's
-       * constructor is in a private implementation
-       * class. dragon::phase_code_generator::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(const std::string code_type, int code_len, bool repeat, int repetitions, const std::vector<tag_t> tags);
-    };
-
-  } // namespace dragon
+} // namespace dragon
 } // namespace gr
 
 #endif /* INCLUDED_DRAGON_PHASE_CODE_GENERATOR_H */
