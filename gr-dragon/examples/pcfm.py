@@ -148,7 +148,7 @@ class pcfm(gr.top_block, Qt.QWidget):
 
         self.top_grid_layout.addWidget(self._qtgui_sink_x_0_win)
         self.dragon_phase_code_generator_0 = dragon.phase_code_generator("P4", code_len, True, 1, [])
-        self.dragon_pcfm_mod_0 = dragon.pcfm_mod(dragon.cpm.LREC, code_len, int(oversampling), int(samp_rate))
+        self.dragon_pcfm_mod_0 = dragon.pcfm_mod(dragon.cpm.GAUSSIAN, code_len, int(oversampling), int(samp_rate))
         self.dragon_oversample_vector_0 = dragon.oversample_vector(code_len, oversampling)
         self.dragon_complex_exponential_0 = dragon.complex_exponential()
         self.blocks_vector_to_stream_0_0 = blocks.vector_to_stream(gr.sizeof_float*1, code_len*oversampling)

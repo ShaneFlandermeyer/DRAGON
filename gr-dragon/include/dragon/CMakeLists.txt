@@ -30,5 +30,6 @@ install(FILES
     complex_exponential.h
     cpm.h
     pulse_shaper.h
-    pcfm_mod.h DESTINATION include/dragon
+    pcfm_mod.h
+    phase_code.h DESTINATION include/dragon
 )

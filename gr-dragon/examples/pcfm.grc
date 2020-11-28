@@ -4,10 +4,7 @@ options:
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: "Modulates a phase code with the PCFM framework, and\nplots a comparison\
-      \ of the phase functions along with the resulting \ncomplex baseband waveform.\n\
-      \nNOTE: This flowgraph relies on the PCFM Modulator Hierarchical\nblock, which\
-      \ can be used by compiling the flowgraph in \ngrc/PCFM_Modulator.grc then refreshing\
-      \ the block list or \nrestarting GRC."
+      \ of the phase functions along with the resulting \ncomplex baseband waveform."
     copyright: ''
     description: ''
     gen_cmake: 'On'
@@ -186,7 +183,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [488, 252.0]
+    coordinate: [488, 284.0]
     rotation: 0
     state: true
 - name: dragon_phase_code_generator_0

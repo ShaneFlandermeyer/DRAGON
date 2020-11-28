@@ -30,7 +30,8 @@ list(APPEND dragon_sources
     complex_exponential_impl.cc
     cpm.cc
     pulse_shaper_impl.cc
-    pcfm_mod_impl.cc )
+    pcfm_mod_impl.cc
+    phase_code.cc )
 
 set(dragon_sources "${dragon_sources}" PARENT_SCOPE)
 if(NOT dragon_sources)
@@ -75,6 +76,7 @@ include(GrTest)
 #include_directories()
 # List all files that contain Boost.UTF unit tests here
 list(APPEND test_dragon_sources
+qa_phase_code.cc
 qa_pcfm_mod.cc
 qa_pulse_shaper.cc
 qa_cpm.cc
