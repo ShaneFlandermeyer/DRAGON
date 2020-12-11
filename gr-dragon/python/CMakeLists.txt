@@ -32,7 +32,7 @@ endif()
 GR_PYTHON_INSTALL(
     FILES
     __init__.py
-    lfm_source.py DESTINATION ${GR_PYTHON_DIR}/dragon
+    DESTINATION ${GR_PYTHON_DIR}/dragon
 )
 
 ########################################################################
@@ -42,10 +42,13 @@ include(GrTest)
 
 set(GR_TEST_TARGET_DEPS gnuradio-dragon)
 set(GR_TEST_PYTHON_DIRS ${CMAKE_BINARY_DIR}/swig)
-GR_ADD_TEST(qa_lfm_source ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_lfm_source.py)
 GR_ADD_TEST(qa_dti ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_dti.py)
 GR_ADD_TEST(qa_oversample_vector ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_oversample_vector.py)
 GR_ADD_TEST(qa_complex_exponential ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_complex_exponential.py)
 GR_ADD_TEST(qa_pulse_shaper ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pulse_shaper.py)
 GR_ADD_TEST(qa_pcfm_mod ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pcfm_mod.py)
 GR_ADD_TEST(qa_phase_code_generator ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_phase_code_generator.py)
+GR_ADD_TEST(qa_moving_target_sim ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_moving_target_sim.py)
+GR_ADD_TEST(qa_pdu_phase_code_generator ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_phase_code_generator.py)
+GR_ADD_TEST(qa_lfm_pdu ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_lfm_pdu.py)
+GR_ADD_TEST(qa_pdu_to_stream ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/qa_pdu_to_stream.py)

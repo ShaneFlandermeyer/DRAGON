@@ -7,7 +7,7 @@
 # GNU Radio Python Flow Graph
 # Title: Not titled yet
 # Author: shane
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.2.0
 
 from distutils.version import StrictVersion
 
@@ -32,7 +32,6 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio.qtgui import Range, RangeWidget
 import dragon
 
 from gnuradio import qtgui
@@ -74,76 +73,55 @@ class lfm_source(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.pri = pri = 200e-6
-        self.duty_factor = duty_factor = 1
+        self.duty_factor = duty_factor = 0.2
+        self.sync_word2 = sync_word2 = [0, 0, 0, 0, 0, 0, -1, -1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1, 1, -1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 0, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1, 1, 1, 1, 1, -1, 1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, 0, 0, 0, 0, 0]
+        self.sync_word1 = sync_word1 = [0., 0., 0., 0., 0., 0., 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., -1.41421356, 0., -1.41421356, 0., -1.41421356, 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., -1.41421356, 0., -1.41421356, 0., -1.41421356, 0., -1.41421356, 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 0., 0., 0., 0., 0.]
         self.sweep_time = sweep_time = duty_factor*pri
         self.samp_rate = samp_rate = 20e6
         self.prf = prf = 1/pri
-        self.code_len = code_len = 50
+        self.pilot_symbols = pilot_symbols = ((1, 1, 1, -1,),)
+        self.pilot_carriers = pilot_carriers = ((-21, -7, 7, 21,),)
+        self.occupied_carriers = occupied_carriers = (list(range(-26, -21)) + list(range(-20, -7)) + list(range(-6, 0)) + list(range(1, 7)) + list(range(8, 21)) + list(range(22, 27)),)
         self.bandwidth = bandwidth = 5e6
 
         ##################################################
         # Blocks
         ##################################################
-        self._code_len_range = Range(0, 100, 1, 50, 200)
-        self._code_len_win = RangeWidget(self._code_len_range, self.set_code_len, 'code_len', "counter_slider", float)
-        self.top_grid_layout.addWidget(self._code_len_win)
-        self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
-            1024, #size
-            samp_rate, #samp_rate
+        self.qtgui_sink_x_0 = qtgui.sink_c(
+            1024, #fftsize
+            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            0, #fc
+            samp_rate, #bw
             "", #name
-            1 #number of inputs
+            True, #plotfreq
+            True, #plotwaterfall
+            True, #plottime
+            True #plotconst
         )
-        self.qtgui_time_sink_x_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0.set_y_axis(-1, 1)
+        self.qtgui_sink_x_0.set_update_time(1.0/10)
+        self._qtgui_sink_x_0_win = sip.wrapinstance(self.qtgui_sink_x_0.pyqwidget(), Qt.QWidget)
 
-        self.qtgui_time_sink_x_0.set_y_label('Amplitude', "")
+        self.qtgui_sink_x_0.enable_rf_freq(False)
 
-        self.qtgui_time_sink_x_0.enable_tags(True)
-        self.qtgui_time_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0.enable_autoscale(False)
-        self.qtgui_time_sink_x_0.enable_grid(False)
-        self.qtgui_time_sink_x_0.enable_axis_labels(True)
-        self.qtgui_time_sink_x_0.enable_control_panel(False)
-        self.qtgui_time_sink_x_0.enable_stem_plot(False)
-
-
-        labels = ['Signal 1', 'Signal 2', 'Signal 3', 'Signal 4', 'Signal 5',
-            'Signal 6', 'Signal 7', 'Signal 8', 'Signal 9', 'Signal 10']
-        widths = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        colors = ['blue', 'red', 'green', 'black', 'cyan',
-            'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0, 1.0]
-        styles = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        markers = [-1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1]
-
-
-        for i in range(1):
-            if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_0.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_time_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_0.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
-
-        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.dragon_p4_encoder_0 = dragon.p4_encoder(code_len, True, [])
-        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, code_len)
+        self.top_grid_layout.addWidget(self._qtgui_sink_x_0_win)
+        self.qtgui_edit_box_msg_0 = qtgui.edit_box_msg(qtgui.FLOAT, '', '', True, False, 'bandwidth')
+        self._qtgui_edit_box_msg_0_win = sip.wrapinstance(self.qtgui_edit_box_msg_0.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_edit_box_msg_0_win)
+        self.dragon_pdu_to_stream_x_0 = dragon.pdu_to_stream_c(dragon.EARLY_BURST_BEHAVIOR__APPEND,2048,False)
+        self.dragon_lfm_pdu_0 = dragon.lfm_pdu(bandwidth, sweep_time, samp_rate, prf, dragon.LFM_GENERATOR_MODE__SIMULATION)
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
+        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_gr_complex*1)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_vector_to_stream_0, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.dragon_p4_encoder_0, 0), (self.blocks_vector_to_stream_0, 0))
+        self.msg_connect((self.dragon_lfm_pdu_0, 'out'), (self.dragon_pdu_to_stream_x_0, 'bursts'))
+        self.msg_connect((self.qtgui_edit_box_msg_0, 'msg'), (self.dragon_lfm_pdu_0, 'ctrl'))
+        self.connect((self.blocks_throttle_0, 0), (self.blocks_null_sink_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.qtgui_sink_x_0, 0))
+        self.connect((self.dragon_pdu_to_stream_x_0, 0), (self.blocks_throttle_0, 0))
 
 
     def closeEvent(self, event):
@@ -166,36 +144,66 @@ class lfm_source(gr.top_block, Qt.QWidget):
         self.duty_factor = duty_factor
         self.set_sweep_time(self.duty_factor*self.pri)
 
+    def get_sync_word2(self):
+        return self.sync_word2
+
+    def set_sync_word2(self, sync_word2):
+        self.sync_word2 = sync_word2
+
+    def get_sync_word1(self):
+        return self.sync_word1
+
+    def set_sync_word1(self, sync_word1):
+        self.sync_word1 = sync_word1
+
     def get_sweep_time(self):
         return self.sweep_time
 
     def set_sweep_time(self, sweep_time):
         self.sweep_time = sweep_time
+        self.dragon_lfm_pdu_0.set_sweep_time(self.sweep_time)
 
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
+        self.dragon_lfm_pdu_0.set_samp_rate(self.samp_rate)
+        self.qtgui_sink_x_0.set_frequency_range(0, self.samp_rate)
 
     def get_prf(self):
         return self.prf
 
     def set_prf(self, prf):
         self.prf = prf
+        self.dragon_lfm_pdu_0.set_prf(self.prf)
+        self.dragon_moving_target_sim_0.set_prf(self.prf)
 
-    def get_code_len(self):
-        return self.code_len
+    def get_pilot_symbols(self):
+        return self.pilot_symbols
 
-    def set_code_len(self, code_len):
-        self.code_len = code_len
+    def set_pilot_symbols(self, pilot_symbols):
+        self.pilot_symbols = pilot_symbols
+
+    def get_pilot_carriers(self):
+        return self.pilot_carriers
+
+    def set_pilot_carriers(self, pilot_carriers):
+        self.pilot_carriers = pilot_carriers
+
+    def get_occupied_carriers(self):
+        return self.occupied_carriers
+
+    def set_occupied_carriers(self, occupied_carriers):
+        self.occupied_carriers = occupied_carriers
 
     def get_bandwidth(self):
         return self.bandwidth
 
     def set_bandwidth(self, bandwidth):
         self.bandwidth = bandwidth
+        self.dragon_lfm_pdu_0.set_bandwidth(self.bandwidth)
 
 
 

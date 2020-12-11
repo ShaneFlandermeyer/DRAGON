@@ -1,0 +1,46 @@
+id: dragon_lfm_pdu
+label: PDU LFM Source
+category: '[dragon]/PDU'
+
+templates:
+  imports: import dragon
+  make: dragon.lfm_pdu(${bandwidth}, ${sweep_time}, ${samp_rate}, ${prf}, ${mode})
+  callbacks:
+    - set_bandwidth(${bandwidth})
+    - set_samp_rate(${samp_rate})
+    - set_sweep_time(${sweep_time})
+    - set_prf(${prf})
+
+parameters:
+  # TODO: Add these modes options to the PDU constant header
+  - id: mode
+    label: Mode
+    dtype: enum
+    options: [dragon.LFM_GENERATOR_MODE__SIMULATION,
+        dragon.LFM_GENERATOR_MODE__LOOPBACK]
+    option_labels: [Simulation, Loopback]
+  - id: bandwidth
+    label: Bandwidth
+    dtype: float
+  - id: sweep_time
+    label: Sweep Interval
+    dtype: float
+  - id: samp_rate
+    label: Sample Rate
+    dtype: float
+  - id: prf
+    label: PRF
+    dtype: float
+
+inputs:
+  - domain: message
+    id: ctrl
+    optional: true
+
+outputs:
+  - domain: message
+    id: out
+    optional: true
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

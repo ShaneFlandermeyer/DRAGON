@@ -31,7 +31,11 @@ list(APPEND dragon_sources
     pulse_shaper_impl.cc
     pcfm_mod_impl.cc
     phase_code.cc
-    phase_code_generator_impl.cc )
+    phase_code_generator_impl.cc
+    moving_target_sim_impl.cc
+    pdu_phase_code_generator_impl.cc
+    lfm_pdu_impl.cc
+    pdu_to_stream_impl.cc )
 
 set(dragon_sources "${dragon_sources}" PARENT_SCOPE)
 if(NOT dragon_sources)
@@ -76,6 +80,10 @@ include(GrTest)
 #include_directories()
 # List all files that contain Boost.UTF unit tests here
 list(APPEND test_dragon_sources
+qa_pdu_to_stream.cc
+qa_lfm_pdu.cc
+qa_pdu_phase_code_generator.cc
+qa_moving_target_sim.cc
 qa_phase_code_generator.cc
 qa_phase_code.cc
 qa_pcfm_mod.cc

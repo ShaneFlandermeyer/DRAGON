@@ -33,6 +33,7 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 import dragon
+import pdu_utils
 
 from gnuradio import qtgui
 
@@ -73,14 +74,14 @@ class p4(gr.top_block, Qt.QWidget):
         # Variables
         ##################################################
         self.samp_rate = samp_rate = 32000
-        self.code_len = code_len = 64
+        self.length = length = 64
 
         ##################################################
         # Blocks
         ##################################################
-        self._code_len_range = Range(0, 1024, 1, 64, 200)
-        self._code_len_win = RangeWidget(self._code_len_range, self.set_code_len, 'code_len', "counter_slider", int)
-        self.top_grid_layout.addWidget(self._code_len_win)
+        self._length_range = Range(0, 1024, 1, 64, 200)
+        self._length_win = RangeWidget(self._length_range, self.set_length, 'length', "counter_slider", int)
+        self.top_grid_layout.addWidget(self._length_win)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
             1024, #size
             samp_rate, #samp_rate
@@ -128,18 +129,22 @@ class p4(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.dragon_phase_code_generator_0 = dragon.phase_code_generator("P4", code_len, True, 1, [])
-        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, code_len)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
+        self.qtgui_edit_box_msg_0 = qtgui.edit_box_msg(qtgui.INT, 'length', '', True, True, 'code_len')
+        self._qtgui_edit_box_msg_0_win = sip.wrapinstance(self.qtgui_edit_box_msg_0.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_edit_box_msg_0_win)
+        self.pdu_utils_pdu_to_bursts_X_0 = pdu_utils.pdu_to_bursts_f(pdu_utils.EARLY_BURST_BEHAVIOR__APPEND, 2048)
+        self.dragon_pdu_phase_code_generator_0 = dragon.pdu_phase_code_generator(dragon.phase_code.P4, length, True)
+        self.blocks_throttle_1 = blocks.throttle(gr.sizeof_float*1, samp_rate,True)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_throttle_0, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.dragon_phase_code_generator_0, 0), (self.blocks_vector_to_stream_0, 0))
+        self.msg_connect((self.dragon_pdu_phase_code_generator_0, 'out'), (self.pdu_utils_pdu_to_bursts_X_0, 'bursts'))
+        self.msg_connect((self.qtgui_edit_box_msg_0, 'msg'), (self.dragon_pdu_phase_code_generator_0, 'ctrl'))
+        self.connect((self.blocks_throttle_1, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.pdu_utils_pdu_to_bursts_X_0, 0), (self.blocks_throttle_1, 0))
 
 
     def closeEvent(self, event):
@@ -152,14 +157,15 @@ class p4(gr.top_block, Qt.QWidget):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
+        self.blocks_throttle_1.set_sample_rate(self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
 
-    def get_code_len(self):
-        return self.code_len
+    def get_length(self):
+        return self.length
 
-    def set_code_len(self, code_len):
-        self.code_len = code_len
+    def set_length(self, length):
+        self.length = length
+        self.dragon_pdu_phase_code_generator_0.set_code_len(self.length)
 
 
 

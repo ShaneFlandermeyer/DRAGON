@@ -41,10 +41,11 @@ d_scale = linspace(-radar.max_vel, radar.max_vel-(1/size(rd_map,2)), size(rd_map
 imagesc(d_scale, r_scale, rd_map_db);
 
 caxis([max_val-dynamic_rng max_val])
-set(gca, 'fontweight', 'bold', 'fontsize', 18);
+set(gca, 'fontweight', 'bold', 'fontsize', 18,'ydir','normal');
 title("Range-Doppler Map");
 xlabel("Velocity (m/s)");
 ylabel("Range (m)");
+ylim([0 max(r_scale)])
 h = colorbar;
-h.Label.String = 'Signal Power (db)';
+h.Label.String = 'Signal Power (db)'; 
 end

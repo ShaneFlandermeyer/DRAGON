@@ -44,32 +44,11 @@ blocks:
     coordinate: [280, 12.0]
     rotation: 0
     state: enabled
-- name: code_len
-  id: variable_qtgui_range
-  parameters:
-    comment: ''
-    gui_hint: ''
-    label: ''
-    min_len: '200'
-    orient: Qt.Horizontal
-    rangeType: float
-    start: '0'
-    step: '1'
-    stop: '100'
-    value: '50'
-    widget: counter_slider
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [544, 12.0]
-    rotation: 0
-    state: true
 - name: duty_factor
   id: variable
   parameters:
     comment: ''
-    value: '1'
+    value: '0.2'
   states:
     bus_sink: false
     bus_source: false
@@ -77,6 +56,43 @@ blocks:
     coordinate: [184, 76.0]
     rotation: 0
     state: enabled
+- name: occupied_carriers
+  id: variable
+  parameters:
+    comment: ''
+    value: (list(range(-26, -21)) + list(range(-20, -7)) + list(range(-6, 0)) + list(range(1,
+      7)) + list(range(8, 21)) + list(range(22, 27)),)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [848, 28.0]
+    rotation: 0
+    state: true
+- name: pilot_carriers
+  id: variable
+  parameters:
+    comment: ''
+    value: ((-21, -7, 7, 21,),)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [976, 100.0]
+    rotation: 0
+    state: true
+- name: pilot_symbols
+  id: variable
+  parameters:
+    comment: ''
+    value: ((1, 1, 1, -1,),)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1024, 28.0]
+    rotation: 0
+    state: true
 - name: prf
   id: variable
   parameters:
@@ -125,6 +141,72 @@ blocks:
     coordinate: [376, 12.0]
     rotation: 0
     state: enabled
+- name: sync_word1
+  id: variable
+  parameters:
+    comment: ''
+    value: '[0., 0., 0., 0., 0., 0., 0., 1.41421356, 0., -1.41421356, 0., 1.41421356,
+      0., -1.41421356, 0., -1.41421356, 0., -1.41421356, 0., 1.41421356, 0., -1.41421356,
+      0., 1.41421356, 0., -1.41421356, 0., -1.41421356, 0., -1.41421356, 0., -1.41421356,
+      0., 1.41421356, 0., -1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 1.41421356,
+      0., -1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 1.41421356, 0., -1.41421356,
+      0., 1.41421356, 0., 1.41421356, 0., 1.41421356, 0., 0., 0., 0., 0., 0.]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [704, 28.0]
+    rotation: 0
+    state: true
+- name: sync_word2
+  id: variable
+  parameters:
+    comment: ''
+    value: '[0, 0, 0, 0, 0, 0, -1, -1, -1, -1, 1, 1, -1, -1, -1, 1, -1, 1, 1, 1, 1,
+      1, -1, -1, -1, -1, -1, 1, -1, -1, 1, -1, 0, 1, -1, 1, 1, 1, -1, 1, 1, 1, -1,
+      1, 1, 1, 1, -1, 1, -1, -1, -1, 1, -1, 1, -1, -1, -1, -1, 0, 0, 0, 0, 0] '
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [552, 28.0]
+    rotation: 0
+    state: true
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /home/shane/chirpRx.dat
+    type: complex
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1184, 356.0]
+    rotation: 0
+    state: disabled
+- name: blocks_null_sink_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1200, 136.0]
+    rotation: 0
+    state: true
 - name: blocks_throttle_0
   id: blocks_throttle
   parameters:
@@ -141,31 +223,90 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [608, 228.0]
+    coordinate: [928, 252.0]
     rotation: 0
     state: enabled
-- name: dragon_lfm_source_0
-  id: dragon_lfm_source
+- name: dragon_lfm_pdu_0
+  id: dragon_lfm_pdu
   parameters:
-    add_tags: 'True'
     affinity: ''
     alias: ''
-    append_zeros: 'True'
     bandwidth: bandwidth
-    chirp_type: Upchirp
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
+    mode: dragon.LFM_GENERATOR_MODE__SIMULATION
     prf: prf
-    repeat: 'True'
     samp_rate: samp_rate
     sweep_time: sweep_time
-    tags: '["SOB","EOB"]'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [312, 204.0]
+    coordinate: [272, 220.0]
+    rotation: 0
+    state: enabled
+- name: dragon_moving_target_sim_0
+  id: dragon_moving_target_sim
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mode: dragon.LFM_GENERATOR_MODE__SIMULATION
+    prf: prf
+    samp_rate: samp_rate
+    tgt_rcs: '[10,100,100,100000]'
+    tgt_rng: '[1000,2000,10000,26000]'
+    tgt_vel: '[-100,0,100,100]'
+    tx_freq: 2.4e9
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [496, 204.0]
+    rotation: 0
+    state: bypassed
+- name: dragon_pdu_to_stream_x_0
+  id: dragon_pdu_to_stream_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    early_burst_behavior: dragon.EARLY_BURST_BEHAVIOR__APPEND
+    max_queue_size: '2048'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: c
+    verbose: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [736, 252.0]
+    rotation: 0
+    state: true
+- name: qtgui_edit_box_msg_0
+  id: qtgui_edit_box_msg
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    gui_hint: ''
+    is_pair: 'True'
+    is_static: 'False'
+    key: bandwidth
+    label: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    value: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [40, 212.0]
     rotation: 0
     state: enabled
 - name: qtgui_sink_x_0
@@ -176,7 +317,7 @@ blocks:
     bw: samp_rate
     comment: ''
     fc: '0'
-    fftsize: '256'
+    fftsize: '1024'
     gui_hint: ''
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -194,13 +335,18 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [864, 228.0]
+    coordinate: [1168, 228.0]
     rotation: 0
-    state: enabled
+    state: true
 
 connections:
+- [blocks_throttle_0, '0', blocks_file_sink_0, '0']
+- [blocks_throttle_0, '0', blocks_null_sink_0, '0']
 - [blocks_throttle_0, '0', qtgui_sink_x_0, '0']
-- [dragon_lfm_source_0, '0', blocks_throttle_0, '0']
+- [dragon_lfm_pdu_0, out, dragon_moving_target_sim_0, in]
+- [dragon_moving_target_sim_0, out, dragon_pdu_to_stream_x_0, bursts]
+- [dragon_pdu_to_stream_x_0, '0', blocks_throttle_0, '0']
+- [qtgui_edit_box_msg_0, msg, dragon_lfm_pdu_0, ctrl]
 
 metadata:
   file_format: 1

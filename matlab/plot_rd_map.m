@@ -15,7 +15,7 @@ end
 num_zeros = round((radar.sig_pri-...
     radar.sig_comp_pulsewidth)*radar.samp_rate);
 pulse_length = length(radar.sig_data_tx)-num_zeros;
-padded_pulse_length = length(radar.sig_data_tx)+num_zeros;
+padded_pulse_length = length(radar.sig_data_tx);
 pulse_train = reshape(data_vec(1:padded_pulse_length*radar.num_pulses),padded_pulse_length,radar.num_pulses);
 % Set up the matched filter and its response for each pulse
 match_filt = flipud(conj(radar.sig_data_tx(1:end-num_zeros)));
@@ -50,10 +50,11 @@ d_scale = linspace(-radar.max_vel, radar.max_vel-(1/size(rd_map,2)), size(rd_map
 imagesc(d_scale, r_scale, rd_map_db);
 
 caxis([max_val-dynamic_rng max_val])
-set(gca, 'fontweight', 'bold', 'fontsize', 18);
+set(gca, 'fontweight', 'bold', 'fontsize', 18,'ydir','normal');
 title("Range-Doppler Map");
 xlabel("Velocity (m/s)");
 ylabel("Range (m)");
 h = colorbar;
 h.Label.String = 'Signal Power (db)';
+ylim([0 max(r_scale)])
 end

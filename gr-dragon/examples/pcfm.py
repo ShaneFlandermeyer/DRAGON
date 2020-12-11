@@ -74,7 +74,7 @@ class pcfm(gr.top_block, Qt.QWidget):
         ##################################################
         self.samp_rate = samp_rate = 100e6
         self.samp_interval = samp_interval = 1/samp_rate
-        self.oversampling = oversampling = 5
+        self.oversampling = oversampling = 16
         self.code_len = code_len = 200
         self.chip_width = chip_width = samp_interval*oversampling
         self.pulse_width = pulse_width = chip_width*code_len
@@ -147,9 +147,9 @@ class pcfm(gr.top_block, Qt.QWidget):
         self.qtgui_sink_x_0.enable_rf_freq(False)
 
         self.top_grid_layout.addWidget(self._qtgui_sink_x_0_win)
-        self.dragon_phase_code_generator_0 = dragon.phase_code_generator(dragon.phase_code.P4, code_len, False, [])
+        self.dragon_phase_code_generator_0 = dragon.phase_code_generator(dragon.phase_code.P4, code_len, True, [])
         self.dragon_pcfm_mod_0 = dragon.pcfm_mod(dragon.cpm.LREC, code_len, int(oversampling), int(samp_rate))
-        self.dragon_oversample_vector_0 = dragon.oversample_vector(code_len, oversampling)
+        self.dragon_oversample_vector_1 = dragon.oversample_vector(code_len, oversampling)
         self.dragon_complex_exponential_0 = dragon.complex_exponential()
         self.blocks_vector_to_stream_0_0 = blocks.vector_to_stream(gr.sizeof_float*1, code_len*oversampling)
 
@@ -160,10 +160,10 @@ class pcfm(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_vector_to_stream_0_0, 0), (self.qtgui_time_sink_x_0, 1))
         self.connect((self.dragon_complex_exponential_0, 0), (self.qtgui_sink_x_0, 0))
-        self.connect((self.dragon_oversample_vector_0, 0), (self.blocks_vector_to_stream_0_0, 0))
+        self.connect((self.dragon_oversample_vector_1, 0), (self.blocks_vector_to_stream_0_0, 0))
         self.connect((self.dragon_pcfm_mod_0, 0), (self.dragon_complex_exponential_0, 0))
         self.connect((self.dragon_pcfm_mod_0, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.dragon_phase_code_generator_0, 0), (self.dragon_oversample_vector_0, 0))
+        self.connect((self.dragon_phase_code_generator_0, 0), (self.dragon_oversample_vector_1, 0))
         self.connect((self.dragon_phase_code_generator_0, 0), (self.dragon_pcfm_mod_0, 0))
 
 

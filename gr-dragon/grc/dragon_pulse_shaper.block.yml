@@ -19,22 +19,22 @@ parameters:
                                                                    .TFM, dragon.cpm.GAUSSIAN ]
     option_labels: [ Rectangular, Raised Cosine, Spectral Raised Cosine, Tamed frequency modulation, Gaussian ]
   - id: vlen
-    label: vlen
+    label: Vec Len
     dtype: int
     default: '1'
     hide: 'part'
   - id: filt_len
-    label: filt_len
+    label: Filter Length
     dtype: int
     default: '1'
     hide: 'part'
   - id: oversampling
-    label: oversampling
+    label: Oversampling
     dtype: int
     default: '1'
     hide: 'part'
   - id: beta
-    label: Phase Response Parameter (BT or Beta)
+    label: Beta
     dtype: real
     default: '0.3'
     hide: 'part'

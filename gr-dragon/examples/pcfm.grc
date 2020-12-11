@@ -73,7 +73,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '5'
+    value: '16'
   states:
     bus_sink: false
     bus_source: false
@@ -117,6 +117,24 @@ blocks:
     coordinate: [184, 12]
     rotation: 0
     state: enabled
+- name: blocks_vector_to_stream_0
+  id: blocks_vector_to_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: code_len*oversampling
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [592, 416.0]
+    rotation: 0
+    state: disabled
 - name: blocks_vector_to_stream_0_0
   id: blocks_vector_to_stream
   parameters:
@@ -132,7 +150,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 448.0]
+    coordinate: [496, 496.0]
     rotation: 0
     state: enabled
 - name: dragon_complex_exponential_0
@@ -164,9 +182,26 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [288, 436.0]
+    coordinate: [320, 404.0]
     rotation: 0
-    state: enabled
+    state: disabled
+- name: dragon_oversample_vector_1
+  id: dragon_oversample_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    over: oversampling
+    vlen: code_len
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 396.0]
+    rotation: 0
+    state: true
 - name: dragon_pcfm_mod_0
   id: dragon_pcfm_mod
   parameters:
@@ -183,7 +218,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [488, 284.0]
+    coordinate: [392, 244.0]
     rotation: 0
     state: true
 - name: dragon_phase_code_generator_0
@@ -195,14 +230,14 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    repeat: 'False'
+    repeat: 'True'
     tags: '[]'
     type: dragon.phase_code.P4
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [48, 292.0]
+    coordinate: [104, 260.0]
     rotation: 0
     state: true
 - name: qtgui_sink_x_0
@@ -231,7 +266,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1032, 292.0]
+    coordinate: [1088, 292.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0
@@ -328,17 +363,20 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [784, 404.0]
+    coordinate: [904, 404.0]
     rotation: 0
     state: enabled
 
 connections:
+- [blocks_vector_to_stream_0, '0', qtgui_time_sink_x_0, '1']
 - [blocks_vector_to_stream_0_0, '0', qtgui_time_sink_x_0, '1']
 - [dragon_complex_exponential_0, '0', qtgui_sink_x_0, '0']
-- [dragon_oversample_vector_0, '0', blocks_vector_to_stream_0_0, '0']
+- [dragon_oversample_vector_0, '0', blocks_vector_to_stream_0, '0']
+- [dragon_oversample_vector_1, '0', blocks_vector_to_stream_0_0, '0']
 - [dragon_pcfm_mod_0, '0', dragon_complex_exponential_0, '0']
 - [dragon_pcfm_mod_0, '0', qtgui_time_sink_x_0, '0']
 - [dragon_phase_code_generator_0, '0', dragon_oversample_vector_0, '0']
+- [dragon_phase_code_generator_0, '0', dragon_oversample_vector_1, '0']
 - [dragon_phase_code_generator_0, '0', dragon_pcfm_mod_0, '0']
 
 metadata:

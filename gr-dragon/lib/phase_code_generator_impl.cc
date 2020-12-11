@@ -115,9 +115,6 @@ phase_code_generator_impl::work(int noutput_items,
         return n / d_code_len;
 
     }
-
-    // Tell runtime system how many output items we produced.
-    return noutput_items;
 }
 
 } /* namespace dragon */

@@ -32,5 +32,6 @@ from .dragon_swig import *
 #     pass
 
 # import any pure python here
-from .lfm_source import lfm_source
+
+
 #

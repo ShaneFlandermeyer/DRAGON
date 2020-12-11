@@ -8,9 +8,9 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: no_gui
+    generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: test_mts
+    id: mts
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -32,6 +32,54 @@ options:
     state: enabled
 
 blocks:
+- name: data1
+  id: variable
+  parameters:
+    comment: ''
+    value: pmt.init_c32vector(1000,range(1000, 0, -1))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 148.0]
+    rotation: 0
+    state: disabled
+- name: duty_cycle
+  id: variable
+  parameters:
+    comment: ''
+    value: sweep_time*prf
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [952, 20.0]
+    rotation: 0
+    state: true
+- name: lfm_bandwidth
+  id: variable
+  parameters:
+    comment: ''
+    value: 5e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [728, 20.0]
+    rotation: 0
+    state: true
+- name: prf
+  id: variable
+  parameters:
+    comment: ''
+    value: '5000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [648, 20.0]
+    rotation: 0
+    state: true
 - name: samp_rate
   id: variable
   parameters:
@@ -41,10 +89,58 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [199, 32]
+    coordinate: [184, 20.0]
     rotation: 0
     state: enabled
-- name: sig_freq_tx
+- name: sweep_time
+  id: variable
+  parameters:
+    comment: ''
+    value: 40e-6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [848, 20.0]
+    rotation: 0
+    state: true
+- name: tgt_rcs
+  id: variable
+  parameters:
+    comment: ''
+    value: '[100]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [472, 20.0]
+    rotation: 0
+    state: true
+- name: tgt_rng
+  id: variable
+  parameters:
+    comment: ''
+    value: '[5000]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 20.0]
+    rotation: 0
+    state: true
+- name: tgt_vel
+  id: variable
+  parameters:
+    comment: ''
+    value: '[0]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [368, 20.0]
+    rotation: 0
+    state: true
+- name: tx_freq
   id: variable
   parameters:
     comment: ''
@@ -53,55 +149,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [626, 14]
-    rotation: 0
-    state: true
-- name: sig_prf
-  id: variable
-  parameters:
-    comment: ''
-    value: '5000'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [759, 11]
-    rotation: 0
-    state: true
-- name: tgt_rcs
-  id: variable
-  parameters:
-    comment: ''
-    value: '[1,100]'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [510, 20]
-    rotation: 0
-    state: true
-- name: tgt_rng
-  id: variable
-  parameters:
-    comment: ''
-    value: '[1000,25000]'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [290, 30]
-    rotation: 0
-    state: true
-- name: tgt_vel
-  id: variable
-  parameters:
-    comment: ''
-    value: '[100,-100]'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [404, 16]
+    coordinate: [560, 20.0]
     rotation: 0
     state: true
 - name: analog_noise_source_x_0
@@ -109,7 +157,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    amp: '0.1585'
+    amp: '0.01'
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -120,27 +168,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [667, 300]
+    coordinate: [736, 420.0]
     rotation: 0
-    state: disabled
-- name: blocks_add_const_vxx_0
-  id: blocks_add_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: '0'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [461, 294]
-    rotation: 0
-    state: true
+    state: enabled
 - name: blocks_add_xx_0
   id: blocks_add_xx
   parameters:
@@ -156,45 +186,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [837, 217]
+    coordinate: [1008, 384.0]
     rotation: 0
-    state: disabled
-- name: blocks_burst_tagger_0
-  id: blocks_burst_tagger
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    false_key: EOB
-    false_value: 'False'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    true_key: SOB
-    true_value: 'True'
-    type: complex
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [606, 173]
-    rotation: 0
-    state: true
-- name: blocks_complex_to_mag_0
-  id: blocks_complex_to_mag
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [310, 346]
-    rotation: 0
-    state: true
+    state: enabled
 - name: blocks_file_sink_0
   id: blocks_file_sink
   parameters:
@@ -210,46 +204,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1230, 199]
-    rotation: 0
-    state: enabled
-- name: blocks_file_source_0
-  id: blocks_file_source
-  parameters:
-    affinity: ''
-    alias: ''
-    begin_tag: pmt.PMT_NIL
-    comment: ''
-    file: /home/shane/chirpTx.dat
-    length: '0'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    offset: '0'
-    repeat: 'False'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [68, 164]
-    rotation: 0
-    state: true
-- name: blocks_float_to_short_0
-  id: blocks_float_to_short
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale: '1'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [518, 360]
+    coordinate: [1192, 460.0]
     rotation: 0
     state: true
 - name: blocks_throttle_0
@@ -268,47 +223,139 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [271, 260]
+    coordinate: [288, 284.0]
     rotation: 0
-    state: true
-- name: dragon_moving_target_sim_py_0
-  id: dragon_moving_target_sim_py
+    state: enabled
+- name: dragon_lfm_source_0
+  id: dragon_lfm_source
   parameters:
+    add_tags: 'True'
     affinity: ''
     alias: ''
+    append_zeros: 'True'
+    bandwidth: lfm_bandwidth
+    chirp_type: Upchirp
     comment: ''
-    end_tag_key: EOB
     maxoutbuf: '0'
     minoutbuf: '0'
-    pad_pulses: 'True'
+    prf: prf
+    repeat: 'True'
     samp_rate: samp_rate
-    sig_comp_pulsewidth: 100e-6
-    sig_freq_tx: sig_freq_tx
-    sig_prf: sig_prf
-    start_tag_key: SOB
-    tgt_rcs: tgt_rcs
-    tgt_rng: tgt_rng
-    tgt_vel: tgt_vel
+    sweep_time: sweep_time
+    tags: '["SOB","EOB"]'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [917, 144]
+    coordinate: [48, 252.0]
     rotation: 0
-    state: true
+    state: enabled
+- name: dragon_moving_target_sim_0
+  id: dragon_moving_target_sim
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    prf: prf
+    samp_rate: samp_rate
+    tgt_rcs: tgt_rcs
+    tgt_rng: tgt_rng
+    tgt_vel: tgt_vel
+    tx_freq: tx_freq
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [672, 244.0]
+    rotation: 0
+    state: enabled
+- name: pdu_utils_pdu_to_bursts_X_0
+  id: pdu_utils_pdu_to_bursts_X
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    depth: '2048'
+    early_behavior: pdu_utils.EARLY_BURST_BEHAVIOR__APPEND
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: c
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [912, 284.0]
+    rotation: 0
+    state: enabled
+- name: pdu_utils_tags_to_pdu_X_0
+  id: pdu_utils_tags_to_pdu_X
+  parameters:
+    affinity: ''
+    alias: ''
+    boost_time: 'False'
+    cfg_port: 'False'
+    comment: ''
+    end_tag: EOB
+    eob_alignment: '1'
+    eob_offset: '0'
+    max_pdu_size: '1024'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    prepend: '[]'
+    pub_det: 'False'
+    rate: samp_rate
+    start_tag: SOB
+    start_time: '0.0'
+    tail_size: '0'
+    type: c
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [496, 256.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_sink_x_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'False'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'False'
+    type: complex
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1184, 268.0]
+    rotation: 0
+    state: enabled
 
 connections:
 - [analog_noise_source_x_0, '0', blocks_add_xx_0, '1']
-- [blocks_add_const_vxx_0, '0', blocks_float_to_short_0, '0']
-- [blocks_add_xx_0, '0', dragon_moving_target_sim_py_0, '0']
-- [blocks_burst_tagger_0, '0', blocks_add_xx_0, '0']
-- [blocks_burst_tagger_0, '0', dragon_moving_target_sim_py_0, '0']
-- [blocks_complex_to_mag_0, '0', blocks_add_const_vxx_0, '0']
-- [blocks_file_source_0, '0', blocks_burst_tagger_0, '0']
-- [blocks_file_source_0, '0', blocks_throttle_0, '0']
-- [blocks_float_to_short_0, '0', blocks_burst_tagger_0, '1']
-- [blocks_throttle_0, '0', blocks_complex_to_mag_0, '0']
-- [dragon_moving_target_sim_py_0, '0', blocks_file_sink_0, '0']
+- [blocks_add_xx_0, '0', blocks_file_sink_0, '0']
+- [blocks_add_xx_0, '0', qtgui_sink_x_0, '0']
+- [blocks_throttle_0, '0', pdu_utils_tags_to_pdu_X_0, '0']
+- [dragon_lfm_source_0, '0', blocks_throttle_0, '0']
+- [dragon_moving_target_sim_0, out, pdu_utils_pdu_to_bursts_X_0, bursts]
+- [pdu_utils_pdu_to_bursts_X_0, '0', blocks_add_xx_0, '0']
+- [pdu_utils_tags_to_pdu_X_0, pdu_out, dragon_moving_target_sim_0, in]
 
 metadata:
   file_format: 1

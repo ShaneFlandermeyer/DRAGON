@@ -31,5 +31,10 @@ install(FILES
     pulse_shaper.h
     pcfm_mod.h
     phase_code.h
-    phase_code_generator.h DESTINATION include/dragon
+    phase_code_generator.h
+    moving_target_sim.h
+    pdu_phase_code_generator.h
+    lfm_pdu.h
+    pdu_constants.h
+    pdu_to_stream.h DESTINATION include/dragon
 )

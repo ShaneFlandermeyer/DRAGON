@@ -1,0 +1,61 @@
+id: dragon_moving_target_sim
+label: PDU Moving Target Simulator
+category: '[dragon]/PDU'
+
+parameters:
+  - id: mode
+    label: Mode
+    dtype: enum
+    options: [ dragon.LFM_GENERATOR_MODE__SIMULATION,
+               dragon.LFM_GENERATOR_MODE__LOOPBACK ]
+    option_labels: [ Simulation, Loopback ]
+  - id: tgt_rng
+    label: Target Range
+    dtype: float_vector
+    default: '[]'
+  - id: tgt_vel
+    label: Target Velocity
+    dtype: float_vector
+    default: '[]'
+  - id: tgt_rcs
+    label: Target RCS
+    dtype: float_vector
+    default: '[]'
+  - id: tx_freq
+    label: Tx Frequency
+    dtype: float
+  - id: prf
+    label: PRF
+    dtype: float
+  - id: samp_rate
+    label: Sample Rate
+    dtype: float
+
+inputs:
+  - domain: message
+    id: in
+    optional: true
+outputs:
+  - domain: message
+    id: out
+    optional: true
+
+asserts:
+  - ${ tx_freq > 0 }
+  - ${ prf > 0 }
+  - ${ samp_rate > 0 }
+  - ${ len(tgt_rng) > 0 }
+  - ${ len(tgt_vel) > 0 }
+  - ${ len(tgt_rcs) > 0 }
+  - ${ len(tgt_rng) == len(tgt_vel) and len(tgt_vel) == len(tgt_rcs) }
+templates:
+  imports: import dragon
+  make: dragon.moving_target_sim(${tgt_rng}, ${tgt_vel}, ${tgt_rcs}, ${tx_freq}, ${prf}, ${samp_rate},${mode})
+  callbacks:
+    - set_tgt_rng(${tgt_rng})
+    - set_tgt_vel(${tgt_vel})
+    - set_tgt_rcs(${tgt_rcs})
+    - set_tx_freq(${tx_freq})
+    - set_prf(${prf})
+
+file_format: 1
