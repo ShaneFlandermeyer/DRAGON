@@ -1,7 +1,0 @@
-<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,42,103,69"/>
-<area shape="rect" id="node2" href="$classgr_1_1dragon_1_1convolve__fft__hier.html" title="&lt;+description of block+&gt;" alt="" coords="156,5,311,47"/>
-<area shape="rect" id="node4" href="$classgr_1_1dragon_1_1pcfm__mod.html" title="Modulates the input with a PCFM scheme." alt="" coords="151,71,316,98"/>
-<area shape="rect" id="node3" href="$classgr_1_1dragon_1_1convolve__fft__hier__impl.html" title=" " alt="" coords="387,5,542,47"/>
-<area shape="rect" id="node5" href="$classgr_1_1dragon_1_1pcfm__mod__impl.html" title=" " alt="" coords="364,71,565,98"/>
-</map>

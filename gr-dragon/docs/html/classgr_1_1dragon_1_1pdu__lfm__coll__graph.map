@@ -1,4 +1,0 @@
-<map id="gr::dragon::pdu_lfm" name="gr::dragon::pdu_lfm">
-<area shape="rect" id="node1" title="Generates an LFM waveform as a PDU message." alt="" coords="5,80,155,107"/>
-<area shape="rect" id="node2" title=" " alt="" coords="41,5,119,32"/>
-</map>
