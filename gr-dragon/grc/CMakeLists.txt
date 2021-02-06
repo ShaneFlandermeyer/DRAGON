@@ -17,16 +17,22 @@
 # along with GNU Radio; see the file COPYING.  If not, write to
 # the Free Software Foundation, Inc., 51 Franklin Street,
 # Boston, MA 02110-1301, USA.
+
+# Misc. blocks
 install(FILES
-    dragon_difference.block.yml
-    dragon_dti.block.yml
-    dragon_oversample_vector.block.yml
-    dragon_complex_exponential.block.yml
-    dragon_pulse_shaper.block.yml
-    dragon_pcfm_mod.block.yml
-    dragon_phase_code_generator.block.yml
-    dragon_moving_target_sim.block.yml
-    dragon_pdu_phase_code_generator.block.yml
-    dragon_lfm_pdu.block.yml
-    dragon_pdu_to_stream.block.yml DESTINATION share/gnuradio/grc/blocks
-)
+        math/dragon_difference.block.yml
+        math/dragon_dti.block.yml
+        vector-utils/dragon_oversample_vector.block.yml
+        math/dragon_complex_exponential.block.yml
+        waveform/dragon_pulse_shaper.block.yml
+        waveform/dragon_pcfm_mod.block.yml
+        waveform/dragon_phase_code_generator.block.yml
+        radar/dragon_moving_target_sim.block.yml
+        waveform/dragon_pdu_phase_code_generator.block.yml
+        waveform/dragon_pdu_lfm.block.yml
+        math/dragon_db.block.yml
+        pdu-utils/dragon_pdu_to_stream.block.yml
+        math/dragon_convolve.block.yml
+        vector-utils/dragon_pad_vector.block.yml
+        math/dragon_convolve_fft_hier.block.yml
+    dragon_cl_db.block.yml DESTINATION share/gnuradio/grc/blocks)

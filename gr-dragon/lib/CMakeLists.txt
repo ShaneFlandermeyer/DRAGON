@@ -22,42 +22,53 @@
 # Setup library
 ########################################################################
 include(GrPlatform) #define LIB_SUFFIX
+
+include_directories(${Boost_INCLUDE_DIR} ${OpenCL_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+link_directories(${FFTW3F_LIBRARY_DIRS})
+
 list(APPEND dragon_sources
-    difference_impl.cc
-    dti_impl.cc
-    oversample_vector_impl.cc
-    complex_exponential_impl.cc
-    cpm.cc
-    pulse_shaper_impl.cc
-    pcfm_mod_impl.cc
-    phase_code.cc
-    phase_code_generator_impl.cc
-    moving_target_sim_impl.cc
-    pdu_phase_code_generator_impl.cc
-    lfm_pdu_impl.cc
-    pdu_to_stream_impl.cc )
+        math/difference_impl.cc
+        math/dti_impl.cc
+        vector-utils/oversample_vector_impl.cc
+        math/complex_exponential_impl.cc
+        waveform/cpm.cc
+        waveform/pulse_shaper_impl.cc
+        waveform/pcfm_mod_impl.cc
+        waveform/phase_code.cc
+        waveform/phase_code_generator_impl.cc
+        radar/moving_target_sim_impl.cc
+        waveform/pdu_phase_code_generator_impl.cc
+        waveform/pdu_lfm_impl.cc
+        math/db_impl.cc
+        pdu-utils/pdu_to_stream_impl.cc
+        math/convolve_impl.cc
+        vector-utils/pad_vector_impl.cc
+        math/convolve_fft_hier_impl.cc
+        GRCLBase.cc
+    cl_db_impl.cc)
 
 set(dragon_sources "${dragon_sources}" PARENT_SCOPE)
-if(NOT dragon_sources)
+if (NOT dragon_sources)
     MESSAGE(STATUS "No C++ sources... skipping lib/")
     return()
-endif(NOT dragon_sources)
+endif (NOT dragon_sources)
 
 add_library(gnuradio-dragon SHARED ${dragon_sources})
 target_link_libraries(gnuradio-dragon gnuradio::gnuradio-runtime
         gnuradio::gnuradio-filter gnuradio::gnuradio-fft
-        gnuradio::gnuradio-blocks)
+        gnuradio::gnuradio-blocks ${OpenCL_LIBRARY})
 target_include_directories(gnuradio-dragon
-    PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
-    PUBLIC $<INSTALL_INTERFACE:include>
-  )
+        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+        PUBLIC $<INSTALL_INTERFACE:include>
+        )
 set_target_properties(gnuradio-dragon PROPERTIES DEFINE_SYMBOL "gnuradio_dragon_EXPORTS")
 
-if(APPLE)
+if (APPLE)
     set_target_properties(gnuradio-dragon PROPERTIES
-        INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
-    )
-endif(APPLE)
+            INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/lib"
+            )
+endif (APPLE)
 
 ########################################################################
 # Install built library files
@@ -72,34 +83,54 @@ message(STATUS "Using install prefix: ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "Building for version: ${VERSION} / ${LIBVER}")
 
 ########################################################################
-# Build and register unit test
+# TODO: Build and register test-dragon
 ########################################################################
-include(GrTest)
-
-# If your unit tests require special include paths, add them here
-#include_directories()
-# List all files that contain Boost.UTF unit tests here
 list(APPEND test_dragon_sources
-qa_pdu_to_stream.cc
-qa_lfm_pdu.cc
-qa_pdu_phase_code_generator.cc
-qa_moving_target_sim.cc
-qa_phase_code_generator.cc
-qa_phase_code.cc
-qa_pcfm_mod.cc
-qa_pulse_shaper.cc
-qa_cpm.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/test_dragon.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/GRCLBase.cc
+        )
+
+add_executable(test-dragon ${test_dragon_sources})
+
+target_link_libraries(
+        test-dragon
+        gnuradio::gnuradio-runtime
+        ${Boost_LIBRARIES}
+        ${VOLK_LIBRARIES}
+        fftw3f
+        ${OpenCL_LIBRARY}
+        ${CLFFT_LIBRARIES}
+        gnuradio-blocks
+        gnuradio-filter
+        gnuradio-fft
 )
-# Anything we need to link to for the unit tests go here
-list(APPEND GR_TEST_TARGET_DEPS gnuradio-dragon)
 
-if(NOT test_dragon_sources)
-    MESSAGE(STATUS "No C++ unit tests... skipping")
-    return()
-endif(NOT test_dragon_sources)
+target_include_directories(test-dragon
+        PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
+        PUBLIC $<INSTALL_INTERFACE:include>
+        )
 
-foreach(qa_file ${test_dragon_sources})
-    GR_ADD_CPP_TEST("dragon_${qa_file}"
-        ${CMAKE_CURRENT_SOURCE_DIR}/${qa_file}
-    )
-endforeach(qa_file)
+install(TARGETS test-dragon DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" RUNTIME)
+#########################################################################
+## Build and register unit test
+#########################################################################
+#include(GrTest)
+#
+## If your unit tests require special include paths, add them here
+##include_directories()
+## List all files that contain Boost.UTF unit tests here
+#list(APPEND test_dragon_sources
+#        )
+## Anything we need to link to for the unit tests go here
+#list(APPEND GR_TEST_TARGET_DEPS gnuradio-dragon)
+#
+#if (NOT test_dragon_sources)
+#    MESSAGE(STATUS "No C++ unit tests... skipping")
+#    return()
+#endif (NOT test_dragon_sources)
+#
+#foreach (qa_file ${test_dragon_sources})
+#    GR_ADD_CPP_TEST("dragon_${qa_file}"
+#            ${CMAKE_CURRENT_SOURCE_DIR}/${qa_file}
+#            )
+#endforeach (qa_file)

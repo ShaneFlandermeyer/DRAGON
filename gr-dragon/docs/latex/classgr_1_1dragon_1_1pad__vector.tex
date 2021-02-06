@@ -1,0 +1,66 @@
+\hypertarget{classgr_1_1dragon_1_1pad__vector}{}\doxysection{gr\+::dragon\+::pad\+\_\+vector Class Reference}
+\label{classgr_1_1dragon_1_1pad__vector}\index{gr::dragon::pad\_vector@{gr::dragon::pad\_vector}}
+
+
+Resizes an input vector to a given size.  
+
+
+
+
+{\ttfamily \#include $<$pad\+\_\+vector.\+h$>$}
+
+
+
+Inheritance diagram for gr\+::dragon\+::pad\+\_\+vector\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=233pt]{classgr_1_1dragon_1_1pad__vector__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for gr\+::dragon\+::pad\+\_\+vector\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=206pt]{classgr_1_1dragon_1_1pad__vector__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classgr_1_1dragon_1_1pad__vector_a234f5ac9d67f1b8c7e3c3e3c5eeda0ae}\label{classgr_1_1dragon_1_1pad__vector_a234f5ac9d67f1b8c7e3c3e3c5eeda0ae}} 
+typedef boost\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classgr_1_1dragon_1_1pad__vector}{pad\+\_\+vector}} $>$ {\bfseries sptr}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static sptr \mbox{\hyperlink{classgr_1_1dragon_1_1pad__vector_a71c7105931de473c6e768497caad61a4}{make}} (uint32\+\_\+t old\+\_\+len, uint32\+\_\+t new\+\_\+len)
+\begin{DoxyCompactList}\small\item\em Return a shared\+\_\+ptr to a new instance of \mbox{\hyperlink{classgr_1_1dragon_1_1pad__vector}{dragon\+::pad\+\_\+vector}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Resizes an input vector to a given size. 
+
+Equivalent to std\+::vector\+::resize(n,0) 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classgr_1_1dragon_1_1pad__vector_a71c7105931de473c6e768497caad61a4}\label{classgr_1_1dragon_1_1pad__vector_a71c7105931de473c6e768497caad61a4}} 
+\index{gr::dragon::pad\_vector@{gr::dragon::pad\_vector}!make@{make}}
+\index{make@{make}!gr::dragon::pad\_vector@{gr::dragon::pad\_vector}}
+\doxysubsubsection{\texorpdfstring{make()}{make()}}
+{\footnotesize\ttfamily pad\+\_\+vector\+::sptr gr\+::dragon\+::pad\+\_\+vector\+::make (\begin{DoxyParamCaption}\item[{uint32\+\_\+t}]{old\+\_\+len,  }\item[{uint32\+\_\+t}]{new\+\_\+len }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Return a shared\+\_\+ptr to a new instance of \mbox{\hyperlink{classgr_1_1dragon_1_1pad__vector}{dragon\+::pad\+\_\+vector}}. 
+
+To avoid accidental use of raw pointers, \mbox{\hyperlink{classgr_1_1dragon_1_1pad__vector}{dragon\+::pad\+\_\+vector}}\textquotesingle{}s constructor is in a private implementation class. \mbox{\hyperlink{classgr_1_1dragon_1_1pad__vector_a71c7105931de473c6e768497caad61a4}{dragon\+::pad\+\_\+vector\+::make}} is the public interface for creating new instances. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/dragon/vector-\/utils/pad\+\_\+vector.\+h\item 
+lib/vector-\/utils/pad\+\_\+vector\+\_\+impl.\+cc\end{DoxyCompactItemize}

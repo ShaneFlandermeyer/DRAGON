@@ -1,0 +1,56 @@
+\hypertarget{classgr_1_1dragon_1_1convolve__fft__hier__impl}{}\doxysection{gr\+::dragon\+::convolve\+\_\+fft\+\_\+hier\+\_\+impl Class Reference}
+\label{classgr_1_1dragon_1_1convolve__fft__hier__impl}\index{gr::dragon::convolve\_fft\_hier\_impl@{gr::dragon::convolve\_fft\_hier\_impl}}
+
+
+Inheritance diagram for gr\+::dragon\+::convolve\+\_\+fft\+\_\+hier\+\_\+impl\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=196pt]{classgr_1_1dragon_1_1convolve__fft__hier__impl__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for gr\+::dragon\+::convolve\+\_\+fft\+\_\+hier\+\_\+impl\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=196pt]{classgr_1_1dragon_1_1convolve__fft__hier__impl__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classgr_1_1dragon_1_1convolve__fft__hier__impl_a58c6e439ae95847a9293f1bbc99affbd}\label{classgr_1_1dragon_1_1convolve__fft__hier__impl_a58c6e439ae95847a9293f1bbc99affbd}} 
+{\bfseries convolve\+\_\+fft\+\_\+hier\+\_\+impl} (uint32\+\_\+t fft\+\_\+size, const std\+::vector$<$ float $>$ \&window, int nthreads)
+\end{DoxyCompactItemize}
+\doxysubsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classgr_1_1dragon_1_1convolve__fft__hier__impl_abf3114a689eeb8f49595306c47398434}\label{classgr_1_1dragon_1_1convolve__fft__hier__impl_abf3114a689eeb8f49595306c47398434}} 
+gr\+::fft\+::fft\+\_\+vcc\+::sptr {\bfseries fft\+\_\+fwd\+\_\+sig}
+\item 
+\mbox{\Hypertarget{classgr_1_1dragon_1_1convolve__fft__hier__impl_a0564ae4ada0dffd4a949beda523fdf84}\label{classgr_1_1dragon_1_1convolve__fft__hier__impl_a0564ae4ada0dffd4a949beda523fdf84}} 
+gr\+::fft\+::fft\+\_\+vcc\+::sptr {\bfseries fft\+\_\+fwd\+\_\+filt}
+\item 
+\mbox{\Hypertarget{classgr_1_1dragon_1_1convolve__fft__hier__impl_a95cd0df6e98f4e6e688c93dfef175e66}\label{classgr_1_1dragon_1_1convolve__fft__hier__impl_a95cd0df6e98f4e6e688c93dfef175e66}} 
+gr\+::fft\+::fft\+\_\+vcc\+::sptr {\bfseries fft\+\_\+rev}
+\item 
+\mbox{\Hypertarget{classgr_1_1dragon_1_1convolve__fft__hier__impl_a31bc8b42db39b4f29306612780e671f6}\label{classgr_1_1dragon_1_1convolve__fft__hier__impl_a31bc8b42db39b4f29306612780e671f6}} 
+gr\+::blocks\+::multiply$<$ gr\+\_\+complex $>$\+::sptr {\bfseries multiply}
+\item 
+\mbox{\Hypertarget{classgr_1_1dragon_1_1convolve__fft__hier__impl_acd6a0fe4901f6d3b7b947c242b1bbd8a}\label{classgr_1_1dragon_1_1convolve__fft__hier__impl_acd6a0fe4901f6d3b7b947c242b1bbd8a}} 
+dragon\+::pad\+\_\+vector\+::sptr {\bfseries pad\+\_\+filt\+\_\+vec}
+\item 
+\mbox{\Hypertarget{classgr_1_1dragon_1_1convolve__fft__hier__impl_aee3d2f734191a03cd81f93ee169c84c2}\label{classgr_1_1dragon_1_1convolve__fft__hier__impl_aee3d2f734191a03cd81f93ee169c84c2}} 
+dragon\+::pad\+\_\+vector\+::sptr {\bfseries pad\+\_\+sig\+\_\+vec}
+\end{DoxyCompactItemize}
+\doxysubsection*{Additional Inherited Members}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+lib/math/convolve\+\_\+fft\+\_\+hier\+\_\+impl.\+h\item 
+lib/math/convolve\+\_\+fft\+\_\+hier\+\_\+impl.\+cc\end{DoxyCompactItemize}

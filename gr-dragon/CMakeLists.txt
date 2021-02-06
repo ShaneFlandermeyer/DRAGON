@@ -127,6 +127,14 @@ endif(APPLE)
 find_package(Doxygen)
 
 ########################################################################
+# Find OpenCL build dependencies
+########################################################################
+find_package(OpenCL)
+if(NOT OpenCL_FOUND)
+    message(FATAL_ERROR "OpenCL is required to compile gr-clenabled")
+endif()
+
+########################################################################
 # Setup doxygen option
 ########################################################################
 if(DOXYGEN_FOUND)

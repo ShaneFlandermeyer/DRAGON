@@ -1,0 +1,32 @@
+id: dragon_db
+label: Linear to dB
+category: '[dragon]/math'
+
+templates:
+  imports: import dragon
+  make: dragon.db(${mode}, ${vlen})
+
+parameters:
+- id: mode
+  label: Mode
+  dtype: enum
+  options: [ dragon.VOLTAGE, dragon.POWER ]
+  option_labels: ['Voltage', 'Power']
+- id: vlen
+  label: Vec Length
+  dtype: int
+  hide: ${ 'part' if vlen == 1 else 'none' }
+
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  vlen: ${vlen}
+
+outputs:
+  - label: out
+    domain: stream
+    dtype: float
+    vlen: ${vlen}
+
+file_format: 1

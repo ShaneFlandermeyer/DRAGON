@@ -1,0 +1,49 @@
+id: dragon_convolve
+label: Time-Domain Convolution
+category: '[dragon]/math'
+
+templates:
+  imports: import dragon
+  make: dragon.convolve(${in_len}, ${filt_len})
+
+#  Make one 'parameters' list entry for every parameter you want settable from the GUI.
+#     Keys include:
+#     * id (makes the value accessible as \$keyname, e.g. in the make entry)
+#     * label (label shown in the GUI)
+#     * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
+parameters:
+  - id: in_len
+    label: Vector length
+    dtype: int
+  - id: filt_len
+    label: Filter length
+    dtype: int
+
+#  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
+#  Keys include:
+#      * label (an identifier for the GUI)
+#      * domain (optional - stream or message. Default is stream)
+#      * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
+#      * vlen (optional - data stream vector length. Default is 1)
+#      * optional (optional - set to 1 for optional inputs. Default is 0)
+inputs:
+  - id: filter
+    domain: message
+  - label: in
+    domain: stream
+    dtype: complex
+    vlen: ${in_len}
+
+# TODO: The output vector size is not correct here. Either add an input parameter for it or make the output a message
+outputs:
+  - id: debug
+    domain: message
+    optional: true
+  - label: out
+    domain: stream
+    dtype: complex
+    vlen: ${in_len+filt_len-1}
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

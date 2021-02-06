@@ -1,0 +1,64 @@
+\hypertarget{classgr_1_1dragon_1_1pulse__shaper}{}\doxysection{gr\+::dragon\+::pulse\+\_\+shaper Class Reference}
+\label{classgr_1_1dragon_1_1pulse__shaper}\index{gr::dragon::pulse\_shaper@{gr::dragon::pulse\_shaper}}
+
+
+Applies a shaping filter to each input data vector.  
+
+
+
+
+{\ttfamily \#include $<$pulse\+\_\+shaper.\+h$>$}
+
+
+
+Inheritance diagram for gr\+::dragon\+::pulse\+\_\+shaper\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=244pt]{classgr_1_1dragon_1_1pulse__shaper__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for gr\+::dragon\+::pulse\+\_\+shaper\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=217pt]{classgr_1_1dragon_1_1pulse__shaper__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Types}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classgr_1_1dragon_1_1pulse__shaper_a7dcf3e6f860b030ffe9b21b593922a40}\label{classgr_1_1dragon_1_1pulse__shaper_a7dcf3e6f860b030ffe9b21b593922a40}} 
+typedef boost\+::shared\+\_\+ptr$<$ \mbox{\hyperlink{classgr_1_1dragon_1_1pulse__shaper}{pulse\+\_\+shaper}} $>$ {\bfseries sptr}
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static sptr \mbox{\hyperlink{classgr_1_1dragon_1_1pulse__shaper_afc2c7e978af791a167cbf79bbf9216a1}{make}} (dragon\+::cpm\+::cpm\+\_\+type type, int vlen, int filt\+\_\+len, int oversampling, double beta)
+\begin{DoxyCompactList}\small\item\em Return a shared\+\_\+ptr to a new instance of \mbox{\hyperlink{classgr_1_1dragon_1_1pulse__shaper}{dragon\+::pulse\+\_\+shaper}}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Applies a shaping filter to each input data vector. 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classgr_1_1dragon_1_1pulse__shaper_afc2c7e978af791a167cbf79bbf9216a1}\label{classgr_1_1dragon_1_1pulse__shaper_afc2c7e978af791a167cbf79bbf9216a1}} 
+\index{gr::dragon::pulse\_shaper@{gr::dragon::pulse\_shaper}!make@{make}}
+\index{make@{make}!gr::dragon::pulse\_shaper@{gr::dragon::pulse\_shaper}}
+\doxysubsubsection{\texorpdfstring{make()}{make()}}
+{\footnotesize\ttfamily pulse\+\_\+shaper\+::sptr gr\+::dragon\+::pulse\+\_\+shaper\+::make (\begin{DoxyParamCaption}\item[{dragon\+::cpm\+::cpm\+\_\+type}]{type,  }\item[{int}]{vlen,  }\item[{int}]{filt\+\_\+len,  }\item[{int}]{oversampling,  }\item[{double}]{beta }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Return a shared\+\_\+ptr to a new instance of \mbox{\hyperlink{classgr_1_1dragon_1_1pulse__shaper}{dragon\+::pulse\+\_\+shaper}}. 
+
+To avoid accidental use of raw pointers, \mbox{\hyperlink{classgr_1_1dragon_1_1pulse__shaper}{dragon\+::pulse\+\_\+shaper}}\textquotesingle{}s constructor is in a private implementation class. \mbox{\hyperlink{classgr_1_1dragon_1_1pulse__shaper_afc2c7e978af791a167cbf79bbf9216a1}{dragon\+::pulse\+\_\+shaper\+::make}} is the public interface for creating new instances. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/dragon/waveform/pulse\+\_\+shaper.\+h\item 
+lib/waveform/pulse\+\_\+shaper\+\_\+impl.\+cc\end{DoxyCompactItemize}

@@ -1,0 +1,52 @@
+id: dragon_pdu_lfm
+label: PDU LFM Source
+category: '[dragon]/waveform'
+
+templates:
+  imports: import dragon
+  make: dragon.pdu_lfm(${bandwidth}, ${sweep_time}, ${samp_rate}, ${prf},${mode},${repeat})
+  callbacks:
+    - set_bandwidth(${bandwidth})
+    - set_samp_rate(${samp_rate})
+    - set_sweep_time(${sweep_time})
+    - set_prf(${prf})
+
+parameters:
+  - id: mode
+    label: Mode
+    dtype: enum
+    options: [ dragon.TX_MODE__SIMULATION,
+               dragon.TX_MODE__LOOPBACK ]
+    option_labels: [ Simulation, Loopback ]
+  - id: bandwidth
+    label: Bandwidth
+    dtype: float
+  - id: sweep_time
+    label: Sweep Interval
+    dtype: float
+  - id: samp_rate
+    label: Sample Rate
+    dtype: float
+  - id: prf
+    label: PRF
+    dtype: float
+  - id: repeat
+    label: Repeat
+    dtype: enum
+    options: [ 'True', 'False' ]
+
+inputs:
+  - domain: message
+    id: ctrl
+    optional: true
+
+outputs:
+  - id: filter
+    domain: message
+    optional: true
+  - id: out
+    domain: message
+    optional: true
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

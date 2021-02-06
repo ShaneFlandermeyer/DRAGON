@@ -1,0 +1,5 @@
+<map id="gr::dragon::pdu_to_stream&lt; T &gt;" name="gr::dragon::pdu_to_stream&lt; T &gt;">
+<area shape="rect" id="node1" title="Converts a PDU data vector to a regular stream." alt="" coords="10,80,150,121"/>
+<area shape="rect" id="node3" href="$classgr_1_1dragon_1_1pdu__to__stream__impl.html" title=" " alt="" coords="5,169,155,211"/>
+<area shape="rect" id="node2" title=" " alt="" coords="33,5,127,32"/>
+</map>

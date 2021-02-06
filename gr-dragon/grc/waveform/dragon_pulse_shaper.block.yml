@@ -1,0 +1,67 @@
+id: dragon_pulse_shaper
+label: Pulse Shaper
+category: '[dragon]/waveform'
+
+templates:
+  imports: import dragon
+  make: dragon.pulse_shaper(${type}, ${vlen}, ${filt_len}, ${oversampling},${beta})
+
+#  Make one 'parameters' list entry for every parameter you want settable from the GUI.
+#     Keys include:
+#     * id (makes the value accessible as \$keyname, e.g. in the make entry)
+#     * label (label shown in the GUI)
+#     * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
+parameters:
+  - id: type
+    label: Shape
+    dtype: enum
+    options: [ dragon.cpm.LREC, dragon.cpm.LRC, dragon.cpm.LSRC, dragon.cpm
+                                                                   .TFM, dragon.cpm.GAUSSIAN ]
+    option_labels: [ Rectangular, Raised Cosine, Spectral Raised Cosine, Tamed frequency modulation, Gaussian ]
+  - id: vlen
+    label: Vec Len
+    dtype: int
+    default: '1'
+    hide: 'part'
+  - id: filt_len
+    label: Filter Length
+    dtype: int
+    default: '1'
+    hide: 'part'
+  - id: oversampling
+    label: Oversampling
+    dtype: int
+    default: '1'
+    hide: 'part'
+  - id: beta
+    label: Beta
+    dtype: real
+    default: '0.3'
+    hide: 'part'
+
+
+#  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
+#  Keys include:
+#      * label (an identifier for the GUI)
+#      * domain (optional - stream or message. Default is stream)
+#      * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
+#      * vlen (optional - data stream vector length. Default is 1)
+#      * optional (optional - set to 1 for optional inputs. Default is 0)
+# TODO: Allow the user to specify the I/O types
+inputs:
+  - label: in
+    domain: stream
+    dtype: float
+    vlen: ${ vlen }
+    optional: 0
+
+outputs:
+  - label: out
+    domain: stream
+    dtype: float
+    vlen: ${ vlen }
+    optional: 0
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

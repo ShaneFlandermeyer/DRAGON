@@ -1,0 +1,4 @@
+<map id="gr::dragon::pcfm_mod" name="gr::dragon::pcfm_mod">
+<area shape="rect" id="node1" title="Modulates the input with a PCFM scheme." alt="" coords="5,80,171,107"/>
+<area shape="rect" id="node2" title=" " alt="" coords="29,5,147,32"/>
+</map>

@@ -7,9 +7,10 @@ if ~isempty(radar.sig_data_rx)
     rd_map = plot_rd_map(radar,radar.sig_data_rx);
 end
 ofdm = read_complex_binary('/home/shane/ofdm.dat');
-db(max(abs(ofdm)))
-db(max(abs(radar.sig_data_rx)))
-db(max(abs(radar.sig_data_rx))) - db(max(abs(ofdm)))
+db(max(abs(ofdm)));
+db(max(abs(radar.sig_data_rx)));
+db(max(abs(radar.sig_data_rx))) - db(max(abs(ofdm)));
+fprintf("SINR: %f\n",db(max(abs(radar.sig_data_rx))) - db(max(abs(ofdm))))
 %% Set parameters and input data
 % Usage: [radar,tags] = setup_data()
 % Creates a radar parameter object and a set of stream tag objects with the

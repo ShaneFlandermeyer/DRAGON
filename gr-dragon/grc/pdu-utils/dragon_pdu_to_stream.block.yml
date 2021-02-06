@@ -1,0 +1,55 @@
+id: dragon_pdu_to_stream_X
+label: PDU To Stream
+category: '[dragon]/pdu-utils'
+
+
+templates:
+  imports: import dragon
+  make: dragon.pdu_to_stream_${type}(${early_burst_behavior}, ${max_queue_size}, ${verbose}, ${add_tags})
+  callbacks:
+    - set_max_queue_size(${max_queue_size})
+parameters:
+  - id: type
+    label: PDU Type
+    dtype: enum
+    options: [ c, f, s, b ]
+    option_labels: [ Complex, Float, Short, Byte ]
+    option_attributes:
+      output: [ complex, float, short, byte ]
+    hide: part
+  - id: early_burst_behavior
+    label: Early Behavior
+    dtype: enum
+    options: [ dragon.EARLY_BURST_BEHAVIOR__APPEND, dragon.EARLY_BURST_BEHAVIOR__DROP,
+               dragon.EARLY_BURST_BEHAVIOR__BALK ]
+    option_labels: [ Append, Drop, Balk ]
+  - id: max_queue_size
+    label: Queue Depth
+    dtype: int
+    default: '64'
+    hide: part
+  - id: verbose
+    label: Verbose Mode
+    dtype: enum
+    options: [ true, false ]
+#    option_labels: [ 0,1 ]
+#    default: false
+  - id: add_tags
+    label: Tag Output
+    dtype: enum
+    options: [ true, false ]
+#    option_labels: [ True, False ]
+#    default: On
+
+inputs:
+  - domain: message
+    id: in
+
+outputs:
+  - domain: stream
+    dtype: ${ type.output }
+asserts:
+  - ${max_queue_size > 0}
+
+
+file_format: 1

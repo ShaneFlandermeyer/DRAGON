@@ -22,19 +22,27 @@
 # Install public header files
 ########################################################################
 install(FILES
-    api.h
-    difference.h
-    dti.h
-    oversample_vector.h
-    complex_exponential.h
-    cpm.h
-    pulse_shaper.h
-    pcfm_mod.h
-    phase_code.h
-    phase_code_generator.h
-    moving_target_sim.h
-    pdu_phase_code_generator.h
-    lfm_pdu.h
-    pdu_constants.h
-    pdu_to_stream.h DESTINATION include/dragon
-)
+        api.h
+        math/difference.h
+        math/dti.h
+        vector-utils/oversample_vector.h
+        math/complex_exponential.h
+        waveform/cpm.h
+        waveform/pulse_shaper.h
+        waveform/pcfm_mod.h
+        waveform/phase_code.h
+        waveform/phase_code_generator.h
+        radar/moving_target_sim.h
+        waveform/pdu_phase_code_generator.h
+        constants.h
+        waveform/pdu_lfm.h
+        math/db.h
+        pdu-utils/pdu_to_stream.h
+        math/convolve.h
+        vector-utils/pad_vector.h
+        vector-utils/vector_functions.h
+        math/convolve_fft_hier.h
+        GRCLBase.h
+        clSComplex.h
+        cl_db.h DESTINATION include/dragon
+        )

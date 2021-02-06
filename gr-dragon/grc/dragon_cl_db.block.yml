@@ -1,0 +1,56 @@
+id: dragon_cl_db
+label: CL Linear to dB
+category: '[dragon]/math'
+
+parameters:
+  - id: mode
+    label: Mode
+    dtype: enum
+    options: [ dragon.VOLTAGE, dragon.POWER ]
+    option_labels: [ 'Voltage', 'Power' ]
+  - id: ocl_platform_type
+    label: OpenCL Platform Type
+    dtype: enum
+    options: [ '1', '2', '3', '4' ]
+    option_labels: [ GPU, Accelerator, CPU, Any ]
+  - id: devices
+    label: OpenCL Device
+    dtype: enum
+    options: [ '1', '2' ]
+    option_labels: [ Any, Specific ]
+    option_attributes:
+        hide_specific: [ all, part ]
+    default: ['1']
+  - id: platform_id
+    label: Platform ID
+    options: ['0','1','2','3']
+    hide: ${ devices.hide_specific }
+    default: ['0']
+  - id: dev_id
+    label: Device ID
+    dtype: enum
+    options: ['0','1','2','3']
+    hide: ${ devices.hide_specific }
+    default: ['0']
+  - id: set_debug
+    label: Debug
+    dtype: enum
+    options: [ '0', '1']
+    option_labels: ['Off','On']
+
+inputs:
+  - domain: stream
+    dtype: float
+
+outputs:
+  - domain: stream
+    dtype: float
+
+
+templates:
+  imports: import dragon
+  make: dragon.cl_db(${ocl_platform_type}, ${devices}, ${platform_id}, ${dev_id}, ${mode}, ${set_debug})
+
+documentation: |-
+
+file_format: 1
