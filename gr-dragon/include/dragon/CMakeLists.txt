@@ -44,5 +44,6 @@ install(FILES
         math/convolve_fft_hier.h
         GRCLBase.h
         clSComplex.h
-        cl_db.h DESTINATION include/dragon
+        cl_db.h
+    lfm_source.h DESTINATION include/dragon
         )

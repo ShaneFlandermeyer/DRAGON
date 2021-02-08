@@ -46,7 +46,8 @@ list(APPEND dragon_sources
         vector-utils/pad_vector_impl.cc
         math/convolve_fft_hier_impl.cc
         GRCLBase.cc
-    cl_db_impl.cc)
+    cl_db_impl.cc
+    lfm_source_impl.cc)
 
 set(dragon_sources "${dragon_sources}" PARENT_SCOPE)
 if (NOT dragon_sources)
@@ -88,6 +89,7 @@ message(STATUS "Building for version: ${VERSION} / ${LIBVER}")
 list(APPEND test_dragon_sources
         ${CMAKE_CURRENT_SOURCE_DIR}/test_dragon.cc
         ${CMAKE_CURRENT_SOURCE_DIR}/GRCLBase.cc
+        ${CMAKE_CURRENT_SOURCE_DIR}/lfm_source_impl.cc
         )
 
 add_executable(test-dragon ${test_dragon_sources})

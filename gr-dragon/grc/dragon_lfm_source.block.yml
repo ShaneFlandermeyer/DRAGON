@@ -1,0 +1,44 @@
+id: lfm_source
+label: LFM Source
+category: '[dragon]/waveform'
+
+templates:
+  imports: import dragon
+  make: dragon.lfm_source(${bandwidth}, ${sweep_time}, ${samp_rate}, ${prf}, ${tags})
+
+parameters:
+  - id: bandwidth
+    label: Bandwidth
+    dtype: float
+  - id: sweep_time
+    label: Sweep Time
+    dtype: float
+  - id: samp_rate
+    label: Sample Rate
+    dtype: float
+  - id: prf
+    label: PRF
+    dtype: float
+  - id: tags
+    label: Tags
+    dtype: raw
+    default: '[]'
+    hide: ${'part'}
+
+asserts:
+  - ${ bandwidth > 0 }
+  - ${ sweep_time > 0 }
+  - ${ samp_rate > 0 }
+  - ${ prf > 0 }
+
+outputs:
+  - label: out
+    domain: stream
+    dtype: complex
+    # / prf
+    vlen: ${int(samp_rate / prf)}
+    optional: 0
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1
