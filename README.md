@@ -20,6 +20,8 @@ The following blocks are available for use in GNU Radio:
 1. PDU to Stream
 (Modified version of block from [here](https://github.com/sandialabs/gr-pdu_utils))
 
+- This is a major bottleneck at high sample rates. We need to think of a more
+    efficient way to do this, or scrap the PDU idea entirely.
 ## Radar Blocks
 1. Moving Target Simulator
 
@@ -34,11 +36,12 @@ The following blocks are available for use in GNU Radio:
 4. Polyphase-Coded Frequency-Modulated (PCFM) Modulator
 
 ## Other Functions
-1. GRCLBase: Base class that extends OpenCL functionality to GR blocks.
-Modifed version of class found [here](ht.tps://github.com/ghostop14/gr-clenabled).
+1. GRCLBase: Base class thati extends OpenCL functionality to GR blocks.
+Modifed version of class found [here](https://github.com/ghostop14/gr-clenabled).
 ## Feature Wishlist
-1. RFNoC integration
-2. OpenCL/GL range-doppler map generation (similar to gr-fosphor)
-3. Extended waveform/phase code generation capabilities
-4. Make Doxygen Documentation available in github
+1. Real-time range-doppler map generation (something like gr-fosphor or the
+spectrogram plot in the qt gui sink block)
+2. Extended waveform/phase code generation capabilities (real-time optimization?)
+3. Make doxygen index.html available directly from github
+4. RFNoC integration
 
