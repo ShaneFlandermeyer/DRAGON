@@ -21,7 +21,7 @@
 #ifndef INCLUDED_DRAGON_LFM_SOURCE_IMPL_H
 #define INCLUDED_DRAGON_LFM_SOURCE_IMPL_H
 
-#include <dragon/lfm_source.h>
+#include <dragon/waveform/lfm_source.h>
 
 namespace gr {
 namespace dragon {

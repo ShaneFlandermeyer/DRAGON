@@ -36,4 +36,4 @@ install(FILES
         vector-utils/dragon_pad_vector.block.yml
         math/dragon_convolve_fft_hier.block.yml
     dragon_cl_db.block.yml
-    dragon_lfm_source.block.yml DESTINATION share/gnuradio/grc/blocks)
+        waveform/dragon_lfm_source.block.yml DESTINATION share/gnuradio/grc/blocks)

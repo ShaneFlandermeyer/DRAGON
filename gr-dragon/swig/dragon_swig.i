@@ -28,7 +28,7 @@
 #include "dragon/vector-utils/vector_functions.h"
 #include "dragon/math/convolve_fft_hier.h"
 #include "dragon/cl_db.h"
-#include "dragon/lfm_source.h"
+#include "dragon/waveform/lfm_source.h"
 %}
 %include "dragon/math/difference.h"
 GR_SWIG_BLOCK_MAGIC2_TMPL(dragon, difference_cc, difference<gr_complex>);
@@ -80,5 +80,5 @@ GR_SWIG_BLOCK_MAGIC2(dragon, pad_vector);
 GR_SWIG_BLOCK_MAGIC2(dragon, convolve_fft_hier);
 %include "dragon/cl_db.h"
 GR_SWIG_BLOCK_MAGIC2(dragon, cl_db);
-%include "dragon/lfm_source.h"
+%include "dragon/waveform/lfm_source.h"
 GR_SWIG_BLOCK_MAGIC2(dragon, lfm_source);

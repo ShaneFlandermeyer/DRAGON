@@ -45,5 +45,5 @@ install(FILES
         GRCLBase.h
         clSComplex.h
         cl_db.h
-    lfm_source.h DESTINATION include/dragon
+        waveform/lfm_source.h DESTINATION include/dragon
         )

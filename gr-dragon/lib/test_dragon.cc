@@ -6,7 +6,7 @@
  */
 
 #include <dragon/GRCLBase.h>
-#include "lfm_source_impl.h"
+//#include "waveform/lfm_source_impl.h"
 #include <gnuradio/block.h>
 //#include <gnuradio/gr_complex.h>
 
@@ -35,37 +35,37 @@ bool testGRCLBase() {
   return true;
 }
 
-bool testLFMSource() {
-  std::cout << "#################################################" << std::endl;
-  std::cout << "Testing LFM Source" << std::endl;
-  gr::dragon::lfm_source_impl *test = nullptr;
-  try {
-    double bandwidth = 5e6;
-    double sweep_time = 20e-6;
-    double samp_rate = 20e6;
-    double prf = 5000;
-    std::vector<gr::tag_t> tags(0);
-    test = new gr::dragon::lfm_source_impl(bandwidth, sweep_time,
-        samp_rate,
-        prf,tags);
-  }
-  catch (...) {
-    std::cout << "ERROR: error setting up LFM waveform source." << std::endl;
-
-      delete test;
-
-    return false;
-
-  }
-
-  delete test;
-  return true;
-
-}
+//bool testLFMSource() {
+//  std::cout << "#################################################" << std::endl;
+//  std::cout << "Testing LFM Source" << std::endl;
+//  gr::dragon::lfm_source_impl *test = nullptr;
+//  try {
+//    double bandwidth = 5e6;
+//    double sweep_time = 20e-6;
+//    double samp_rate = 20e6;
+//    double prf = 5000;
+//    std::vector<gr::tag_t> tags(0);
+//    test = new gr::dragon::lfm_source_impl(bandwidth, sweep_time,
+//        samp_rate,
+//        prf,tags);
+//  }
+//  catch (...) {
+//    std::cout << "ERROR: error setting up LFM waveform source." << std::endl;
+//
+//      delete test;
+//
+//    return false;
+//
+//  }
+//
+//  delete test;
+//  return true;
+//
+//}
 int main(int argc, char **argv) {
   bool was_successful;
   was_successful = testGRCLBase();
-  was_successful = testLFMSource();
+//  was_successful = testLFMSource();
 
   return was_successful ? 0 : 1;
 

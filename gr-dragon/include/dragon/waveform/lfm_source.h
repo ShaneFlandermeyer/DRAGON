@@ -21,7 +21,7 @@
 #ifndef INCLUDED_DRAGON_LFM_SOURCE_H
 #define INCLUDED_DRAGON_LFM_SOURCE_H
 
-#include <dragon/api.h>
+#include "../api.h"
 #include <gnuradio/sync_block.h>
 
 namespace gr {
