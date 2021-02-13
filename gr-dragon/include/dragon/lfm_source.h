@@ -25,30 +25,41 @@
 #include <gnuradio/sync_block.h>
 
 namespace gr {
-  namespace dragon {
+namespace dragon {
 
-    /*!
-     * \brief <+description of block+>
-     * \ingroup dragon
-     *
-     */
-    class DRAGON_API lfm_source : virtual public gr::sync_block
-    {
-     public:
-      typedef boost::shared_ptr<lfm_source> sptr;
+/*!
+ * \brief <+description of block+>
+ * \ingroup dragon
+ *
+ */
+class DRAGON_API lfm_source : virtual public gr::sync_block {
+ public:
+  typedef boost::shared_ptr<lfm_source> sptr;
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of dragon::lfm_source.
-       *
-       * To avoid accidental use of raw pointers, dragon::lfm_source's
-       * constructor is in a private implementation
-       * class. dragon::lfm_source::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(float bandwidth, float sweep_time, float samp_rate, float prf, const std::vector<tag_t>& tags);
-    };
+  /*!
+   * \brief Return a shared_ptr to a new instance of dragon::lfm_source.
+   *
+   * To avoid accidental use of raw pointers, dragon::lfm_source's
+   * constructor is in a private implementation
+   * class. dragon::lfm_source::make is the public interface for
+   * creating new instances.
+   */
+  static sptr make(float bandwidth,
+      float sweep_time,
+      float samp_rate,
+      float prf,
+      const std::vector<tag_t> &tags);
 
-  } // namespace dragon
+  /*
+   * Callback functions
+   */
+  virtual void setBandwidth(float bandwidth) = 0;
+  virtual void setSweepTime(float sweep_time) = 0;
+  virtual void setSampRate(float samp_rate) = 0;
+  virtual void setPRF(float prf) = 0;
+};
+
+} // namespace dragon
 } // namespace gr
 
 #endif /* INCLUDED_DRAGON_LFM_SOURCE_H */

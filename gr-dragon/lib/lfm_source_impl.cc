@@ -66,6 +66,7 @@ lfm_source_impl::lfm_source_impl(float bandwidth,
   else
     set_tags = true;
 
+
 }
 
 /*
@@ -77,10 +78,16 @@ int
 lfm_source_impl::work(int noutput_items,
     gr_vector_const_void_star &input_items,
     gr_vector_void_star &output_items) {
+
   auto *out = (gr_complex *) output_items[0];
+
   if (waveform.empty()) // No waveform specified
     return -1;
   for (int i = 0; i < noutput_items; i++) {
+    if (param_updated) { // Parameters updated...create a new waveform
+      generateWaveform();
+      param_updated = false;
+    }
     memcpy(out, waveform.data(), waveform.size() * sizeof(gr_complex));
     out += waveform.size();
     if (set_tags) {
@@ -105,7 +112,6 @@ void lfm_source_impl::generateWaveform() {
   t = arange(static_cast<float>(0),
       static_cast<float>(sweep_time),
       static_cast<float>(1 / samp_rate));
-  // TODO: Change sweep_time back to pri
   waveform = std::vector<gr_complex>(samp_rate * pri, 0);
 
   // Create the waveform
@@ -115,6 +121,25 @@ void lfm_source_impl::generateWaveform() {
     waveform[ii] = std::exp(J * phase);
   }
 
+}
+void lfm_source_impl::setBandwidth(float bandwidth) {
+  this->bandwidth = bandwidth;
+  param_updated = true;
+}
+
+void lfm_source_impl::setSweepTime(float sweep_time) {
+  this->sweep_time = sweep_time;
+  param_updated = true;
+  }
+
+void lfm_source_impl::setSampRate(float samp_rate) {
+  this->samp_rate = samp_rate;
+  param_updated = true;
+}
+
+void lfm_source_impl::setPRF(float prf) {
+  this->prf = prf;
+  param_updated = true;
 }
 
 } /* namespace dragon */

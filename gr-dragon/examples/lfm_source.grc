@@ -33,115 +33,169 @@ options:
 
 blocks:
 - name: bandwidth
-  id: variable
+  id: variable_qtgui_range
   parameters:
     comment: ''
-    value: 10e6
+    gui_hint: ''
+    label: Bandwidth
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: samp_rate
+    value: 5e6
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [280, 12.0]
-    rotation: 0
-    state: enabled
-- name: duty_factor
-  id: variable
-  parameters:
-    comment: ''
-    value: '0.1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [184, 76.0]
-    rotation: 0
-    state: enabled
-- name: filt_len
-  id: variable
-  parameters:
-    comment: ''
-    value: int(samp_rate*sweep_time)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [624, 36.0]
+    coordinate: [328, 12.0]
     rotation: 0
     state: true
-- name: out_len
-  id: variable
+- name: duty_factor
+  id: variable_qtgui_range
   parameters:
     comment: ''
-    value: sig_len+filt_len-1
+    gui_hint: ''
+    label: Duty Factor
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '.01'
+    stop: '1'
+    value: '.1'
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 52.0]
+    coordinate: [184, 140.0]
     rotation: 0
     state: true
 - name: prf
-  id: variable
+  id: variable_qtgui_range
   parameters:
     comment: ''
-    value: 1/pri
+    gui_hint: ''
+    label: PRF
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '10000'
+    value: '5000'
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [280, 76.0]
+    coordinate: [328, 140.0]
     rotation: 0
-    state: enabled
+    state: true
 - name: pri
   id: variable
   parameters:
     comment: ''
-    value: 200e-6
+    value: 1/prf
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [368, 76.0]
+    coordinate: [464, 76.0]
     rotation: 0
-    state: enabled
+    state: true
 - name: samp_rate
-  id: variable
+  id: variable_qtgui_range
   parameters:
     comment: ''
+    gui_hint: ''
+    label: Sample Rate
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: 100e6
     value: 20e6
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 12]
-    rotation: 0
-    state: enabled
-- name: sig_len
-  id: variable
-  parameters:
-    comment: ''
-    value: filt_len
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [544, 36.0]
+    coordinate: [184, 12.0]
     rotation: 0
     state: true
 - name: sweep_time
   id: variable
   parameters:
     comment: ''
-    value: duty_factor*pri
+    value: duty_factor/prf
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [376, 12.0]
+    coordinate: [464, 12.0]
     rotation: 0
-    state: enabled
-- name: dragon_pdu_lfm_0
-  id: dragon_pdu_lfm
+    state: true
+- name: blocks_null_sink_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [824, 224.0]
+    rotation: 0
+    state: disabled
+- name: blocks_throttle_0
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [664, 308.0]
+    rotation: 0
+    state: true
+- name: blocks_vector_to_stream_0
+  id: blocks_vector_to_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: int(samp_rate*pri)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [472, 312.0]
+    rotation: 0
+    state: true
+- name: lfm_source_0
+  id: lfm_source
   parameters:
     affinity: ''
     alias: ''
@@ -149,80 +203,17 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    mode: dragon.TX_MODE__SIMULATION
     prf: prf
-    repeat: 'True'
     samp_rate: samp_rate
     sweep_time: sweep_time
+    tags: '[]'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 212.0]
+    coordinate: [192, 292.0]
     rotation: 0
     state: true
-- name: dragon_pdu_to_stream_X_0
-  id: dragon_pdu_to_stream_X
-  parameters:
-    add_tags: 'True'
-    affinity: ''
-    alias: ''
-    comment: ''
-    early_burst_behavior: dragon.EARLY_BURST_BEHAVIOR__APPEND
-    max_queue_size: '64'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: c
-    verbose: 'True'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [872, 252.0]
-    rotation: 0
-    state: true
-- name: pdu_utils_pdu_add_noise_0
-  id: pdu_utils_pdu_add_noise
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    dist: pdu_utils.UNIFORM
-    level: '0.01'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    offset: '0.0'
-    scale: '1.0'
-    seed: '123456789'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [632, 236.0]
-    rotation: 0
-    state: true
-- name: qtgui_edit_box_msg_0
-  id: qtgui_edit_box_msg
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    gui_hint: ''
-    is_pair: 'True'
-    is_static: 'False'
-    key: bandwidth
-    label: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    value: ''
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [160, 212.0]
-    rotation: 0
-    state: enabled
 - name: qtgui_sink_x_0
   id: qtgui_sink_x
   parameters:
@@ -231,7 +222,7 @@ blocks:
     bw: samp_rate
     comment: ''
     fc: '0'
-    fftsize: '1024'
+    fftsize: int(pri*samp_rate)
     gui_hint: ''
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -244,20 +235,20 @@ blocks:
     showports: 'False'
     showrf: 'False'
     type: complex
-    wintype: firdes.WIN_BLACKMAN_hARRIS
+    wintype: firdes.WIN_RECTANGULAR
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1080, 252.0]
+    coordinate: [888, 316.0]
     rotation: 0
     state: enabled
 
 connections:
-- [dragon_pdu_lfm_0, out, pdu_utils_pdu_add_noise_0, pdu_in]
-- [dragon_pdu_to_stream_X_0, '0', qtgui_sink_x_0, '0']
-- [pdu_utils_pdu_add_noise_0, pdu_out, dragon_pdu_to_stream_X_0, in]
-- [qtgui_edit_box_msg_0, msg, dragon_pdu_lfm_0, ctrl]
+- [blocks_throttle_0, '0', blocks_null_sink_0, '0']
+- [blocks_throttle_0, '0', qtgui_sink_x_0, '0']
+- [blocks_vector_to_stream_0, '0', blocks_throttle_0, '0']
+- [lfm_source_0, '0', blocks_vector_to_stream_0, '0']
 
 metadata:
   file_format: 1

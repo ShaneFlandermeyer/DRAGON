@@ -84,7 +84,7 @@ class pdu_lfm_impl : public pdu_lfm {
 
   bool stop() override;
 
-  virtual void set_bandwidth(float bandwidth);
+  void set_bandwidth(float bandwidth) override;
   // TODO: Implement setters for the other parameters
 };
 

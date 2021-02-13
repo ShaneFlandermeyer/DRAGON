@@ -25,14 +25,15 @@ from PyQt5 import Qt
 from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
+from gnuradio import blocks
 from gnuradio import gr
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
+from gnuradio.qtgui import Range, RangeWidget
 import dragon
-import pdu_utils
 
 from gnuradio import qtgui
 
@@ -72,22 +73,28 @@ class lfm_source(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.pri = pri = 200e-6
-        self.duty_factor = duty_factor = 0.1
-        self.sweep_time = sweep_time = duty_factor*pri
+        self.prf = prf = 5000
+        self.duty_factor = duty_factor = .1
+        self.sweep_time = sweep_time = duty_factor/prf
         self.samp_rate = samp_rate = 20e6
-        self.filt_len = filt_len = int(samp_rate*sweep_time)
-        self.sig_len = sig_len = filt_len
-        self.prf = prf = 1/pri
-        self.out_len = out_len = sig_len+filt_len-1
-        self.bandwidth = bandwidth = 10e6
+        self.pri = pri = 1/prf
+        self.bandwidth = bandwidth = 5e6
 
         ##################################################
         # Blocks
         ##################################################
+        self._samp_rate_range = Range(0, 100e6, 1, 20e6, 200)
+        self._samp_rate_win = RangeWidget(self._samp_rate_range, self.set_samp_rate, 'Sample Rate', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._samp_rate_win)
+        self._prf_range = Range(0, 10000, 1, 5000, 200)
+        self._prf_win = RangeWidget(self._prf_range, self.set_prf, 'PRF', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._prf_win)
+        self._bandwidth_range = Range(0, samp_rate, 1, 5e6, 200)
+        self._bandwidth_win = RangeWidget(self._bandwidth_range, self.set_bandwidth, 'Bandwidth', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._bandwidth_win)
         self.qtgui_sink_x_0 = qtgui.sink_c(
-            1024, #fftsize
-            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            int(pri*samp_rate), #fftsize
+            firdes.WIN_RECTANGULAR, #wintype
             0, #fc
             samp_rate, #bw
             "", #name
@@ -102,22 +109,21 @@ class lfm_source(gr.top_block, Qt.QWidget):
         self.qtgui_sink_x_0.enable_rf_freq(False)
 
         self.top_grid_layout.addWidget(self._qtgui_sink_x_0_win)
-        self.qtgui_edit_box_msg_0 = qtgui.edit_box_msg(qtgui.FLOAT, '', '', True, False, 'bandwidth')
-        self._qtgui_edit_box_msg_0_win = sip.wrapinstance(self.qtgui_edit_box_msg_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_edit_box_msg_0_win)
-        self.pdu_utils_pdu_add_noise_0 = pdu_utils.pdu_add_noise(0.01, 0.0, 1.0, 123456789, pdu_utils.UNIFORM)
-        self.dragon_pdu_to_stream_X_0 = dragon.pdu_to_stream_c(dragon.EARLY_BURST_BEHAVIOR__APPEND, 64, True, True)
-        self.dragon_pdu_lfm_0 = dragon.pdu_lfm(bandwidth, sweep_time, samp_rate, prf,dragon.TX_MODE__SIMULATION,True)
+        self.lfm_source_0 = dragon.lfm_source(bandwidth, sweep_time, samp_rate, prf, [])
+        self._duty_factor_range = Range(0, 1, .01, .1, 200)
+        self._duty_factor_win = RangeWidget(self._duty_factor_range, self.set_duty_factor, 'Duty Factor', "counter_slider", float)
+        self.top_grid_layout.addWidget(self._duty_factor_win)
+        self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, int(samp_rate*pri))
+        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.dragon_pdu_lfm_0, 'out'), (self.pdu_utils_pdu_add_noise_0, 'pdu_in'))
-        self.msg_connect((self.pdu_utils_pdu_add_noise_0, 'pdu_out'), (self.dragon_pdu_to_stream_X_0, 'in'))
-        self.msg_connect((self.qtgui_edit_box_msg_0, 'msg'), (self.dragon_pdu_lfm_0, 'ctrl'))
-        self.connect((self.dragon_pdu_to_stream_X_0, 0), (self.qtgui_sink_x_0, 0))
+        self.connect((self.blocks_throttle_0, 0), (self.qtgui_sink_x_0, 0))
+        self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_throttle_0, 0))
+        self.connect((self.lfm_source_0, 0), (self.blocks_vector_to_stream_0, 0))
 
 
     def closeEvent(self, event):
@@ -125,72 +131,50 @@ class lfm_source(gr.top_block, Qt.QWidget):
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
-    def get_pri(self):
-        return self.pri
+    def get_prf(self):
+        return self.prf
 
-    def set_pri(self, pri):
-        self.pri = pri
-        self.set_prf(1/self.pri)
-        self.set_sweep_time(self.duty_factor*self.pri)
+    def set_prf(self, prf):
+        self.prf = prf
+        self.set_pri(1/self.prf)
+        self.set_sweep_time(self.duty_factor/self.prf)
+        self.lfm_source_0.setPRF(self.prf)
 
     def get_duty_factor(self):
         return self.duty_factor
 
     def set_duty_factor(self, duty_factor):
         self.duty_factor = duty_factor
-        self.set_sweep_time(self.duty_factor*self.pri)
+        self.set_sweep_time(self.duty_factor/self.prf)
 
     def get_sweep_time(self):
         return self.sweep_time
 
     def set_sweep_time(self, sweep_time):
         self.sweep_time = sweep_time
-        self.set_filt_len(int(self.samp_rate*self.sweep_time))
-        self.dragon_pdu_lfm_0.set_sweep_time(self.sweep_time)
+        self.lfm_source_0.setSweepTime(self.sweep_time)
 
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.set_filt_len(int(self.samp_rate*self.sweep_time))
-        self.dragon_pdu_lfm_0.set_samp_rate(self.samp_rate)
+        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
+        self.lfm_source_0.setSampRate(self.samp_rate)
         self.qtgui_sink_x_0.set_frequency_range(0, self.samp_rate)
 
-    def get_filt_len(self):
-        return self.filt_len
+    def get_pri(self):
+        return self.pri
 
-    def set_filt_len(self, filt_len):
-        self.filt_len = filt_len
-        self.set_out_len(self.sig_len+self.filt_len-1)
-        self.set_sig_len(self.filt_len)
-
-    def get_sig_len(self):
-        return self.sig_len
-
-    def set_sig_len(self, sig_len):
-        self.sig_len = sig_len
-        self.set_out_len(self.sig_len+self.filt_len-1)
-
-    def get_prf(self):
-        return self.prf
-
-    def set_prf(self, prf):
-        self.prf = prf
-        self.dragon_pdu_lfm_0.set_prf(self.prf)
-
-    def get_out_len(self):
-        return self.out_len
-
-    def set_out_len(self, out_len):
-        self.out_len = out_len
+    def set_pri(self, pri):
+        self.pri = pri
 
     def get_bandwidth(self):
         return self.bandwidth
 
     def set_bandwidth(self, bandwidth):
         self.bandwidth = bandwidth
-        self.dragon_pdu_lfm_0.set_bandwidth(self.bandwidth)
+        self.lfm_source_0.setBandwidth(self.bandwidth)
 
 
 

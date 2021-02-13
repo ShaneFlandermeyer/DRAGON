@@ -28,11 +28,13 @@ namespace dragon {
 
 class lfm_source_impl : public lfm_source {
  private:
+
   /*
    * Constants
    */
   const gr_complex J = gr_complex(0, 1);
 
+  bool param_updated = false; //
   /*
    * Waveform parameters
    */
@@ -72,6 +74,17 @@ class lfm_source_impl : public lfm_source {
       gr_vector_const_void_star &input_items,
       gr_vector_void_star &output_items
   );
+
+  /*
+   * Callback functions
+   */
+  void setBandwidth(float bandwidth) override;
+  void setSweepTime(float sweep_time) override;
+  void setSampRate(float samp_rate) override;
+  void setPRF(float prf) override;
+
+
+
 };
 
 } // namespace dragon

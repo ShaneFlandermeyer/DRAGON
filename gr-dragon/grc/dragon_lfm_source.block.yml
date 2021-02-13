@@ -5,6 +5,11 @@ category: '[dragon]/waveform'
 templates:
   imports: import dragon
   make: dragon.lfm_source(${bandwidth}, ${sweep_time}, ${samp_rate}, ${prf}, ${tags})
+  callbacks:
+    - setBandwidth(${bandwidth})
+    - setSweepTime(${sweep_time})
+    - setSampRate(${samp_rate})
+    - setPRF(${prf})
 
 parameters:
   - id: bandwidth
@@ -35,10 +40,7 @@ outputs:
   - label: out
     domain: stream
     dtype: complex
-    # / prf
     vlen: ${int(samp_rate / prf)}
     optional: 0
 
-#  'file_format' specifies the version of the GRC yml format used in the file
-#  and should usually not be changed.
 file_format: 1
