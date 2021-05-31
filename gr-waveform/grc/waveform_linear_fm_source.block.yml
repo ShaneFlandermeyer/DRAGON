@@ -1,0 +1,27 @@
+id: waveform_linear_fm_source
+label: linear_fm_source
+category: '[waveform]'
+
+templates:
+  imports: import waveform
+  make: waveform.linear_fm_source(${bandwidth}, ${pulsewidth}, ${sampleRate})
+
+parameters:
+  - id: bandwidth
+    label: Bandwidth
+    dtype: float
+  - id: pulsewidth
+    label: Pulse Width
+    dtype: float
+  - id: sampleRate
+    label: sampleRate
+    dtype: float
+
+outputs:
+  - label: out
+    domain: stream
+    dtype: complex
+    vlen: 1
+    optional: 0
+
+file_format: 1
