@@ -1,6 +1,6 @@
 id: waveform_linear_fm_source
-label: linear_fm_source
-category: '[waveform]'
+label: Linear FM Source
+category: '[DRAGON]/waveform'
 
 templates:
   imports: import waveform
@@ -14,7 +14,7 @@ parameters:
     label: Pulse Width
     dtype: float
   - id: sampleRate
-    label: sampleRate
+    label: Sample Rate
     dtype: float
 
 outputs:
