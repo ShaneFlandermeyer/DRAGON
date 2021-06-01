@@ -1,4 +1,7 @@
 # DRAGON
+
+IMPORTANT NOTE: This repo is currently undergoing a major overhaul (see develop branch for updates), and this is the master branch for the old structure. Once v0.1 of the new module is ready, this branch will be renamed (but preserved for posterity) and a new master will take its place.
+
 A GNU Radio-based signal processing library for the University of Oklahoma's
 DRAGON research group. The ultimate goal for this project is to create a
 streamlined framework for performing radar functions on GR-compatible
