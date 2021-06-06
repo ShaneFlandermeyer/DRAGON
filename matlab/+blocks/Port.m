@@ -1,10 +1,7 @@
 classdef (Abstract) Port < handle & matlab.mixin.Heterogeneous
   
   properties
-    connections gnuradio.Block
+    connections blocks.Port
   end
   
-  methods (Abstract)
-    addConnection(obj,port);
-  end
 end
