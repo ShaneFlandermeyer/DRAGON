@@ -21,6 +21,7 @@ classdef InputPortTest < matlab.unittest.TestCase
       inPort.disconnect(outPort);
       testCase.verifyTrue(isempty(inPort.connections))
     end
+   
     
   end
 
