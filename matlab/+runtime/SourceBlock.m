@@ -1,11 +1,15 @@
-classdef SourceBlock < runtime.Block
- properties 
-   inputPorts runtime.InputPort
-   outputPorts runtime.OutputPort
- end
- methods 
-   function work(obj)
-   end
- end
+classdef (Abstract) SourceBlock < runtime.Block
+  
+  methods
+    
+    function obj = SourceBlock()
+      obj.addOutputPort();
+    end
+    
+  end
 
+  methods (Abstract)
+    work(obj)
+  end
+  
 end
