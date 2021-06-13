@@ -7,11 +7,11 @@ end
 import matlab.unittest.TestSuite
 import matlab.unittest.TestRunner
 import matlab.unittest.plugins.CodeCoveragePlugin
-import blocks.*
+import runtime.*
 
 suite = TestSuite.fromPackage('tests');
 runner = TestRunner.withTextOutput;
 % Add code coverage output for desired package(s)
-runner.addPlugin(CodeCoveragePlugin.forPackage('blocks'))
+runner.addPlugin(CodeCoveragePlugin.forPackage('runtime'))
 result = runner.run(suite);
 cd(currPath)
