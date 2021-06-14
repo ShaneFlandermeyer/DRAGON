@@ -1,18 +1,21 @@
 classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   
   properties (SetAccess = protected)
+    parent runtime.TopBlock
     inputPorts runtime.InputPort
     outputPorts runtime.OutputPort
+    nItemsWritten
+    nItemsRead
   end
-  
+ 
   properties (Abstract, Dependent)
-    nInputItems;
-    nOutputItems;
+    nInputItems
+    nOutputItems
   end
   
   properties (Abstract, Access = protected)
-    d_nInputItems;
-    d_nOutputItems;
+    d_nInputItems
+    d_nOutputItems
   end
   
   methods (Abstract)
@@ -20,6 +23,12 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   end
   
   methods
+    
+    function obj = Block(parent,varargin)
+      validateattributes(parent,{'runtime.TopBlock'},{})
+      obj.parent = parent;
+      parent.addBlock(obj);
+    end
     
     function addInputPort(obj)
       % Add a new input port to the block
@@ -51,8 +60,6 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         
     end
     
-    
-    
     function deletePort(obj,port)
       % Delete an existing port from the block
       % 
@@ -64,6 +71,8 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       idx = find(obj.outputPorts == port);
       obj.outputPorts(idx) = [];
     end
+    
+    
   end
   
 end

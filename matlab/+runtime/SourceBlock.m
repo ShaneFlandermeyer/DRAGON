@@ -6,8 +6,8 @@ classdef (Abstract) SourceBlock < runtime.Block
   end
   
   properties (Access = protected)
-    d_nInputItems = 0
-    d_nOutputItems = 4096
+    d_nInputItems
+    d_nOutputItems
   end
   
   %% Abstract methods
@@ -18,17 +18,33 @@ classdef (Abstract) SourceBlock < runtime.Block
   %% Constructor
   methods
     
-    function obj = SourceBlock()
-      % Initialize the block to have 1 output port
-      obj.addOutputPort();
+    function obj = SourceBlock(parent,varargin)
+      nPortsDefault = 1;
+      nOutputItemsDefault = 4096;
+      
+      p = inputParser;
+      p.addParameter('nOutputPorts',nPortsDefault);
+      p.addParameter('nOutputItems',nOutputItemsDefault);
+      p.parse(varargin{:});
+      obj@runtime.Block(parent);
+      
+      obj.nInputItems = 0;
+      for ii = 1:p.Results.nOutputPorts
+        obj.addOutputPort();
+      end
+      obj.nOutputItems = p.Results.nOutputItems;
     end
     
   end
   
   %% Setters/Getters
   methods
-    function set.nInputItems(obj,~)
-      error('Cannot set nInputItems for Source Block')
+    function set.nInputItems(obj,n)
+      if (n ~= 0)
+        error('Cannot set nInputItems for Source Block')
+      end
+      obj.d_nInputItems = 0;
+     
     end
     
     function set.nOutputItems(obj,n)

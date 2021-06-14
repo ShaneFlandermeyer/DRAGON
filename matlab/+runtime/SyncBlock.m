@@ -9,13 +9,40 @@ classdef (Abstract) SyncBlock < runtime.Block
     d_nInputItems = 4096
     d_nOutputItems = 4096
   end
+  %% Abstract Methods
+  methods (Abstract)
+    work(obj)
+  end
   
   %% Constructor
   methods
     
-    function obj = SyncBlock()
-      obj.addInputPort();
-      obj.addOutputPort();
+    function obj = SyncBlock(parent,varargin)
+      nPortsDefault = 1;
+      nItemsDefault = 4096;
+      
+      p = inputParser;
+      p.addParameter('nInputPorts',nPortsDefault);
+      p.addParameter('nOutputPorts',nPortsDefault);
+      p.addParameter('nItems',nItemsDefault);
+      p.parse(varargin{:});
+      obj@runtime.Block(parent);
+      
+      
+      obj.nInputItems = p.Results.nItems;
+      obj.nOutputItems = p.Results.nItems;
+      
+      % Create the specified number of input ports
+      for iPort = 1:p.Results.nInputPorts
+        obj.addInputPort();
+      end
+      
+      % Create the specified number of output ports
+      for iPort = 1:p.Results.nOutputPorts
+        obj.addOutputPort();
+      end
+      
+      
     end
     
   end
@@ -41,11 +68,6 @@ classdef (Abstract) SyncBlock < runtime.Block
       n = obj.d_nOutputItems;
     end
     
-  end
-  
-  %% Abstract Methods
-  methods (Abstract)
-    work(obj)
   end
   
 end

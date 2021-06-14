@@ -7,7 +7,7 @@
 % - enqueue: Add the newData to the queue as a column vector
 % 
 % - dequeue: emove nItems data items from the head of the queue
-classdef Queue < handle
+classdef Queue < handle & matlab.mixin.Heterogeneous
   
   properties (SetAccess = protected)
     data;

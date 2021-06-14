@@ -3,6 +3,8 @@ tests = functiontests(localfunctions);
 end
 
 function test_work(testCase)
+% Test the work function
+tb = runtime.TopBlock; % Top block
 constant = 5;
 cs = blocks.ConstantSource(constant);
 cs.work();
