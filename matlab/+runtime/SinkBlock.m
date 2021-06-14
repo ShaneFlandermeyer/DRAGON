@@ -1,4 +1,4 @@
-classdef (Abstract) SourceBlock < runtime.Block
+classdef SinkBlock < runtime.Block
   
   properties (Dependent)
     nInputItems
@@ -18,36 +18,38 @@ classdef (Abstract) SourceBlock < runtime.Block
   %% Constructor
   methods
     
-    function obj = SourceBlock(parent,varargin)
+    function obj = SinkBlock(parent,varargin)
       nPortsDefault = 1;
       nOutputItemsDefault = 4096;
       
       p = inputParser;
-      p.addParameter('nOutputPorts',nPortsDefault);
+      p.addParameter('nInputPorts',nPortsDefault);
       p.addParameter('nOutputItems',nOutputItemsDefault);
       p.parse(varargin{:});
       obj@runtime.Block(parent);
       
-      obj.nInputItems = 0;
-      for ii = 1:p.Results.nOutputPorts
-        obj.addOutputPort();
+      obj.nOutputItems = 0;
+      for ii = 1:p.Results.nInputPorts
+        obj.addInputPort();
       end
-      obj.nOutputItems = p.Results.nOutputItems;
+      
+      obj.nInputItems = p.Results.nInputItems;
     end
     
   end
   
   %% Setters/Getters
   methods
+    
     function set.nInputItems(obj,n)
-      if (n ~= 0)
-        error('Cannot set nInputItems for Source Block')
-      end
       obj.d_nInputItems = n;
      
     end
     
     function set.nOutputItems(obj,n)
+      if (n ~= 0)
+        error('Cannot set nInputItems for Source Block')
+      end
       obj.d_nOutputItems = n;
     end
     
@@ -58,8 +60,7 @@ classdef (Abstract) SourceBlock < runtime.Block
     function n = get.nOutputItems(obj)
       n = obj.d_nOutputItems;
     end
+    
   end
-
   
-  
-end
+end 
