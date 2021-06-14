@@ -14,6 +14,32 @@ classdef Queue < handle
   end
   
   methods 
+    
+    function out = pop(obj)
+      if isempty(obj.data)
+        out = [];
+      else
+        out = obj.data(1);
+        obj.data = obj.data(2:end);
+      end
+    end
+    
+    function out = peek(obj)
+      if isempty(obj.data)
+        out = [];
+      else
+        out = obj.data(1);
+      end
+    end
+    
+    function push(obj,newItem)
+      obj.data = [obj.data; newItem(:)];
+    end
+    
+    function len = length(obj)
+      len = length(obj.data);
+    end
+    
     function enqueue(obj,newData)
       % Add the newData to the queue as a column vector
       if isempty(obj.data)
