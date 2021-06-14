@@ -5,9 +5,14 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     outputPorts runtime.OutputPort
   end
   
-  properties (Abstract)
+  properties (Abstract, Dependent)
     nInputItems;
     nOutputItems;
+  end
+  
+  properties (Abstract, Access = protected)
+    d_nInputItems;
+    d_nOutputItems;
   end
   
   methods (Abstract)

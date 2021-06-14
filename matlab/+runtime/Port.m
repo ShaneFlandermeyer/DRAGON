@@ -15,10 +15,7 @@ classdef (Abstract) Port < handle & matlab.mixin.Heterogeneous
     function obj = Port()
       obj.buffer = Queue;
     end
-    
-%     function delete(obj)
-%       delete(obj.buffer);
-%     end
+
   end
 
 end

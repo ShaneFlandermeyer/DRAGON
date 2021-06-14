@@ -1,9 +1,13 @@
 classdef (Abstract) SourceBlock < runtime.Block
   
-  properties
-    % TODO: Handle these more dynamically (probably from the Block class)
-    nInputItems = []
-    nOutputItems = 4096
+  properties (Dependent)
+    nInputItems
+    nOutputItems
+  end
+  
+  properties (Access = protected)
+    d_nInputItems = 0
+    d_nOutputItems = 4096
   end
   
   %% Abstract methods
@@ -19,6 +23,25 @@ classdef (Abstract) SourceBlock < runtime.Block
       obj.addOutputPort();
     end
     
+  end
+  
+  %% Setters/Getters
+  methods
+    function set.nInputItems(obj,~)
+      error('Cannot set nInputItems for Source Block')
+    end
+    
+    function set.nOutputItems(obj,n)
+      obj.d_nOutputItems = n;
+    end
+    
+    function n = get.nInputItems(obj)
+      n = obj.d_nInputItems;
+    end
+    
+    function n = get.nOutputItems(obj)
+      n = obj.d_nOutputItems;
+    end
   end
 
   
