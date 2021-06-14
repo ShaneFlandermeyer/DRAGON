@@ -7,6 +7,13 @@ classdef (Abstract) SyncBlock < runtime.Block
     nOutputItems = 4096;
   end
   
+  methods
+    function obj = SyncBlock()
+      obj.addInputPort();
+      obj.addOutputPort();
+    end
+  end
+  
   
   methods (Abstract)
     work(obj)
