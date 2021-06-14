@@ -15,32 +15,27 @@ classdef Queue < handle
   
   methods 
     
-    function out = pop(obj)
+    function out = pop(obj,nItems)
+      % Remove and return nItems samples from the front of the queue
       if isempty(obj.data)
         out = [];
       else
-        out = obj.data(1);
-        obj.data = obj.data(2:end);
+        out = obj.data(1:nItems);
+        obj.data = obj.data(nItems+1:end);
       end
     end
     
-    function out = peek(obj)
+    function out = peek(obj,nItems)
+      % Return the value of the first nItems items from the front of the
+      % queue (without dequeueing)
       if isempty(obj.data)
         out = [];
       else
-        out = obj.data(1);
+        out = obj.data(1:nItems);
       end
     end
     
-    function push(obj,newItem)
-      obj.data = [obj.data; newItem(:)];
-    end
-    
-    function len = length(obj)
-      len = length(obj.data);
-    end
-    
-    function enqueue(obj,newData)
+    function push(obj,newData)
       % Add the newData to the queue as a column vector
       if isempty(obj.data)
         obj.data = newData(:);
@@ -49,12 +44,14 @@ classdef Queue < handle
       end
     end
     
-    function outData = dequeue(obj,nItems)
-      % Remove nItems data items from the head of the queue
-      outData = obj.data(1:nItems);
-      obj.data = obj.data(nItems+1:end);
+    function len = length(obj)
+      % Return the length of the queue
+      len = length(obj.data);
     end
-      
+    
+%     function delete(obj)
+%       obj.data = [];
+%     end
     
   end
 end

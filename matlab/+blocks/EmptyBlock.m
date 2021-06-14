@@ -6,6 +6,10 @@ classdef EmptyBlock < runtime.SyncBlock
     methods
       
       function work(obj)
+        % TODO: Data passing should not be done inside the work function
+        obj.inputPorts(1).buffer.push(obj.inputPorts(1).connections(1).buffer.pop(obj.nInputItems));
+        inputData = obj.inputPorts(1).buffer.pop(obj.nInputItems);
+        obj.outputPorts(1).buffer.push(inputData);
         
         
       end
