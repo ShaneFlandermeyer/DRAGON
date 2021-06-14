@@ -16,8 +16,10 @@ classdef EmptyBlock < runtime.SyncBlock
     end
     
     methods 
+      
       function obj = EmptyBlock(parent,varargin)
         obj@runtime.SyncBlock(parent,varargin{:})
       end
+      
     end
 end

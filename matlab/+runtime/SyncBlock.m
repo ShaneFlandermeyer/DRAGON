@@ -24,13 +24,17 @@ classdef (Abstract) SyncBlock < runtime.Block
       p = inputParser;
       p.addParameter('nInputPorts',nPortsDefault);
       p.addParameter('nOutputPorts',nPortsDefault);
-      p.addParameter('nItems',nItemsDefault);
+      p.addParameter('nInputItems',nItemsDefault);
+      p.addParameter('nOutputItems',nItemsDefault);
       p.parse(varargin{:});
       obj@runtime.Block(parent);
       
+      if (obj.nInputItems ~= obj.nOutputItems)
+        error('For Sync blocks, nInputItems must equal nOutputItems')
+      end
       
-      obj.nInputItems = p.Results.nItems;
-      obj.nOutputItems = p.Results.nItems;
+      obj.nInputItems = p.Results.nInputItems;
+      obj.nOutputItems = p.Results.nOutputItems;
       
       % Create the specified number of input ports
       for iPort = 1:p.Results.nInputPorts

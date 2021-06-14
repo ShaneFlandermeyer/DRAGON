@@ -10,13 +10,18 @@ classdef TopBlock < handle
   end
   
   methods
+    
     function addBlock(obj,block)
+      
+      % Add a block to the list 
       if isempty(block)
         obj.blocks = block;
       else
         obj.blocks = [obj.blocks; block];
       end
+      
     end
+    
     function start(obj,n)
       % TODO: starts the flow graph running with N as the maximum noutput_items any block can receive.
     end
