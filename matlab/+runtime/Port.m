@@ -3,6 +3,7 @@ classdef (Abstract) Port < handle & matlab.mixin.Heterogeneous
   properties (SetAccess = protected)
     connections runtime.Port
     buffer (1,1) Queue
+    parent runtime.Block
   end
   
   methods (Abstract)
@@ -12,8 +13,13 @@ classdef (Abstract) Port < handle & matlab.mixin.Heterogeneous
   
   methods
     
-    function obj = Port()
+    function obj = Port(parent)
+      validateattributes(parent,{'runtime.Block'},{})
       obj.buffer = Queue;
+      if isempty(parent)
+        error('Port cannot exist without an associated block')
+      end
+      obj.parent = parent;
     end
 
   end

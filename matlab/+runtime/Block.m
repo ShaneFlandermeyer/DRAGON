@@ -26,8 +26,13 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     
     function obj = Block(parent,varargin)
       validateattributes(parent,{'runtime.TopBlock'},{})
+      % Link the block to its parent flowgraph
       obj.parent = parent;
       parent.addBlock(obj);
+      
+      % Initialize the number of IO items read
+      obj.nItemsWritten = 0;
+      obj.nItemsRead = 0;
     end
     
     function addInputPort(obj)
@@ -38,9 +43,9 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       end
       
       if isempty(obj.inputPorts)
-        obj.inputPorts = runtime.InputPort;
+        obj.inputPorts = runtime.InputPort(obj);
       else
-        obj.inputPorts = [obj.inputPorts; runtime.InputPort];
+        obj.inputPorts = [obj.inputPorts; runtime.InputPort(obj)];
       end
       
     end
@@ -53,9 +58,9 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       end
       
       if isempty(obj.outputPorts)
-        obj.outputPorts = runtime.OutputPort;
+        obj.outputPorts = runtime.OutputPort(obj);
       else
-        obj.outputPorts = [obj.outputPorts; runtime.OutputPort];
+        obj.outputPorts = [obj.outputPorts; runtime.OutputPort(obj)];
       end
         
     end

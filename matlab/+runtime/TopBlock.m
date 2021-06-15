@@ -48,6 +48,28 @@ classdef TopBlock < handle
     
     function showGraph(obj)
       % TODO: Use graphviz to show the current flowgraph for this block
+      
+      % Create graphviz instructions
+      str = ['echo ''digraph {a -> b'];
+      str = [str '}'' | dot -Tpng > output.png'];
+      % Get dot strings, get dot labels, etc
+      
+      % Write to a .gv file
+      
+      % Load .gv file and output to a png
+      
+      % Use imshow on the opened png
+      
+      system(str)
+      imshow('output.png')
+    end
+    
+    function outStr = printGraph(obj)
+      block = obj.blocks(2);
+      while ~isempty(block.inputPorts)
+        block = block.inputPorts(1).parent;
+      end
+        
     end
     
   end

@@ -2,6 +2,10 @@ classdef InputPort < runtime.Port
   
   methods
     
+    function obj = InputPort(parent)
+      obj@runtime.Port(parent);
+    end
+    
     function connect(obj,port)
       validateattributes(port,'runtime.OutputPort',{})
       obj.connections = port;
