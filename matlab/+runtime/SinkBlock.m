@@ -20,11 +20,11 @@ classdef SinkBlock < runtime.Block
     
     function obj = SinkBlock(parent,varargin)
       nPortsDefault = 1;
-      nOutputItemsDefault = 4096;
+      nInputItems = 4096;
       
       p = inputParser;
       p.addParameter('nInputPorts',nPortsDefault);
-      p.addParameter('nOutputItems',nOutputItemsDefault);
+      p.addParameter('nInputItems',nInputItems);
       p.parse(varargin{:});
       obj@runtime.Block(parent);
       

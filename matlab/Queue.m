@@ -15,8 +15,13 @@ classdef Queue < handle & matlab.mixin.Heterogeneous
   
   methods 
     
-    function out = pop(obj,nItems)
+    function out = dequeue(obj,nItems)
       % Remove and return nItems samples from the front of the queue
+      
+      if nargin == 1
+        nItems = 1;
+      end
+      
       if isempty(obj.data)
         out = [];
       else
@@ -35,7 +40,7 @@ classdef Queue < handle & matlab.mixin.Heterogeneous
       end
     end
     
-    function push(obj,newData)
+    function enqueue(obj,newData)
       % Add the newData to the queue as a column vector
       if isempty(obj.data)
         obj.data = newData(:);

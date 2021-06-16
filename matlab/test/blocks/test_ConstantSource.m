@@ -9,6 +9,6 @@ constant = 5;
 cs = blocks.ConstantSource(tb,constant);
 cs.work();
 expected = repmat(constant,cs.nOutputItems,1);
-actual = cs.outputPorts(1).buffer.pop(cs.nOutputItems);
+actual = cs.outputPorts(1).buffer.dequeue(cs.nOutputItems);
 testCase.verifyEqual(actual,expected);
 end

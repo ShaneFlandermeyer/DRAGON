@@ -14,10 +14,10 @@ classdef ConstantSource < runtime.SourceBlock
     
     function work(obj)
       
-      % Push the constant value to the output buffer
+      % enqueue the constant value to the output buffer
       outData = repmat(obj.constant,obj.nOutputItems,1);
       for iPort = 1:length(obj.outputPorts)
-        obj.outputPorts(iPort).buffer.push(outData);
+        obj.outputPorts(iPort).buffer.enqueue(outData);
       end
       
     end

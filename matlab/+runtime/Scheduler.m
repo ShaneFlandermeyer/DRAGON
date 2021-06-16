@@ -17,7 +17,7 @@ classdef Scheduler < handle
       
       % If this block is a source block, add it to the queue and return
       if isa(block,'runtime.SourceBlock')
-        obj.eventQueue.push(block);
+        obj.eventQueue.enqueue(block);
         return
       end
       

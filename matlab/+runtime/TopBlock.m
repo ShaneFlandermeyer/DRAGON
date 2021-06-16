@@ -64,13 +64,26 @@ classdef TopBlock < handle
       imshow('output.png')
     end
     
-    function outStr = printGraph(obj)
-      block = obj.blocks(2);
-      while ~isempty(block.inputPorts)
-        block = block.inputPorts(1).parent;
-      end
-        
+%     function outStr = printGraph(obj)
+%       error('This feature is not yet implemented')
+%     end
+    
+    function out = printGraph(obj)
+      % Print the graph associated with the input block, with the output given
+      % in the dot language. This block will eventually be used to generate a
+      % graphviz output of the flowgraph
+      
+%       while ~isa(block,'runtime.SourceBlock')
+%         block = block.inputPorts(1).connections(1).parent;
+%       end
+%       
+%       while ~isa(block,'runtime.SinkBlock')
+%         out = [out class(block) ' -> '];
+%         block = block.outputPorts(1).connections(1).parent;
+%       end
+%       out = [out class(block) ';'];
     end
+        
     
   end
 end
