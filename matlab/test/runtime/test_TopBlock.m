@@ -40,6 +40,11 @@ cs1.outputPorts(1).connect(eb1.inputPorts(1));
 cs2.outputPorts(1).connect(eb1.inputPorts(2));
 eb1.outputPorts(1).connect(ns.inputPorts(1));
 
+cs3 = blocks.ConstantSource(tb,3);
+eb2 = blocks.EmptyBlock(tb);
+ns2 = blocks.NullSink(tb);
+cs3.outputPorts(1).connect(eb2.inputPorts(1));
+eb2.outputPorts(1).connect(ns2.inputPorts(1));
 
 % Test that the function works properly regardless of which block is used for the call 
 expected = 'ConstantSource -> EmptyBlock -> NullSink;ConstantSource -> EmptyBlock -> NullSink;';

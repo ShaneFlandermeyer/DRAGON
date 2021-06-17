@@ -51,10 +51,12 @@ classdef TopBlock < handle
       
       % Create graphviz instructions
       command = 'echo ''strict digraph { rankdir=LR node [shape=box]';
+      runtime.TopBlock.addUniqueName([],true);
       for iBlock = 1:length(obj.blocks)
         % Only print the graph path if 
         if isa(obj.blocks(iBlock),'runtime.SinkBlock')
           command = [command obj.printGraph(obj.blocks(iBlock))];
+          command = [command runtime.TopBlock.getNodeLabels];
         end
       end
       
@@ -65,6 +67,7 @@ classdef TopBlock < handle
       system(command)
       imshow('output.png')
     end
+    
     
     % TODO:
     % - Decide if this should be static and whether or not the user should be
@@ -79,13 +82,18 @@ classdef TopBlock < handle
       % graphviz output of the flowgraph
       
       outStr = '';
-      name = split(class(block),'.');
+
+      names = runtime.TopBlock.addUniqueName(block,false);
+      n = length(names);
+      blockStr = ['block',num2str(n)];
+      % ------------------------------------------------------------------------
+      
       % If inStr is not specified, this is the first call from an external
       % function call. The block is then assumed to be a sink block
       if nargin == 2
-        tempStr = [name{2}];
+        tempStr = [blockStr];
       else
-        tempStr = [name{2} ' -> ' tempStr];
+        tempStr = [blockStr ' -> ' tempStr];
       end
       
       % Add a semicolon to the end of every sink block name to mark the end of
@@ -109,4 +117,56 @@ classdef TopBlock < handle
     
     
   end
+  
+  methods (Static, Access = private)
+        
+    function out = addUniqueName(block,reset)
+      % Append the name of the input block to a list of unique block names.
+      % Used to visualize the flowgraph with graphviz.
+      %
+      % INPUTS:
+      % - block: The runtime.Block object whose name is to be added to the list
+      % - clear: If this value is true, the name array is emptied
+      % 
+      % OUTPUTS:
+      % - out: The name array after the new block name has been appended
+      % 
+      % TODO: Give the block objects a "name" parameter, then use that instead
+      % of the name of the block class
+      persistent names;
+      
+      
+      if nargin == 0
+        out = names;
+        return
+      end
+      
+      if nargin == 1
+        reset = false;
+      end
+      
+      if reset
+        clear names
+        out = [];
+        return
+      end
+      
+      str = split(class(block),'.');
+      names{end+1} = str{2};
+      out = names;
+      
+    end
+    
+    function str = getNodeLabels()
+      
+      s = runtime.TopBlock.addUniqueName;
+      str = [];
+      for iName = 1:length(s)
+        str = [str 'block' num2str(iName) '[label="' s{iName} '"];'];
+      end
+      
+    end
+    
+  end
+  
 end

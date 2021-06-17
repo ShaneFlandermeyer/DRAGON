@@ -9,7 +9,7 @@ classdef (Abstract) SourceBlock < runtime.Block
     d_nInputItems
     d_nOutputItems
   end
-  
+
   %% Abstract methods
   methods (Abstract)
     work(obj)

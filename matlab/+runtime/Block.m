@@ -7,6 +7,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     nItemsWritten
     nItemsRead
   end
+  
  
   properties (Abstract, Dependent)
     nInputItems

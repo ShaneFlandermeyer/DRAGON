@@ -9,6 +9,7 @@ classdef SinkBlock < runtime.Block
     d_nInputItems
     d_nOutputItems
   end
+
   
   %% Abstract methods
   methods (Abstract)

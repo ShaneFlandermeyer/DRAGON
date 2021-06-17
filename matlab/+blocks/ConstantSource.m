@@ -3,11 +3,11 @@ classdef ConstantSource < runtime.SourceBlock
   properties
     constant;
   end
-  
+
   methods
     
     function obj = ConstantSource(parent,constant,varargin)
-      % TODO: Use inputparser and varargin 
+      % TODO: Use inputparser and varargin
       obj@runtime.SourceBlock(parent,varargin{:});
       obj.constant = constant;
     end

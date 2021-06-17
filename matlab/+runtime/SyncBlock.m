@@ -9,6 +9,7 @@ classdef (Abstract) SyncBlock < runtime.Block
     d_nInputItems = 4096
     d_nOutputItems = 4096
   end
+
   %% Abstract Methods
   methods (Abstract)
     work(obj)
