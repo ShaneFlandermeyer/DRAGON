@@ -47,70 +47,83 @@ classdef TopBlock < handle
     end
     
     function showGraph(obj)
-      % Use graphviz to show the current flowgraph for this block
+      % Use graphviz to show the connections of the current flowgraph
+      % NOTE: Only works for bash!
       
-      % Create graphviz instructions
+      % Like gnuradio, the graph flows from left to right and each node is
+      % represented by a box
       command = 'echo ''strict digraph { rankdir=LR node [shape=box]';
+      % Clear the unique name list
       runtime.TopBlock.addUniqueName([],true);
       for iBlock = 1:length(obj.blocks)
-        % Only print the graph path if 
+        % If the block is a sink block, show the path to all its children. This
+        % does no error checking to verify if the connections are legitimate
         if isa(obj.blocks(iBlock),'runtime.SinkBlock')
           command = [command obj.printGraph(obj.blocks(iBlock))];
           command = [command runtime.TopBlock.getNodeLabels];
         end
       end
       
+      % Output the graph as a png
       command = [command '}'' | dot -Tpng > output.png'];
-      
-      % Use imshow on the opened png
-      
-      system(command)
+      system(command);
+      % Plot the graph
       imshow('output.png')
+      % Remove the intermediate graph file
+      system('rm output.png');
     end
     
-    
-    % TODO:
-    % - Decide if this should be static and whether or not the user should be
-    %   able to call it
-    % - Decide if the tempStr parameter should become some form of a persistent
-    %   variable
-    % - Update this function to use a "name" parameter for each block rather
-    %   than just the block name
-    function outStr = printGraph(obj,block,tempStr)
-      % Print the graph associated with the input block, with the output given
-      % in the dot language. This block will eventually be used to generate a
-      % graphviz output of the flowgraph
+    function depthFirstPath = printGraph(obj,block)
+      % Return a string representing the path taken for a depth first traversal
+      % of the tree rooted at the given block. Each tree node is given
+      % a unique identifier of the form "blockN" for some integer N, which can
+      % be used to plot the tree using graphviz. Branching tree paths are
+      % separated by semicolons
+      %
+      % INPUTS: 
+      % - obj: The TopBlock object containing the blocks in question 
+      %        TODO: This method will probably be made static soon, removing
+      %              this argument
+      % - block: The block to be used as the root of the tree
+      % 
+      % OUTPUTS:
+      % - depthFirstPath: An ASCII drawing of the traversal of the tree, with
+      % arrows pointing from leaf nodes to the root
       
-      outStr = '';
+      persistent traversalPath
+      depthFirstPath = [];
 
-      names = runtime.TopBlock.addUniqueName(block,false);
-      n = length(names);
-      blockStr = ['block',num2str(n)];
-      % ------------------------------------------------------------------------
+      % Add the current block to the list of existing blocks
+      blockNames = runtime.TopBlock.addUniqueName(block,false);
+      nNames = length(blockNames);
+      blockID = ['block',num2str(nNames)];
       
-      % If inStr is not specified, this is the first call from an external
-      % function call. The block is then assumed to be a sink block
-      if nargin == 2
-        tempStr = [blockStr];
+      % If the current block is a sink block, don't add an output arrow to it
+      if isa(block,'runtime.SinkBlock')
+        traversalPath = [blockID];
       else
-        tempStr = [blockStr ' -> ' tempStr];
+        traversalPath = [blockID ' -> ' traversalPath];
       end
       
       % Add a semicolon to the end of every sink block name to mark the end of
       % the graph path
       if isa(block,'runtime.SinkBlock')
-        tempStr = [tempStr ';'];
+        traversalPath = [traversalPath ';'];
       end
       
+      currentPath = traversalPath;
       
-      % Append all children graphs to the output
+      % Append all children paths to the output
       for iPort = 1 : length(block.inputPorts)
-        outStr = [obj.printGraph(block.inputPorts(iPort).connections.parent,tempStr) outStr];
+        depthFirstPath = [obj.printGraph(block.inputPorts(iPort).connections.parent) depthFirstPath];
+        % Discard the changes made to the persistent variable in the function
+        % calls above
+        traversalPath = currentPath;
       end
       
       % If we've reached a source block, the graph ends 
       if isa(block,'runtime.SourceBlock')
-        outStr = tempStr;
+        depthFirstPath = traversalPath;
       end
       
     end
@@ -131,42 +144,53 @@ classdef TopBlock < handle
       % OUTPUTS:
       % - out: The name array after the new block name has been appended
       % 
-      % TODO: Give the block objects a "name" parameter, then use that instead
-      % of the name of the block class
+      % TODO: 
+      % - Give the block objects a "name" parameter, then use that instead
+      %   of the name of the block class
+      % - Use inputParser object to be smarter about the inputs
+      
+      % Array of names
       persistent names;
       
       
+      % No arguments specified. Return the name array
       if nargin == 0
         out = names;
         return
       end
       
+      % Block name given, assume the user wants to append it to the list
       if nargin == 1
         reset = false;
       end
       
+      % Reset operation specified; clear the array and return
       if reset
         clear names
         out = [];
         return
       end
       
+      % User wants to add block to the list. Add the block name, but not its
+      % qualifier
       str = split(class(block),'.');
-      names{end+1} = str{2};
+      names{end+1} = str{end};
       out = names;
       
     end
     
-    function str = getNodeLabels()
+    function labelCommand = getNodeLabels()
+      % Output the graphviz command that allows us to convert from the abstract
+      % numbered block names to the actual names of the blocks being used
       
-      s = runtime.TopBlock.addUniqueName;
-      str = [];
-      for iName = 1:length(s)
-        str = [str 'block' num2str(iName) '[label="' s{iName} '"];'];
+      names = runtime.TopBlock.addUniqueName;
+      labelCommand = [];
+      for iName = 1:length(names)
+        labelCommand = [labelCommand 'block' num2str(iName) '[label="' names{iName} '"];'];
       end
       
     end
     
   end
   
-end
+end % class
