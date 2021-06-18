@@ -20,7 +20,7 @@ cs.outputPorts(1).connect(eb.inputPorts(1));
 cs.work();
 eb.work();
 
-expected = ones(cs.nOutputItems,1);
+expected = ones(cs.nOutputItemsMax,1);
 actual = eb.outputPorts(1).buffer.data;
 testCase.verifyEqual(actual,expected);
 

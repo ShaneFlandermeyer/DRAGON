@@ -6,8 +6,9 @@ classdef NullSink < runtime.SinkBlock
       obj@runtime.SinkBlock(parent,varargin{:});
     end
     
-    function work(obj)
-      % TODO: Implement me
+    function outputItems = work(obj,nOutputItemsMax,inputItems)
+      % Do nothing
+      outputItems = [];
     end
     
   end

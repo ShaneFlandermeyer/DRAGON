@@ -54,6 +54,10 @@ classdef Queue < handle & matlab.mixin.Heterogeneous
       len = length(obj.data);
     end
     
+    function isEmpty = isempty(obj)
+      isEmpty = isempty(obj.data);
+    end
+    
 %     function delete(obj)
 %       obj.data = [];
 %     end

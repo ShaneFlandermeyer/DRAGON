@@ -1,18 +1,18 @@
 classdef (Abstract) SyncBlock < runtime.Block
   
   properties (Dependent)
-    nInputItems
-    nOutputItems
+    nInputItemsMax
+    nOutputItemsMax
   end
   
   properties (Access = protected)
-    d_nInputItems = 4096
-    d_nOutputItems = 4096
+    d_nInputItemsMax = 4096
+    d_nOutputItemsMax = 4096
   end
 
   %% Abstract Methods
   methods (Abstract)
-    work(obj)
+    outputItems = work(obj,nOutputItemsMax,inputItems)
   end
   
   %% Constructor
@@ -25,17 +25,17 @@ classdef (Abstract) SyncBlock < runtime.Block
       p = inputParser;
       p.addParameter('nInputPorts',nPortsDefault);
       p.addParameter('nOutputPorts',nPortsDefault);
-      p.addParameter('nInputItems',nItemsDefault);
-      p.addParameter('nOutputItems',nItemsDefault);
+      p.addParameter('nInputItemsMax',nItemsDefault);
+      p.addParameter('nOutputItemsMax',nItemsDefault);
       p.parse(varargin{:});
       obj@runtime.Block(parent);
       
-      if (obj.nInputItems ~= obj.nOutputItems)
-        error('For Sync blocks, nInputItems must equal nOutputItems')
+      if (obj.nInputItemsMax ~= obj.nOutputItemsMax)
+        error('For Sync blocks, nInputItemsMax must equal nOutputItemsMax')
       end
       
-      obj.nInputItems = p.Results.nInputItems;
-      obj.nOutputItems = p.Results.nOutputItems;
+      obj.nInputItemsMax = p.Results.nInputItemsMax;
+      obj.nOutputItemsMax = p.Results.nOutputItemsMax;
       
       % Create the specified number of input ports
       for iPort = 1:p.Results.nInputPorts
@@ -55,22 +55,22 @@ classdef (Abstract) SyncBlock < runtime.Block
   %% Setters and getters
   methods
     
-    function set.nInputItems(obj,n)
-      obj.d_nInputItems = n;
-      obj.d_nOutputItems = n;
+    function set.nInputItemsMax(obj,n)
+      obj.d_nInputItemsMax = n;
+      obj.d_nOutputItemsMax = n;
     end
     
-    function set.nOutputItems(obj,n)
-      obj.d_nInputItems = n;
-      obj.d_nOutputItems = n;
+    function set.nOutputItemsMax(obj,n)
+      obj.d_nInputItemsMax = n;
+      obj.d_nOutputItemsMax = n;
     end
     
-    function n = get.nInputItems(obj)
-      n = obj.d_nInputItems;
+    function n = get.nInputItemsMax(obj)
+      n = obj.d_nInputItemsMax;
     end
     
-    function n = get.nOutputItems(obj)
-      n = obj.d_nOutputItems;
+    function n = get.nOutputItemsMax(obj)
+      n = obj.d_nOutputItemsMax;
     end
     
   end

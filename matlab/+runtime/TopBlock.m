@@ -6,6 +6,8 @@ classdef TopBlock < handle
   % "blocks" property
   properties
     blocks runtime.Block
+    sources runtime.Block
+    sinks runtime.Block
     
   end
   
@@ -18,6 +20,12 @@ classdef TopBlock < handle
         obj.blocks = block;
       else
         obj.blocks = [obj.blocks; block];
+      end
+      
+      if isa(block,'runtime.SourceBlock')
+        obj.sources = [obj.sources; block];
+      elseif isa(block,'runtime.SinkBlock')
+        obj.sinks = [obj.sinks;block];
       end
       
     end
@@ -34,8 +42,12 @@ classdef TopBlock < handle
       % TODO: blocks until top block is finished
     end
     
-    function run(obj,n)
+    function run(obj,nItems)
       % TODO: a blocking start(N) (calls start then wait)
+      for iSource = 1 : length(obj.sources)
+        obj.sources(iSource).processData(nItems);
+      end
+      
     end
     
     function lock(obj)
@@ -57,7 +69,8 @@ classdef TopBlock < handle
       runtime.TopBlock.addUniqueName([],true);
       for iBlock = 1:length(obj.blocks)
         % If the block is a sink block, show the path to all its children. This
-        % does no error checking to verify if the connections are legitimate
+        % does no error checking to verify if the connections are legitimate.
+        % That should probably be handled in the block class itself
         if isa(obj.blocks(iBlock),'runtime.SinkBlock')
           command = [command obj.printGraph(obj.blocks(iBlock))];
           command = [command runtime.TopBlock.getNodeLabels];
@@ -80,20 +93,19 @@ classdef TopBlock < handle
       % be used to plot the tree using graphviz. Branching tree paths are
       % separated by semicolons
       %
-      % INPUTS: 
-      % - obj: The TopBlock object containing the blocks in question 
+      % INPUTS:
+      % - obj: The TopBlock object containing the blocks in question
       %        TODO: This method will probably be made static soon, removing
       %              this argument
       % - block: The block to be used as the root of the tree
-      % 
+      %
       % OUTPUTS:
       % - depthFirstPath: An ASCII drawing of the traversal of the tree, with
       % arrows pointing from leaf nodes to the root
       
       persistent traversalPath
       depthFirstPath = [];
-
-      % Add the current block to the list of existing blocks
+      
       blockNames = runtime.TopBlock.addUniqueName(block,false);
       nNames = length(blockNames);
       blockID = ['block',num2str(nNames)];
@@ -121,7 +133,7 @@ classdef TopBlock < handle
         traversalPath = currentPath;
       end
       
-      % If we've reached a source block, the graph ends 
+      % If we've reached a source block, the graph ends
       if isa(block,'runtime.SourceBlock')
         depthFirstPath = traversalPath;
       end
@@ -132,7 +144,7 @@ classdef TopBlock < handle
   end
   
   methods (Static, Access = private)
-        
+    
     function out = addUniqueName(block,reset)
       % Append the name of the input block to a list of unique block names.
       % Used to visualize the flowgraph with graphviz.
@@ -140,11 +152,11 @@ classdef TopBlock < handle
       % INPUTS:
       % - block: The runtime.Block object whose name is to be added to the list
       % - clear: If this value is true, the name array is emptied
-      % 
+      %
       % OUTPUTS:
       % - out: The name array after the new block name has been appended
-      % 
-      % TODO: 
+      %
+      % TODO:
       % - Give the block objects a "name" parameter, then use that instead
       %   of the name of the block class
       % - Use inputParser object to be smarter about the inputs

@@ -12,13 +12,10 @@ classdef ConstantSource < runtime.SourceBlock
       obj.constant = constant;
     end
     
-    function work(obj)
+    function outputItems = work(obj,nOutputItemsMax,inputItems)
       
       % enqueue the constant value to the output buffer
-      outData = repmat(obj.constant,obj.nOutputItems,1);
-      for iPort = 1:length(obj.outputPorts)
-        obj.outputPorts(iPort).buffer.enqueue(outData);
-      end
+      outputItems = repmat(obj.constant,nOutputItemsMax,1);
       
     end
     

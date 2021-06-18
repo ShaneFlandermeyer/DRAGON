@@ -1,19 +1,19 @@
 classdef SinkBlock < runtime.Block
   
   properties (Dependent)
-    nInputItems
-    nOutputItems
+    nInputItemsMax
+    nOutputItemsMax
   end
   
   properties (Access = protected)
-    d_nInputItems
-    d_nOutputItems
+    d_nInputItemsMax
+    d_nOutputItemsMax
   end
 
   
   %% Abstract methods
   methods (Abstract)
-    work(obj)
+    outputItems = work(obj,nOutputItemsMax,inputItems)
   end
   
   %% Constructor
@@ -21,20 +21,20 @@ classdef SinkBlock < runtime.Block
     
     function obj = SinkBlock(parent,varargin)
       nPortsDefault = 1;
-      nInputItems = 4096;
+      nInputItemsMax = 4096;
       
       p = inputParser;
       p.addParameter('nInputPorts',nPortsDefault);
-      p.addParameter('nInputItems',nInputItems);
+      p.addParameter('nInputItemsMax',nInputItemsMax);
       p.parse(varargin{:});
       obj@runtime.Block(parent);
       
-      obj.nOutputItems = 0;
+      obj.nOutputItemsMax = 0;
       for ii = 1:p.Results.nInputPorts
         obj.addInputPort();
       end
       
-      obj.nInputItems = p.Results.nInputItems;
+      obj.nInputItemsMax = p.Results.nInputItemsMax;
     end
     
   end
@@ -42,24 +42,24 @@ classdef SinkBlock < runtime.Block
   %% Setters/Getters
   methods
     
-    function set.nInputItems(obj,n)
-      obj.d_nInputItems = n;
+    function set.nInputItemsMax(obj,n)
+      obj.d_nInputItemsMax = n;
      
     end
     
-    function set.nOutputItems(obj,n)
+    function set.nOutputItemsMax(obj,n)
       if (n ~= 0)
-        error('Cannot set nInputItems for Source Block')
+        error('Cannot set nInputItemsMax for Source Block')
       end
-      obj.d_nOutputItems = n;
+      obj.d_nOutputItemsMax = n;
     end
     
-    function n = get.nInputItems(obj)
-      n = obj.d_nInputItems;
+    function n = get.nInputItemsMax(obj)
+      n = obj.d_nInputItemsMax;
     end
     
-    function n = get.nOutputItems(obj)
-      n = obj.d_nOutputItems;
+    function n = get.nOutputItemsMax(obj)
+      n = obj.d_nOutputItemsMax;
     end
     
   end
