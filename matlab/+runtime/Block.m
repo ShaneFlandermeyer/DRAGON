@@ -1,6 +1,6 @@
 classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   
-  properties (SetAccess = protected)
+  properties (SetAccess = private)
     parent runtime.TopBlock
     inputPorts runtime.InputPort   
     outputPorts runtime.OutputPort
@@ -14,10 +14,10 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     nOutputItemsMax
   end
   
-  properties (Abstract, Access = protected)
-    d_nInputItemsMax
-    d_nOutputItemsMax
-  end
+%   properties (Abstract, Access = protected)
+%     d_nInputItemsMax
+%     d_nOutputItemsMax
+%   end
   
   methods (Abstract)
     outputItems = work(obj,nOutputItemsMax,inputItems)
@@ -60,15 +60,21 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         end
         nInputItems = min(min(nItems,obj.nInputItemsMax),length(obj.inputPorts(iPort).buffer));
         inputItems(:,iPort) = obj.inputPorts(iPort).buffer.dequeue(nInputItems);
+        % TODO: This might cause problems if the number of inputs is not the
+        % same from each port (for example, if one port does not have enough
+        % data). Will probably need to find the minimum length of all port
+        % buffers for nInputItems assignment statement
+        obj.nItemsRead = obj.nItemsRead + nInputItems;
+        
       end
       
       % Process input data
       outputItems = obj.work(obj.nOutputItemsMax,inputItems);
       
-      
       for iPort = 1 : length(obj.outputPorts)
         % Send the result of the work function to the output buffer(s)
         obj.outputPorts(iPort).buffer.enqueue(outputItems(:,iPort));
+        obj.nItemsWritten = obj.nItemsWritten + length(outputItems);
         % TODO: This function currently recursively calls itself for the next
         % block in the flowgraph, but it should probably be handled somewhere
         % else so 

@@ -5,7 +5,7 @@ classdef (Abstract) SyncBlock < runtime.Block
     nOutputItemsMax
   end
   
-  properties (Access = protected)
+  properties (Access = private)
     d_nInputItemsMax = 4096
     d_nOutputItemsMax = 4096
   end
