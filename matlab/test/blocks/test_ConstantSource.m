@@ -11,7 +11,7 @@ constantSource = blocks.ConstantSource(tb,constant);
 % Create the data sink block
 dataSink = blocks.DataSink(tb);
 % Connect the blocks
-constantSource.outputPorts(1).connect(dataSink.inputPorts(1));
+tb.connect(constantSource,1,dataSink,1);
 % Run a work function work of data
 tb.run(constantSource.nOutputItemsMax);
 
