@@ -5,7 +5,7 @@ classdef SinkBlock < runtime.Block
     nOutputItemsMax
   end
   
-  properties (Access = protected)
+  properties (Access = private)
     d_nInputItemsMax
     d_nOutputItemsMax
   end

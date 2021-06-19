@@ -8,19 +8,26 @@ classdef InputPort < runtime.Port
     
     function connect(obj,port)
       validateattributes(port,'runtime.OutputPort',{})
-      obj.connections = port;
-      port.connections = [port.connections; obj];
+      if ~isempty(obj.connections)
+        obj.deleteConnection(obj.connections(1));
+      end
+      obj.addConnection(port);
+      port.addConnection(obj);
+%       obj.connections = port;
+%       port.connections = [port.connections; obj];
     end
     
     function disconnect(obj,port)
       validateattributes(port,'runtime.OutputPort',{})
-      % Find the connection in this object's list and delete it
-      idx = find(obj.connections == port);
-      obj.connections(idx) = [];
-      
-      % Find the connection in the input port's list and delete it
-      idx = find(port.connections == obj);
-      port.connections(idx) = [];
+      obj.deleteConnection(port);
+      port.deleteConnection(obj);
+%       % Find the connection in this object's list and delete it
+%       idx = find(obj.connections == port);
+%       obj.connections(idx) = [];
+%       
+%       % Find the connection in the input port's list and delete it
+%       idx = find(port.connections == obj);
+%       port.connections(idx) = [];
     end
 
   end

@@ -1,6 +1,6 @@
 classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   
-  properties (SetAccess = protected)
+  properties (SetAccess = private)
     parent runtime.TopBlock
     inputPorts runtime.InputPort   
     outputPorts runtime.OutputPort
@@ -13,12 +13,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     nInputItemsMax
     nOutputItemsMax
   end
-  
-  properties (Abstract, Access = protected)
-    d_nInputItemsMax
-    d_nOutputItemsMax
-  end
-  
+
   methods (Abstract)
     outputItems = work(obj,nOutputItemsMax,inputItems)
   end
@@ -48,8 +43,10 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       % 
       
       
-      % Get data from each input port
-      inputItems = [];
+      % Get the length of the inputItems array for each input port. If the input
+      % array buffers have different sizes, the smallest size is used as the
+      % input size
+      minBufferSize = inf;
       for iPort = 1 : length(obj.inputPorts)
         % If data exists at the output of the previous block, transfer it to the
         % input port of this block
@@ -58,17 +55,33 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
           obj.inputPorts(iPort).connections.buffer.dequeue(...
           length(obj.inputPorts(iPort).connections.buffer)));
         end
-        nInputItems = min(min(nItems,obj.nInputItemsMax),length(obj.inputPorts(iPort).buffer));
+        % Compute the minimum buffer size
+        minBufferSize = min(minBufferSize,length(obj.inputPorts(iPort).buffer));
+      end
+      nInputItems = min(min(nItems,obj.nInputItemsMax),minBufferSize);
+      inputItems = zeros(nInputItems,length(obj.inputPorts));
+      
+      % Get data from each input port
+      for iPort = 1 : length(obj.inputPorts)
+        if isempty(inputItems)
+          return;
+        end
         inputItems(:,iPort) = obj.inputPorts(iPort).buffer.dequeue(nInputItems);
+        % TODO: This might cause problems if the number of inputs is not the
+        % same from each port (for example, if one port does not have enough
+        % data). Will probably need to find the minimum length of all port
+        % buffers for nInputItems assignment statement
+        obj.nItemsRead = obj.nItemsRead + nInputItems;
+        
       end
       
       % Process input data
       outputItems = obj.work(obj.nOutputItemsMax,inputItems);
       
-      
       for iPort = 1 : length(obj.outputPorts)
         % Send the result of the work function to the output buffer(s)
         obj.outputPorts(iPort).buffer.enqueue(outputItems(:,iPort));
+        obj.nItemsWritten = obj.nItemsWritten + length(outputItems);
         % TODO: This function currently recursively calls itself for the next
         % block in the flowgraph, but it should probably be handled somewhere
         % else so 

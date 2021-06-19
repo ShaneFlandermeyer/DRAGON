@@ -5,8 +5,7 @@ classdef EmptyBlock < runtime.SyncBlock
 
   
   methods
-    % TODO: This should not stay public once the flowgraph structure is
-    % well defined
+
     function outputItems = work(obj,nOutputItemsMax,inputItems)
       
       outputItems = inputItems;

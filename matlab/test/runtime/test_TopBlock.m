@@ -9,17 +9,24 @@ function test_run(testCase)
 
 % The top block to be tested
 tb = runtime.TopBlock();
-constantSource = blocks.ConstantSource(tb,5);
+
+constant = 5;
+constantSource = blocks.ConstantSource(tb,constant);
 emptyBlock = blocks.EmptyBlock(tb);
-timeSink = blocks.TimeSink(tb);
+dataSink = blocks.DataSink(tb);
 
 % Connect the blocks as follows:
 % ConsantSource -> EmptyBlock -> NullSink
-constantSource.outputPorts(1).connect(emptyBlock.inputPorts(1));
-emptyBlock.outputPorts(1).connect(timeSink.inputPorts(1));
+tb.connect(constantSource,1,emptyBlock,1);
+tb.connect(emptyBlock,1,dataSink,1);
 
-% Generate 100 samples
-tb.run(4096);
+% Generate samples
+nSamples = 4096;
+tb.run(nSamples);
+
+expected = repmat(constant,nSamples,1);
+actual = dataSink.data;
+testCase.verifyEqual(actual,expected);
 
 
 end

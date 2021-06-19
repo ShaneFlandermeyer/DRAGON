@@ -58,6 +58,12 @@ classdef TopBlock < handle
       % TODO: unlocks and restarts the flowgraph
     end
     
+    % Connect the source block output port at index sourcePort to the sink block
+    % input port at index sinkPort
+    function connect(~, source, sourcePort, sink, sinkPort)
+      source.outputPorts(sourcePort).connect(sink.inputPorts(sinkPort));
+    end
+    
     function showGraph(obj)
       % Use graphviz to show the connections of the current flowgraph
       % NOTE: Only works for bash!

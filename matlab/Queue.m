@@ -9,7 +9,7 @@
 % - dequeue: emove nItems data items from the head of the queue
 classdef Queue < handle & matlab.mixin.Heterogeneous
   
-  properties (SetAccess = protected)
+  properties (SetAccess = private)
     data;
   end
   

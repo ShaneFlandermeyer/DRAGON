@@ -10,18 +10,22 @@ tb = runtime.TopBlock();
 
 % Create a constant source block
 constant = 1;
-cs = blocks.ConstantSource(tb,constant);
+constantSource = blocks.ConstantSource(tb,constant);
 
 % Create the empty block to be tested
-eb = blocks.EmptyBlock(tb);
+emptyBlock = blocks.EmptyBlock(tb);
 
-% Connect them
-cs.outputPorts(1).connect(eb.inputPorts(1));
-cs.work();
-eb.work();
+% Create the data sink
+dataSink = blocks.DataSink(tb);
 
-expected = ones(cs.nOutputItemsMax,1);
-actual = eb.outputPorts(1).buffer.data;
+% Connect the blocks
+tb.connect(constantSource,1,emptyBlock,1);
+tb.connect(emptyBlock,1,dataSink,1);
+
+tb.run(constantSource.nOutputItemsMax);
+
+expected = ones(constantSource.nOutputItemsMax,1);
+actual = dataSink.data;
 testCase.verifyEqual(actual,expected);
 
 end
