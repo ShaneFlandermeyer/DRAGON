@@ -1,4 +1,4 @@
-function tests = test_EmptyBlock
+function tests = test_LinearFMSource
 tests = functiontests(localfunctions);
 end
 
