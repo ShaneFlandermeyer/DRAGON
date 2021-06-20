@@ -43,9 +43,32 @@ classdef TopBlock < handle
     end
     
     function run(obj,nItems)
-      % TODO: a blocking start(N) (calls start then wait)
-      for iSource = 1 : length(obj.sources)
-        obj.sources(iSource).processData(nItems);
+      % A blocking start(N) (calls start then wait)
+      
+      % If the number of items is not specified, the flowgraph will run
+      % continuously (equivalent to calling start)
+      % TODO: This is not working well for real-time plotting
+      if nargin == 1
+        nItems = inf;
+      end
+      
+      isDone = false(length(obj.sources),1);
+      while ~all(isDone)
+        % Loop through all sources and process nItems data items. If the block
+        % input item limit is less than this, that is the number of items that
+        % will be processedd
+        for iSource = 1 : length(obj.sources)
+          nItemsWritten = obj.sources(iSource).nItemsWritten;
+          if nItemsWritten >= nItems
+            isDone(iSource) = true;
+            continue
+          end
+          if isinf(nItems)
+            obj.sources(iSource).processData(nItems);
+          else
+            obj.sources(iSource).processData(nItems-nItemsWritten);
+          end
+        end
       end
       
     end
