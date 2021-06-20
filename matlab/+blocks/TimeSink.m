@@ -12,7 +12,8 @@ classdef TimeSink < runtime.SinkBlock
     
     function outputItems = work(obj,nOutputItemsMax,inputItems)
       
-      plot(inputItems);
+      plot(inputItems,'Linewidth',2);
+      drawnow % Continuously update the plot
       outputItems = [];
       
     end

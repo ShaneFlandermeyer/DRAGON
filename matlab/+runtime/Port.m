@@ -27,7 +27,7 @@ classdef (Abstract) Port < handle & matlab.mixin.Heterogeneous
       if isempty(obj.connections)
         obj.connections = port;
       else
-        obj.connecttions = [obj.connections;port];
+        obj.connections = [obj.connections;port];
       end
     end
     
