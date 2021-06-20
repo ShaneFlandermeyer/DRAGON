@@ -12,15 +12,21 @@ classdef IOSignature < handle
   end
   
   methods
+    %% Constructor
     function obj = IOSignature(varargin)
+      
+      % Validation functions
+      validNonnegativeNumber = @(x) isnumeric(x) && isscalar(x) && (x >= 0);
+      validPositiveNumber = @(x) isnumeric(x) && isscalar(x) && (x > 0);
+      
+      % Parse inputs
       p = inputParser;
-
-      % Add parameters and default values
-      p.addOptional('minPorts',1);
-      p.addOptional('maxPorts',1);
-      p.addOptional('vectorLength',1);
+      p.addOptional('minPorts',validNonnegativeNumber);
+      p.addOptional('maxPorts',validNonnegativeNumber);
+      p.addOptional('vectorLength',validPositiveNumber);
       p.parse(varargin{:})
       
+      % Assign parsed values
       obj.minPorts = p.Results.minPorts;
       obj.maxPorts = p.Results.maxPorts;
       obj.vectorLength = p.Results.vectorLength;

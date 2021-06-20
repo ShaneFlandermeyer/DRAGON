@@ -19,6 +19,7 @@ classdef (Abstract) SourceBlock < runtime.Block
   methods
     
     function obj = SourceBlock(parent,varargin)
+      % Parse parameters needed for runtime.Block superclass
       p = inputParser();
       p.KeepUnmatched = true;
       p.addParameter('nInputPorts',0);
@@ -37,18 +38,11 @@ classdef (Abstract) SourceBlock < runtime.Block
       results = namedargs2cell(p.Results);
       obj@runtime.Block(parent,results{:});
       
+      % Parse private class members
       p.addParameter('nOutputItemsMax',4096);
       p.parse(varargin{:})
       obj.nInputItemsMax = 0;
       obj.nOutputItemsMax = p.Results.nOutputItemsMax;
-      
-      
-%       
-%       obj.nInputItemsMax = 0;
-%       for ii = 1:p.Results.nOutputPorts
-%         obj.addOutputPort();
-%       end
-%       obj.nOutputItemsMax = p.Results.nOutputItemsMax;
     end
     
   end

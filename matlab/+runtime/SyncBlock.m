@@ -6,8 +6,8 @@ classdef (Abstract) SyncBlock < runtime.Block
   end
   
   properties (Access = private)
-    d_nInputItemsMax = 4096
-    d_nOutputItemsMax = 4096
+    d_nInputItemsMax
+    d_nOutputItemsMax 
   end
 
   %% Abstract Methods
@@ -19,6 +19,7 @@ classdef (Abstract) SyncBlock < runtime.Block
   methods
     
     function obj = SyncBlock(parent,varargin)
+      % Parse parameters needed for runtime.Block superclass
       p = inputParser();
       p.KeepUnmatched = true;
       p.addParameter('nInputPorts',1);
@@ -32,6 +33,7 @@ classdef (Abstract) SyncBlock < runtime.Block
       results = namedargs2cell(p.Results);
       obj@runtime.Block(parent,results{:});
       
+      % Parse private class members
       p.addParameter('nInputItemsMax',4096);
       p.addParameter('nOutputItemsMax',4096);
       p.parse(varargin{:});

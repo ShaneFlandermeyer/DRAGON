@@ -8,6 +8,7 @@ classdef ConstantSource < runtime.SourceBlock
     
     function obj = ConstantSource(parent,constant,varargin)
       obj@runtime.SourceBlock(parent,varargin{:});
+      validateattributes(constant,{'numeric'},{'scalar','finite','nonnan'})
       obj.constant = constant;
     end
     

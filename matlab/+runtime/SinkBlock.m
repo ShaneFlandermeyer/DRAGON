@@ -20,7 +20,7 @@ classdef SinkBlock < runtime.Block
   methods
     
     function obj = SinkBlock(parent,varargin)
-
+      % Parse parameters needed for runtime.Block superclass
       p = inputParser();
       p.KeepUnmatched = true;
       p.addParameter('nInputPorts',1);
@@ -36,9 +36,11 @@ classdef SinkBlock < runtime.Block
         error('Sink blocks cannot have output ports')
       end
       
+      
       results = namedargs2cell(p.Results);
       obj@runtime.Block(parent,results{:});
       
+      % Parse private class members
       p.addParameter('nInputItemsMax',4096);
       p.parse(varargin{:})
       obj.nOutputItemsMax = 0;

@@ -1,13 +1,13 @@
 classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   
   properties (SetAccess = private)
-    parent runtime.TopBlock
+    parent (1,1) runtime.TopBlock
     inputPorts runtime.InputPort   
     outputPorts runtime.OutputPort
-    inputSignature runtime.IOSignature
-    outputSignature runtime.IOSignature
-    nItemsWritten
-    nItemsRead
+    inputSignature (1,1) runtime.IOSignature
+    outputSignature (1,1) runtime.IOSignature
+    nItemsWritten (1,1) uint32
+    nItemsRead (1,1) uint32
   end
   
   properties (Abstract, Dependent)
@@ -22,28 +22,33 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   methods
     
     function obj = Block(parent,varargin)
+      % Parse inputs
+      validNonnegativeNumber = @(x) isnumeric(x) && isscalar(x) && (x >= 0);
+      validPositiveNumber = @(x) isnumeric(x) && isscalar(x) && (x > 0);
+      
       p = inputParser();
-      p.addParameter('nInputPorts',1);
-      p.addParameter('nOutputPorts',1);
-      p.addParameter('nInputPortsMin',1);
-      p.addParameter('nInputPortsMax',1);
-      p.addParameter('nOutputPortsMin',1);
-      p.addParameter('nOutputPortsMax',1);
-      p.addParameter('vectorLength',1);
+      p.addParameter('nInputPorts',0,validNonnegativeNumber);
+      p.addParameter('nOutputPorts',0,validNonnegativeNumber);
+      p.addParameter('nInputPortsMin',0,validNonnegativeNumber);
+      p.addParameter('nInputPortsMax',inf,validNonnegativeNumber);
+      p.addParameter('nOutputPortsMin',0,validNonnegativeNumber);
+      p.addParameter('nOutputPortsMax',inf,validNonnegativeNumber);
+      p.addParameter('vectorLength',1,validPositiveNumber);
       p.parse(varargin{:})
       
-      validateattributes(parent,{'runtime.TopBlock'},{})
       % Link the block to its parent flowgraph
+      validateattributes(parent,{'runtime.TopBlock'},{})
       obj.parent = parent;
       parent.addBlock(obj);
       
-      % Create the IO signatures
+      % Create the IO signatures for each port
       obj.inputSignature = runtime.IOSignature(minPorts=p.Results.nInputPortsMin,...
         maxPorts=p.Results.nInputPortsMax,vectorLength=p.Results.vectorLength);
       
       obj.outputSignature = runtime.IOSignature(minPorts=p.Results.nOutputPortsMin,...
         maxPorts=p.Results.nOutputPortsMax,vectorLength=p.Results.vectorLength);
       
+      % Add input and output ports
       for iPort = 1 : p.Results.nInputPorts
         obj.addInputPort();
       end
@@ -51,8 +56,6 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       for iPort = 1 : p.Results.nOutputPorts
         obj.addOutputPort();
       end
-      
-      
       
       % Initialize the number of IO items read
       % TODO: Should this be specific to each port?
@@ -118,6 +121,25 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       
     end
     
+    function deletePort(obj,port)
+      % Delete an existing port from the block
+      % 
+      % INPUT: A reference to the runtime.Port object to be deleted
+      
+      % TODO: Do nothing here if it causes the number of ports to violate the IO
+      % signature
+      
+      idx = find(obj.inputPorts == port);
+      obj.inputPorts(idx) = [];
+
+      idx = find(obj.outputPorts == port);
+      obj.outputPorts(idx) = [];
+    end
+    
+    
+  end
+  
+  methods (Access = protected)
     function addInputPort(obj)
       % Add a new input port to the block
       
@@ -158,23 +180,6 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       end
         
     end
-    
-    function deletePort(obj,port)
-      % Delete an existing port from the block
-      % 
-      % INPUT: A reference to the runtime.Port object to be deleted
-      
-      % TODO: Do nothing here if it causes the number of ports to violate the IO
-      % signature
-      
-      idx = find(obj.inputPorts == port);
-      obj.inputPorts(idx) = [];
-
-      idx = find(obj.outputPorts == port);
-      obj.outputPorts(idx) = [];
-    end
-    
-    
   end
   
 end
