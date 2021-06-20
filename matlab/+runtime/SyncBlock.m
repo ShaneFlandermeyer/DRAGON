@@ -6,8 +6,8 @@ classdef (Abstract) SyncBlock < runtime.Block
   end
   
   properties (Access = private)
-    d_nInputItemsMax = 4096
-    d_nOutputItemsMax = 4096
+    d_nInputItemsMax
+    d_nOutputItemsMax 
   end
 
   %% Abstract Methods
@@ -19,33 +19,29 @@ classdef (Abstract) SyncBlock < runtime.Block
   methods
     
     function obj = SyncBlock(parent,varargin)
-      nPortsDefault = 1;
-      nItemsDefault = 4096;
-      
-      p = inputParser;
-      p.addParameter('nInputPorts',nPortsDefault);
-      p.addParameter('nOutputPorts',nPortsDefault);
-      p.addParameter('nInputItemsMax',nItemsDefault);
-      p.addParameter('nOutputItemsMax',nItemsDefault);
+      % Parse parameters needed for runtime.Block superclass
+      p = inputParser();
+      p.KeepUnmatched = true;
+      p.addParameter('nInputPorts',1);
+      p.addParameter('nOutputPorts',1);
+      p.addParameter('nInputPortsMin',1);
+      p.addParameter('nInputPortsMax',inf);
+      p.addParameter('nOutputPortsMin',1);
+      p.addParameter('nOutputPortsMax',inf);
+      p.addParameter('vectorLength',1);
       p.parse(varargin{:});
-      obj@runtime.Block(parent);
+      results = namedargs2cell(p.Results);
+      obj@runtime.Block(parent,results{:});
       
-      if (obj.nInputItemsMax ~= obj.nOutputItemsMax)
-        error('For Sync blocks, nInputItemsMax must equal nOutputItemsMax')
+      % Parse private class members
+      p.addParameter('nInputItemsMax',4096);
+      p.addParameter('nOutputItemsMax',4096);
+      p.parse(varargin{:});
+      if p.Results.nInputItemsMax ~= p.Results.nOutputItemsMax
+        error('Number of input items must equal number of output items')
       end
-      
       obj.nInputItemsMax = p.Results.nInputItemsMax;
       obj.nOutputItemsMax = p.Results.nOutputItemsMax;
-      
-      % Create the specified number of input ports
-      for iPort = 1:p.Results.nInputPorts
-        obj.addInputPort();
-      end
-      
-      % Create the specified number of output ports
-      for iPort = 1:p.Results.nOutputPorts
-        obj.addOutputPort();
-      end
       
       
     end
