@@ -19,20 +19,36 @@ classdef (Abstract) SourceBlock < runtime.Block
   methods
     
     function obj = SourceBlock(parent,varargin)
-      nPortsDefault = 1;
-      nOutputItemsMaxDefault = 4096;
-      
-      p = inputParser;
-      p.addParameter('nOutputPorts',nPortsDefault);
-      p.addParameter('nOutputItemsMax',nOutputItemsMaxDefault);
+      p = inputParser();
+      p.KeepUnmatched = true;
+      p.addParameter('nInputPorts',0);
+      p.addParameter('nOutputPorts',1);
+      p.addParameter('nInputPortsMin',0);
+      p.addParameter('nInputPortsMax',0);
+      p.addParameter('nOutputPortsMin',1);
+      p.addParameter('nOutputPortsMax',inf);
+      p.addParameter('vectorLength',1);
       p.parse(varargin{:});
-      obj@runtime.Block(parent);
       
-      obj.nInputItemsMax = 0;
-      for ii = 1:p.Results.nOutputPorts
-        obj.addOutputPort();
+      if p.Results.nInputPorts ~= 0
+        error('Source blocks cannot have input ports')
       end
+      
+      results = namedargs2cell(p.Results);
+      obj@runtime.Block(parent,results{:});
+      
+      p.addParameter('nOutputItemsMax',4096);
+      p.parse(varargin{:})
+      obj.nInputItemsMax = 0;
       obj.nOutputItemsMax = p.Results.nOutputItemsMax;
+      
+      
+%       
+%       obj.nInputItemsMax = 0;
+%       for ii = 1:p.Results.nOutputPorts
+%         obj.addOutputPort();
+%       end
+%       obj.nOutputItemsMax = p.Results.nOutputItemsMax;
     end
     
   end

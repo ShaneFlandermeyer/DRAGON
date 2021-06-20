@@ -4,11 +4,12 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     parent runtime.TopBlock
     inputPorts runtime.InputPort   
     outputPorts runtime.OutputPort
+    inputSignature runtime.IOSignature
+    outputSignature runtime.IOSignature
     nItemsWritten
     nItemsRead
   end
   
- 
   properties (Abstract, Dependent)
     nInputItemsMax
     nOutputItemsMax
@@ -21,12 +22,40 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   methods
     
     function obj = Block(parent,varargin)
+      p = inputParser();
+      p.addParameter('nInputPorts',1);
+      p.addParameter('nOutputPorts',1);
+      p.addParameter('nInputPortsMin',1);
+      p.addParameter('nInputPortsMax',1);
+      p.addParameter('nOutputPortsMin',1);
+      p.addParameter('nOutputPortsMax',1);
+      p.addParameter('vectorLength',1);
+      p.parse(varargin{:})
+      
       validateattributes(parent,{'runtime.TopBlock'},{})
       % Link the block to its parent flowgraph
       obj.parent = parent;
       parent.addBlock(obj);
       
+      % Create the IO signatures
+      obj.inputSignature = runtime.IOSignature(minPorts=p.Results.nInputPortsMin,...
+        maxPorts=p.Results.nInputPortsMax,vectorLength=p.Results.vectorLength);
+      
+      obj.outputSignature = runtime.IOSignature(minPorts=p.Results.nOutputPortsMin,...
+        maxPorts=p.Results.nOutputPortsMax,vectorLength=p.Results.vectorLength);
+      
+      for iPort = 1 : p.Results.nInputPorts
+        obj.addInputPort();
+      end
+      
+      for iPort = 1 : p.Results.nOutputPorts
+        obj.addOutputPort();
+      end
+      
+      
+      
       % Initialize the number of IO items read
+      % TODO: Should this be specific to each port?
       obj.nItemsWritten = 0;
       obj.nItemsRead = 0;
     end
@@ -67,10 +96,6 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
           return;
         end
         inputItems(:,iPort) = obj.inputPorts(iPort).buffer.dequeue(nInputItems);
-        % TODO: This might cause problems if the number of inputs is not the
-        % same from each port (for example, if one port does not have enough
-        % data). Will probably need to find the minimum length of all port
-        % buffers for nInputItems assignment statement
         obj.nItemsRead = obj.nItemsRead + nInputItems;
         
       end
@@ -84,7 +109,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         obj.nItemsWritten = obj.nItemsWritten + length(outputItems);
         % TODO: This function currently recursively calls itself for the next
         % block in the flowgraph, but it should probably be handled somewhere
-        % else so 
+        % else 
         for iConnection = 1 : length(obj.outputPorts(iPort).connections)
           obj.outputPorts(iPort).connections(iConnection).parent.processData(nItems);
         end
@@ -95,9 +120,15 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     
     function addInputPort(obj)
       % Add a new input port to the block
+      
       if isa(obj,'runtime.SourceBlock')
         % TODO: Make this an exception
         error('Source Blocks cannot instantiate input ports (messages input ports not supported)')
+      end
+      
+      % Don't add more ports than the IO signature allows
+      if length(obj.inputPorts) >= obj.inputSignature.maxPorts
+        return
       end
       
       if isempty(obj.inputPorts)
@@ -115,6 +146,11 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         error('Sink Blocks cannot instantiate output ports (messages output ports not supported)')
       end
       
+      % Don't add more ports than the IO signature allows
+      if length(obj.outputPorts) >= obj.outputSignature.maxPorts
+        return
+      end
+      
       if isempty(obj.outputPorts)
         obj.outputPorts = runtime.OutputPort(obj);
       else
@@ -127,6 +163,9 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       % Delete an existing port from the block
       % 
       % INPUT: A reference to the runtime.Port object to be deleted
+      
+      % TODO: Do nothing here if it causes the number of ports to violate the IO
+      % signature
       
       idx = find(obj.inputPorts == port);
       obj.inputPorts(idx) = [];

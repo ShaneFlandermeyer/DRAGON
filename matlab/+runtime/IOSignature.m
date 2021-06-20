@@ -1,32 +1,29 @@
-classdef IOSignature < handle
-  % TODO: I don't think this is really necessary for a matlab
-  % implementation, but I'm leaving it just in case
+% Defines the IO properties of each block. These properties include the maximum
+% and minimum number of ports and the size of each input item (in samples)
 
+classdef IOSignature < handle
+  
   properties (SetAccess = private)
     minPorts
     maxPorts
-    itemSize
+    % NOTE: In gnuradio this describes the item SIZE (# items * size in bytes),
+    % but matlab handles byte level stuff automatically so only # items is used
+    vectorLength
   end
   
   methods
     function obj = IOSignature(varargin)
       p = inputParser;
-      
-      % Validation functions
-      validNonnegNum = @(x)validateattributes(x,{'numeric'},...
-            {'nonempty','integer','nonnegative'});
-      validPosNum = @(x)validateattributes(x,{'numeric'},...
-            {'nonempty','integer','positive'});
-      
+
       % Add parameters and default values
-      p.addOptional('minPorts',1,validNonnegNum);
-      p.addOptional('maxPorts',1,validNonnegNum);
-      p.addOptional('itemSize',1,validPosNum);
+      p.addOptional('minPorts',1);
+      p.addOptional('maxPorts',1);
+      p.addOptional('vectorLength',1);
       p.parse(varargin{:})
       
       obj.minPorts = p.Results.minPorts;
       obj.maxPorts = p.Results.maxPorts;
-      obj.itemSize = p.Results.itemSize;
+      obj.vectorLength = p.Results.vectorLength;
       
       
     end

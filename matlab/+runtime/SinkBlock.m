@@ -20,20 +20,28 @@ classdef SinkBlock < runtime.Block
   methods
     
     function obj = SinkBlock(parent,varargin)
-      nPortsDefault = 1;
-      nInputItemsMax = 4096;
-      
-      p = inputParser;
-      p.addParameter('nInputPorts',nPortsDefault);
-      p.addParameter('nInputItemsMax',nInputItemsMax);
+
+      p = inputParser();
+      p.KeepUnmatched = true;
+      p.addParameter('nInputPorts',1);
+      p.addParameter('nOutputPorts',0);
+      p.addParameter('nInputPortsMin',1);
+      p.addParameter('nInputPortsMax',inf);
+      p.addParameter('nOutputPortsMin',0);
+      p.addParameter('nOutputPortsMax',0);
+      p.addParameter('vectorLength',1);
       p.parse(varargin{:});
-      obj@runtime.Block(parent);
       
-      obj.nOutputItemsMax = 0;
-      for ii = 1:p.Results.nInputPorts
-        obj.addInputPort();
+      if p.Results.nOutputPorts ~= 0
+        error('Sink blocks cannot have output ports')
       end
       
+      results = namedargs2cell(p.Results);
+      obj@runtime.Block(parent,results{:});
+      
+      p.addParameter('nInputItemsMax',4096);
+      p.parse(varargin{:})
+      obj.nOutputItemsMax = 0;
       obj.nInputItemsMax = p.Results.nInputItemsMax;
     end
     
