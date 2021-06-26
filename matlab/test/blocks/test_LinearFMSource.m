@@ -42,7 +42,5 @@ expected = chirp(t,f0,t1,f1,'complex').';
 actual = dataSink.data;
 
 testCase.verifyEqual(actual,expected,'relTol',1e-10);
-
-
 end
 

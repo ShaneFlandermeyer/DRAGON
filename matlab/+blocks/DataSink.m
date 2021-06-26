@@ -17,9 +17,9 @@ classdef DataSink < runtime.SinkBlock
       % Do nothing
       outputItems = [];
       if isempty(obj.data)
-        obj.data = inputItems(:);
+        obj.data = inputItems;
       else
-        obj.data = [obj.data;inputItems(:)];
+        obj.data = [obj.data;inputItems];
       end
     end
     
