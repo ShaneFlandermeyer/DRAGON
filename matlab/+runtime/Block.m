@@ -135,8 +135,15 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     
     
     function consume(obj,nItems,iPort)
+      % 
       items = obj.inputPorts(iPort).buffer.dequeue(nItems);
       obj.nItemsRead(iPort) = obj.nItemsRead(iPort) + length(items);
+    end
+    
+    function consumeEach(obj,nItems)
+      for iPort = 1 : length(obj.inputPorts)
+        obj.consume(nItems,iPort);
+      end
     end
     
     function deletePort(obj,port)
