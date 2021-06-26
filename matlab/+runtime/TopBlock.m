@@ -31,7 +31,9 @@ classdef TopBlock < handle
     end
     
     function start(obj,n)
-      % TODO: starts the flow graph running with N as the maximum noutput_items any block can receive.
+      % starts the flow graph running with N as the maximum noutput_items any block can receive.
+      % TODO: Utilize the input argument
+      obj.run();
     end
     
     function stop(obj)
