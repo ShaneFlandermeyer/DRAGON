@@ -18,6 +18,10 @@ classdef (Abstract) SourceBlock < runtime.Block
   %% Constructor
   methods
     
+    function outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems)
+      outputItems = obj.work(nOutputItems,inputItems);
+    end
+    
     function obj = SourceBlock(parent,varargin)
       % Parse parameters needed for runtime.Block superclass
       p = inputParser();

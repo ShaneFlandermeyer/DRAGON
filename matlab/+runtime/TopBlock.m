@@ -52,6 +52,8 @@ classdef TopBlock < handle
         nItems = inf;
       end
       
+      nItems = floor(nItems);
+      
       isDone = false(length(obj.sources),1);
       while ~all(isDone)
         % Loop through all sources and process nItems data items. If the block

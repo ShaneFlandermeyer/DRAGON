@@ -12,11 +12,18 @@ classdef (Abstract) SyncBlock < runtime.Block
 
   %% Abstract Methods
   methods (Abstract)
-    outputItems = work(obj,nOutputItemsMax,inputItems)
+    outputItems = work(obj,nOutputItems,inputItems)
   end
   
   %% Constructor
   methods
+    
+    function outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems)
+      outputItems = obj.work(nOutputItems,inputItems);
+      for iPort = 1 : length(obj.inputPorts)
+        obj.consume(nInputItems,iPort);
+      end
+    end
     
     function obj = SyncBlock(parent,varargin)
       % Parse parameters needed for runtime.Block superclass

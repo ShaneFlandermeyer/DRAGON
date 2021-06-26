@@ -6,8 +6,8 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     outputPorts runtime.OutputPort
     inputSignature (1,1) runtime.IOSignature
     outputSignature (1,1) runtime.IOSignature
-    nItemsWritten (1,1) uint32
-    nItemsRead (1,1) uint32
+    nItemsWritten
+    nItemsRead
   end
   
   properties (Abstract, Dependent)
@@ -16,7 +16,8 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   end
 
   methods (Abstract)
-    outputItems = work(obj,nOutputItemsMax,inputItems)
+%     outputItems = work(obj,nOutputItemsMax,inputItems)
+    outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems);
   end
   
   methods
@@ -58,9 +59,8 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       end
       
       % Initialize the number of IO items read
-      % TODO: Should this be specific to each port?
-      obj.nItemsWritten = 0;
-      obj.nItemsRead = 0;
+      obj.nItemsWritten = zeros(p.Results.nOutputPorts,1);
+      obj.nItemsRead = zeros(p.Results.nInputPorts,1);
     end
     
     function processData(obj, nItems)
@@ -98,18 +98,18 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         if isempty(inputItems)
           return;
         end
-        inputItems(:,iPort) = obj.inputPorts(iPort).buffer.dequeue(nInputItems);
-        obj.nItemsRead = obj.nItemsRead + nInputItems;
+          inputItems(:,iPort) = obj.inputPorts(iPort).buffer.peek(nInputItems);
         
       end
       
       % Process input data
-      outputItems = obj.work(obj.nOutputItemsMax,inputItems);
+      nOutputItems = min(nItems,obj.nOutputItemsMax);
+      outputItems = obj.general_work(nInputItems,nOutputItems,inputItems);
       
       for iPort = 1 : length(obj.outputPorts)
         % Send the result of the work function to the output buffer(s)
         obj.outputPorts(iPort).buffer.enqueue(outputItems(:,iPort));
-        obj.nItemsWritten = obj.nItemsWritten + length(outputItems);
+        obj.nItemsWritten(iPort) = obj.nItemsWritten(iPort) + length(outputItems);
         % TODO: This function currently recursively calls itself for the next
         % block in the flowgraph, but it should probably be handled somewhere
         % else 
@@ -119,6 +119,13 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       end
       
       
+    end
+    
+    function consume(obj,nItems,iPort)
+      obj.inputPorts(iPort).buffer.dequeue(nItems);
+      % TODO: Should nItemsRead track the total number of items read or the
+      % number of items read per port?
+      obj.nItemsRead(iPort) = obj.nItemsRead(iPort) + nItems;
     end
     
     function deletePort(obj,port)

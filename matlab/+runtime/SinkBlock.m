@@ -19,6 +19,13 @@ classdef SinkBlock < runtime.Block
   %% Constructor
   methods
     
+    function outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems)
+      outputItems = obj.work(nOutputItems,inputItems);
+      for iPort = 1 : length(obj.inputPorts)
+        obj.consume(nInputItems,iPort);
+      end
+    end
+    
     function obj = SinkBlock(parent,varargin)
       % Parse parameters needed for runtime.Block superclass
       p = inputParser();
