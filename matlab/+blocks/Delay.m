@@ -10,6 +10,15 @@ classdef Delay < runtime.GeneralBlock
   
   methods
     function obj = Delay(parent,delay,varargin)
+      
+      % For this block, the number of input ports must be the same as the number
+      % of output ports. We can pass everything else to the superclass
+      % constructors
+      p = inputParser();
+      p.KeepUnmatched = true;
+      p.addParameter('nInputPorts',1);
+      p.addParameter('nOutputPorts',1);
+      p.parse(varargin{:});
       obj@runtime.GeneralBlock(parent,varargin{:});
       obj.delta = delay;
       obj.delay = delay;

@@ -4,16 +4,7 @@
 classdef EmptyBlock < runtime.SyncBlock
 
   
-  methods
-
-    function outputItems = work(obj,nOutputItemsMax,inputItems)
-      
-      outputItems = inputItems;
-      
-    end
     
-  end
-  
   methods
     
     function obj = EmptyBlock(parent,varargin)
@@ -31,6 +22,12 @@ classdef EmptyBlock < runtime.SyncBlock
       end
       
       obj@runtime.SyncBlock(parent,varargin{:})
+    end
+    
+    function outputItems = work(obj,nOutputItemsMax,inputItems)
+      
+      outputItems = inputItems;
+      
     end
     
   end
