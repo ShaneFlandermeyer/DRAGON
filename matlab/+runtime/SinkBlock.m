@@ -9,7 +9,7 @@ classdef SinkBlock < runtime.Block
     d_nInputItemsMax
     d_nOutputItemsMax
   end
-
+  
   
   %% Abstract methods
   methods (Abstract)
@@ -18,6 +18,7 @@ classdef SinkBlock < runtime.Block
   
   %% Constructor
   methods
+    
     
     function obj = SinkBlock(parent,varargin)
       % Parse parameters needed for runtime.Block superclass
@@ -47,6 +48,14 @@ classdef SinkBlock < runtime.Block
       obj.nInputItemsMax = p.Results.nInputItemsMax;
     end
     
+    function outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems)
+      outputItems = obj.work(nOutputItems,inputItems);
+      % Consume items from each input port
+      for iPort = 1 : length(obj.inputPorts)
+        obj.consume(nInputItems,iPort);
+      end
+    end
+    
   end
   
   %% Setters/Getters
@@ -54,7 +63,7 @@ classdef SinkBlock < runtime.Block
     
     function set.nInputItemsMax(obj,n)
       obj.d_nInputItemsMax = n;
-     
+      
     end
     
     function set.nOutputItemsMax(obj,n)
@@ -74,4 +83,4 @@ classdef SinkBlock < runtime.Block
     
   end
   
-end 
+end

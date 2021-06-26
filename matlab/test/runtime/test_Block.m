@@ -25,15 +25,3 @@ block = blocks.EmptyBlock(tb,nInputPorts=4,nOutputPorts=4);
 testCase.verifyEqual(length(block.outputPorts),4);
 
 end
-
-function test_deletePort(testCase)
-% Test the deletePort function
-
-tb = runtime.TopBlock; % Top block
-
-block1 = blocks.EmptyBlock(tb);
-
-block1.deletePort(block1.outputPorts(1));
-testCase.verifyTrue(isempty(block1.outputPorts));
-
-end

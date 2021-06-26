@@ -47,13 +47,13 @@ classdef LinearFMSource < runtime.SourceBlock
       obj.createWaveform();
     end
     
-    function outputItems = work(obj,nOutputItemsMax,inputItems)
+    function outputItems = work(obj,nOutputItems,inputItems)
       % Continuously output the waveform, one sample at a time. This could
       % easily be vectorized, but it is left in a loop to make it directly
       % portable to C++
       
-      outputItems = zeros(nOutputItemsMax,1);
-      for iOutput = 1 : nOutputItemsMax
+      outputItems = zeros(nOutputItems,1);
+      for iOutput = 1 : nOutputItems
         outputItems(iOutput) = obj.waveform(obj.iWaveform);
         % Increment the waveform sample index, resetting every time the end of
         % the waveform is reached

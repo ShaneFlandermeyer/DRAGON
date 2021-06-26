@@ -12,12 +12,17 @@ classdef (Abstract) SourceBlock < runtime.Block
 
   %% Abstract methods
   methods (Abstract)
-    outputItems = work(obj,nOutputItemsMax,inputItems)
+    outputItems = work(obj,nOutputItems,inputItems)
   end
   
-  %% Constructor
+  
   methods
     
+    function outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems)
+      outputItems = obj.work(nOutputItems,inputItems);
+    end
+    
+    %% Constructor
     function obj = SourceBlock(parent,varargin)
       % Parse parameters needed for runtime.Block superclass
       p = inputParser();

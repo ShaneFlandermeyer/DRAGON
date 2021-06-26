@@ -12,10 +12,10 @@ classdef ConstantSource < runtime.SourceBlock
       obj.constant = constant;
     end
     
-    function outputItems = work(obj,nOutputItemsMax,inputItems)
+    function outputItems = work(obj,nOutputItems,inputItems)
       
       % enqueue the constant value to the output buffer
-      outputItems = repmat(obj.constant,nOutputItemsMax,1);
+      outputItems = repmat(obj.constant,nOutputItems,1);
       
     end
     
