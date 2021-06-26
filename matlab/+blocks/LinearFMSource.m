@@ -1,18 +1,23 @@
 classdef LinearFMSource < runtime.SourceBlock
   
   properties (SetAccess = private)
-    sampleRate
-    bandwidth
-    pulsewidth
-    dutyCycle
-    waveform
-    % TODO: Do something with this parameter. For now, only upchirps can be
-    % generated
-    chirpDirection
+    sampleRate     % Sample rate (Samples/s)
+    bandwidth      % Bandwidth (Hz)
+    pulsewidth     % Pulse width (s)
+    dutyCycle      % Duty cycle fraction
+    waveform       % Waveform data vector
+    chirpDirection % Direction of the chirp's frequency sweep
+                   % upchirp = 1
+                   % downchirp = -1
   end
   
   properties (Access = private)
     iWaveform
+  end
+  
+  properties (Access = private,Constant)
+    upchirp = 1;
+    downchirp = -1;
   end
   
   methods
@@ -32,6 +37,9 @@ classdef LinearFMSource < runtime.SourceBlock
       obj@runtime.SourceBlock(parent,varargin{:});
       
       % Waveform parameters
+      validChirpDir = @(x) (x == obj.upchirp) || (x == obj.downchirp);
+      p.addOptional('chirpDirection',obj.upchirp,validChirpDir);
+      p.parse(varargin{:})
       
       % Validate required positional arguments
       validateattributes(sampleRate,{'numeric'},{'scalar','finite','nonnan','positive'})
@@ -43,6 +51,7 @@ classdef LinearFMSource < runtime.SourceBlock
       obj.bandwidth = bandwidth;
       obj.pulsewidth = pulsewidth;
       obj.dutyCycle = dutyCycle;
+      obj.chirpDirection = p.Results.chirpDirection;
       obj.iWaveform = 1;
       obj.createWaveform();
     end
@@ -71,7 +80,8 @@ classdef LinearFMSource < runtime.SourceBlock
         % the time interval [0:tau], where tau is the pulsewidth
         Ts = 1/obj.sampleRate;
         t = (0:Ts:obj.pulsewidth-Ts).';
-        obj.waveform = exp(1i*pi*obj.bandwidth*t.*(t/obj.pulsewidth-1));
+        phase = obj.chirpDirection*obj.bandwidth*t.*(t/obj.pulsewidth-1);
+        obj.waveform = exp(1i*pi*phase);
         
         % Zero pad to the number of samples in a PRI. 
         pri = obj.pulsewidth/obj.dutyCycle;
