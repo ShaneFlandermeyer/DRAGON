@@ -2,7 +2,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   
   properties (SetAccess = private)
     parent (1,1) runtime.TopBlock
-    inputPorts runtime.InputPort   
+    inputPorts runtime.InputPort
     outputPorts runtime.OutputPort
     inputSignature (1,1) runtime.IOSignature
     outputSignature (1,1) runtime.IOSignature
@@ -14,15 +14,16 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     nInputItemsMax
     nOutputItemsMax
   end
-
+  
   methods (Abstract)
-%     outputItems = work(obj,nOutputItemsMax,inputItems)
     outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems);
   end
   
   methods
     
     function obj = Block(parent,varargin)
+      % Constructor
+      
       % Parse inputs
       validNonnegativeNumber = @(x) isnumeric(x) && isscalar(x) && (x >= 0);
       validPositiveNumber = @(x) isnumeric(x) && isscalar(x) && (x > 0);
@@ -66,13 +67,13 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     function processData(obj, nItems)
       % Process the data from the block's input ports and output the result to
       % its output port buffers
-      % 
+      %
       % INPUTS:
       % - nItems: The desired number of input items to process for the given
       %           call to work(). If there is not enough data in the input
       %           buffers or if the block requires less data, the minimum of
       %           those values will be used instead
-      % 
+      %
       
       
       % Get the length of the inputItems array for each input port. If the input
@@ -84,13 +85,14 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         % input port of this block
         if ~isempty(obj.inputPorts(iPort).connections.buffer)
           obj.inputPorts(iPort).buffer.enqueue(...
-          obj.inputPorts(iPort).connections.buffer.dequeue(...
-          length(obj.inputPorts(iPort).connections.buffer)));
+            obj.inputPorts(iPort).connections.buffer.dequeue(...
+            length(obj.inputPorts(iPort).connections.buffer)));
         end
         % Compute the minimum buffer size
         minBufferSize = min(minBufferSize,length(obj.inputPorts(iPort).buffer));
       end
       nInputItems = min(min(nItems,obj.nInputItemsMax),minBufferSize);
+      % Pre-allocate the input items array
       inputItems = zeros(nInputItems,length(obj.inputPorts));
       
       % Get data from each input port
@@ -98,7 +100,10 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         if isempty(inputItems)
           return;
         end
-          inputItems(:,iPort) = obj.inputPorts(iPort).buffer.peek(nInputItems);
+        % Get nInputItems items from this port. Since we don't necessarily want
+        % to remove these items from the queue, we just peek here (dequeueing is
+        % handled in general_work)
+        inputItems(:,iPort) = obj.inputPorts(iPort).buffer.peek(nInputItems);
         
       end
       
@@ -112,7 +117,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         obj.nItemsWritten(iPort) = obj.nItemsWritten(iPort) + length(outputItems);
         % TODO: This function currently recursively calls itself for the next
         % block in the flowgraph, but it should probably be handled somewhere
-        % else 
+        % else
         for iConnection = 1 : length(obj.outputPorts(iPort).connections)
           obj.outputPorts(iPort).connections(iConnection).parent.processData(nItems);
         end
@@ -121,16 +126,22 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       
     end
     
+    
+    
+    
+  end
+  
+  methods (Access = protected)
+    
+    
     function consume(obj,nItems,iPort)
-      obj.inputPorts(iPort).buffer.dequeue(nItems);
-      % TODO: Should nItemsRead track the total number of items read or the
-      % number of items read per port?
-      obj.nItemsRead(iPort) = obj.nItemsRead(iPort) + nItems;
+      items = obj.inputPorts(iPort).buffer.dequeue(nItems);
+      obj.nItemsRead(iPort) = obj.nItemsRead(iPort) + length(items);
     end
     
     function deletePort(obj,port)
       % Delete an existing port from the block
-      % 
+      %
       % INPUT: A reference to the runtime.Port object to be deleted
       
       % TODO: Do nothing here if it causes the number of ports to violate the IO
@@ -138,15 +149,11 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       
       idx = find(obj.inputPorts == port);
       obj.inputPorts(idx) = [];
-
+      
       idx = find(obj.outputPorts == port);
       obj.outputPorts(idx) = [];
     end
     
-    
-  end
-  
-  methods (Access = protected)
     function addInputPort(obj)
       % Add a new input port to the block
       
@@ -185,7 +192,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       else
         obj.outputPorts = [obj.outputPorts; runtime.OutputPort(obj)];
       end
-        
+      
     end
   end
   

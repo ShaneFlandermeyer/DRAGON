@@ -1,4 +1,4 @@
-classdef (Abstract) SyncBlock < runtime.Block
+classdef (Abstract) GeneralBlock < runtime.Block
   
   properties (Dependent)
     nInputItemsMax
@@ -7,32 +7,17 @@ classdef (Abstract) SyncBlock < runtime.Block
   
   properties (Access = private)
     d_nInputItemsMax
-    d_nOutputItemsMax 
-  end
-
-  %% Abstract Methods
-  methods (Abstract)
-    outputItems = work(obj,nOutputItems,inputItems)
+    d_nOutputItemsMax
   end
   
-  %% Constructor
+  methods (Abstract)
+    outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems)
+    forecast() % TODO: Implement this
+  end
+  
   methods
     
-    function outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems)
-      
-      if nInputItems ~= nOutputItems
-        error('For a sync block, input and output must have the same length')
-      end
-      
-      outputItems = obj.work(nOutputItems,inputItems);
-
-      % Consume items from each input port
-      for iPort = 1 : length(obj.inputPorts)
-        obj.consume(nInputItems,iPort);
-      end
-    end
-    
-    function obj = SyncBlock(parent,varargin)
+    function obj = GeneralBlock(parent,varargin)
       % Parse parameters needed for runtime.Block superclass
       p = inputParser();
       p.KeepUnmatched = true;
@@ -59,7 +44,6 @@ classdef (Abstract) SyncBlock < runtime.Block
       
       
     end
-    
   end
   
   %% Setters and getters
@@ -67,11 +51,9 @@ classdef (Abstract) SyncBlock < runtime.Block
     
     function set.nInputItemsMax(obj,n)
       obj.d_nInputItemsMax = n;
-      obj.d_nOutputItemsMax = n;
     end
     
     function set.nOutputItemsMax(obj,n)
-      obj.d_nInputItemsMax = n;
       obj.d_nOutputItemsMax = n;
     end
     
@@ -84,5 +66,4 @@ classdef (Abstract) SyncBlock < runtime.Block
     end
     
   end
-  
 end
