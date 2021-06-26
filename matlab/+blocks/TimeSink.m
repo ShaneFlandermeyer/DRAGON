@@ -10,8 +10,10 @@ classdef TimeSink < runtime.SinkBlock
       obj@runtime.SinkBlock(parent,varargin{:});
     end
     
-    function outputItems = work(obj,nOutputItemsMax,inputItems)
-      
+    function outputItems = work(obj,nOutputItems,inputItems)
+      % TODO: This will cause problems if the flowgraph contains more than one
+      % plotting blocks
+      figure(1)
       plot(inputItems,'Linewidth',2);
       drawnow % Continuously update the plot
       outputItems = [];
