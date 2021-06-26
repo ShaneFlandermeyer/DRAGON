@@ -75,14 +75,14 @@ classdef TopBlock < handle
       
       for iBlock = 1 : length(obj.blocks)
         % Flush the rest of the buffers
-        % TODO: Make this work for multiple inputs
         
         if isa(obj.blocks(iBlock),'runtime.SourceBlock')
           % Source blocks have already produced all their inputs in the above loop
           continue
         end
         
-        while ~isempty(obj.blocks(iBlock).inputPorts.buffer)
+        while any(obj.blocks(iBlock).hasInputItems)
+          % Process any leftover inputs in the block
           obj.blocks(iBlock).processData(length(obj.blocks(iBlock).inputPorts.buffer));
         end
       end

@@ -2,8 +2,6 @@ function tests = test_TopBlock
 tests = functiontests(localfunctions);
 end
 
-
-
 function test_run(testCase)
 % TODO: Implement this with a vector sink instead of a time sink.
 

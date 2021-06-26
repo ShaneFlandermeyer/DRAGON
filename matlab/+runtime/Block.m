@@ -8,6 +8,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
     outputSignature (1,1) runtime.IOSignature
     nItemsWritten
     nItemsRead
+    hasInputItems
   end
   
   properties (Abstract, Dependent)
@@ -62,6 +63,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       % Initialize the number of IO items read
       obj.nItemsWritten = zeros(p.Results.nOutputPorts,1);
       obj.nItemsRead = zeros(p.Results.nInputPorts,1);
+      obj.hasInputItems = false(p.Results.nInputPorts,1);
     end
     
     function processData(obj, nItems)
@@ -125,22 +127,26 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       
       
     end
-    
-    
-    
-    
+
   end
   
   methods (Access = protected)
     
     
     function consume(obj,nItems,iPort)
-      % 
+      % Remove nItems from the given input port, and increment the number of
+      % items read for that port
       items = obj.inputPorts(iPort).buffer.dequeue(nItems);
       obj.nItemsRead(iPort) = obj.nItemsRead(iPort) + length(items);
+      if isempty(obj.inputPorts(iPort).buffer)
+        obj.hasInputItems = false;
+      else
+        obj.hasInputItems = true;
+      end
     end
     
     function consumeEach(obj,nItems)
+      % Remove nItems from each inputPort
       for iPort = 1 : length(obj.inputPorts)
         obj.consume(nItems,iPort);
       end
