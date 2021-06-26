@@ -15,7 +15,8 @@ classdef LinearFMSource < runtime.SourceBlock
     iWaveform
   end
   
-  properties (Access = private,Constant)
+  properties (Constant,Hidden)
+    % TODO: Make this an enum?
     upchirp = 1;
     downchirp = -1;
   end

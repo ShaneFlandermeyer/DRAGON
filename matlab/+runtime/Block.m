@@ -114,13 +114,15 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       outputItems = obj.general_work(nInputItems,nOutputItems,inputItems);
       
       for iPort = 1 : length(obj.outputPorts)
-        % Send the result of the work function to the output buffer(s)
-        obj.outputPorts(iPort).buffer.enqueue(outputItems(:,iPort));
+        % Update the number of items written
         obj.nItemsWritten(iPort) = obj.nItemsWritten(iPort) + length(outputItems);
-        % TODO: This function currently recursively calls itself for the next
-        % block in the flowgraph, but it should probably be handled somewhere
-        % else
+        
+        % Process each output connection separately
         for iConnection = 1 : length(obj.outputPorts(iPort).connections)
+          % Add the output of this block to the proper port. Since each output
+          % path gets a copy of the data, this enqueue operation occurs for
+          % every connection
+          obj.outputPorts(iPort).buffer.enqueue(outputItems(:,iPort));
           obj.outputPorts(iPort).connections(iConnection).parent.processData(nItems);
         end
       end
