@@ -22,6 +22,9 @@ classdef TopBlock < handle
         error('Only runtime.Block objects can be added to a flowgraph')
       end
       
+      % Assign the block an ID
+      id = length(obj.blocks);
+      
       % Add a block to the list
       if isempty(block)
         obj.blocks = block;
@@ -35,8 +38,7 @@ classdef TopBlock < handle
         obj.sinks = [obj.sinks;block];
       end
       
-      % Assign the block an ID
-      id = obj.getUID();
+      
       
     end
     
@@ -184,12 +186,6 @@ classdef TopBlock < handle
       end
       
     end
-    
-    function delete(obj)
-      % Reset the unique ID counter
-      obj.getUID(true);
-    end
-
   end
   
   methods (Access = private)
@@ -204,25 +200,6 @@ classdef TopBlock < handle
         labelCommand = [labelCommand 'block' num2str(obj.blocks(iBlock).uid) '[label="' name '"];'];
       end
     end
-  end
-  
-  methods (Static, Access = private)
-
-    function id = getUID(reset)
-      persistent n
-      if isempty(n)
-        n = -1;
-      end
-      
-      if nargin == 1 && reset
-        n = -1;
-        return
-      end
-      
-      n = n + 1;
-      id = n;
-    end
-    
   end
   
 end % class

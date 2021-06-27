@@ -88,7 +88,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         % input port of this block
         if ~isempty(obj.inputPorts(iPort).connections.buffer)
           obj.inputPorts(iPort).buffer.enqueue(...
-            obj.inputPorts(iPort).connections.buffer.dequeue(...
+            obj.inputPorts(iPort).connections.buffer.peek(...
             length(obj.inputPorts(iPort).connections.buffer)));
         end
         % Compute the minimum buffer size
@@ -119,13 +119,21 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
         obj.nItemsWritten(iPort) = obj.nItemsWritten(iPort) + length(outputItems);
         
         % Process each output connection separately
+        obj.outputPorts(iPort).buffer.enqueue(outputItems(:,iPort));
+        uniqueConnections = [];
         for iConnection = 1 : length(obj.outputPorts(iPort).connections)
-          % Add the output of this block to the proper port. Since each output
-          % path gets a copy of the data, this enqueue operation occurs for
-          % every connection
-          obj.outputPorts(iPort).buffer.enqueue(outputItems(:,iPort));
-          obj.outputPorts(iPort).connections(iConnection).parent.processData(nItems);
+          % Process the data for each UNIQUE connection in the port.
+          % Duplicate connections are handled in a single call to
+          % processData. For example, if the output port goes to input
+          % ports 1 and 2 of the next block, processData should only be
+          % called once 
+          if ~any(obj.outputPorts(iPort).connections(iConnection).parent.uid == uniqueConnections)
+            obj.outputPorts(iPort).connections(iConnection).parent.processData(nItems);
+            uniqueConnections(end+1) = obj.outputPorts(iPort).connections(iConnection).parent.uid;
+          end
+          
         end
+        obj.outputPorts(iPort).buffer.dequeue(length(outputItems));
       end
       
       
