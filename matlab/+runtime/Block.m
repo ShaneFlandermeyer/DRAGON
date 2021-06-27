@@ -154,21 +154,6 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       end
     end
     
-    function deletePort(obj,port)
-      % Delete an existing port from the block
-      %
-      % INPUT: A reference to the runtime.Port object to be deleted
-      
-      % TODO: Do nothing here if it causes the number of ports to violate the IO
-      % signature
-      
-      idx = find(obj.inputPorts == port);
-      obj.inputPorts(idx) = [];
-      
-      idx = find(obj.outputPorts == port);
-      obj.outputPorts(idx) = [];
-    end
-    
     function addInputPort(obj)
       % Add a new input port to the block
       
