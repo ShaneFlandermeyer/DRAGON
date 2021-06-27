@@ -11,7 +11,7 @@ constant1 = 1;
 constant2 = 2;
 input1 = blocks.ConstantSource(tb,constant1);
 input2 = blocks.ConstantSource(tb,constant2);
-adder = blocks.Add(tb,nInputPorts=2);
+adder = blocks.Add(tb,'nInputPorts',2);
 % TODO: Create an IOSignature to handle this
 dataSink = blocks.DataSink(tb);
 

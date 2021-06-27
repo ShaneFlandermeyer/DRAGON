@@ -8,7 +8,7 @@ function test_addInputPort(testCase)
 tb = runtime.TopBlock; % Top block
 
 % Test the addInputPort function
-block = blocks.EmptyBlock(tb,nInputPorts=4,nOutputPorts=4);
+block = blocks.EmptyBlock(tb,'nInputPorts',4,'nOutputPorts',4);
 % An input port is added to Sync Blocks by default
 testCase.verifyEqual(length(block.inputPorts),4);
 
@@ -19,7 +19,7 @@ function test_addOutputPort(testCase)
 
 tb = runtime.TopBlock; % Top block
 
-block = blocks.EmptyBlock(tb,nInputPorts=4,nOutputPorts=4);
+block = blocks.EmptyBlock(tb,'nInputPorts',4,'nOutputPorts',4);
 
 % Output ports are added to the block in the constructor
 testCase.verifyEqual(length(block.outputPorts),4);
