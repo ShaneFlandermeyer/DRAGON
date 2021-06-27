@@ -67,10 +67,7 @@ classdef SinkBlock < runtime.Block
     end
     
     function set.nOutputItemsMax(obj,n)
-      if (n ~= 0)
-        error('Cannot set nInputItemsMax for Source Block')
-      end
-      obj.d_nOutputItemsMax = n;
+      obj.d_nOutputItemsMax = 0;
     end
     
     function n = get.nInputItemsMax(obj)

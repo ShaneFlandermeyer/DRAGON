@@ -4,16 +4,19 @@ classdef TopBlock < handle
   % flowgraph, which is an instance of this class. When a block object is
   % created, its parent is given as this and its name is added to the
   % "blocks" property
-  properties
-    blocks runtime.Block
-    sources runtime.Block
-    sinks runtime.Block
+  properties (SetAccess = private)
+    blocks 
+    sources 
+    sinks 
     
   end
   
   methods
     
     function addBlock(obj,block)
+      if ~isa(block,'runtime.Block')
+        error('Only runtime.Block objects can be added to a flowgraph')
+      end
       
       % Add a block to the list
       if isempty(block)
@@ -33,6 +36,12 @@ classdef TopBlock < handle
     function start(obj,n)
       % starts the flow graph running with N as the maximum noutput_items any block can receive.
       % TODO: Utilize the input argument
+      if nargin == 2
+        validateattributes(n,{'numeric'},{'scalar','positive','real','integer'});
+        for iBlock = 1 : length(obj.blocks)
+          obj.blocks(iBlock).nOutputItemsMax = n;
+        end
+      end
       obj.run();
     end
     
@@ -107,7 +116,11 @@ classdef TopBlock < handle
     
     function showGraph(obj)
       % Use graphviz to show the connections of the current flowgraph
-      % NOTE: Only works for bash!
+      
+      if ispc
+        error('This function currently only works in Linux environments')
+      end
+        
       
       % Like gnuradio, the graph flows from left to right and each node is
       % represented by a box

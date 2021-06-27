@@ -26,4 +26,4 @@ tb.connect(abs,1,timeSink,1);
 tb.connect(abs,1,dataSink,1);
 tb.showGraph();
 
-tb.run(10e3);
+tb.start();
