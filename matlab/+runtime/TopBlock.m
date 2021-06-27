@@ -1,9 +1,5 @@
 classdef TopBlock < handle
-  
-  % Idea: In the blocks constructor, give an option for the block's parent
-  % flowgraph, which is an instance of this class. When a block object is
-  % created, its parent is given as this and its name is added to the
-  % "blocks" property
+
   properties (SetAccess = private)
     blocks 
     sources 
@@ -13,6 +9,15 @@ classdef TopBlock < handle
   methods
     
     function id = addBlock(obj,block)
+      % Add the input block to the TopBlock/flowgraph. If the block is a
+      % source or a sink, it is added to the TopBlock's source/sink list
+      % accordingly
+      % 
+      % INPUTS:
+      % - block: The block object to be added
+      %
+      % OUTPUTS: The unique ID number assigned to the block
+      
       if ~isa(block,'runtime.Block')
         error('Only runtime.Block objects can be added to a flowgraph')
       end
@@ -29,6 +34,8 @@ classdef TopBlock < handle
       elseif isa(block,'runtime.SinkBlock')
         obj.sinks = [obj.sinks;block];
       end
+      
+      % Assign the block an ID
       id = obj.getUID();
       
     end
@@ -43,15 +50,7 @@ classdef TopBlock < handle
       end
       obj.run();
     end
-    
-    function stop(obj)
-      % TODO: stops the top block
-    end
-    
-    function wait(obj)
-      % TODO: blocks until top block is finished
-    end
-    
+
     function run(obj,nItems)
       % A blocking start(N) (calls start then wait)
       
@@ -98,18 +97,10 @@ classdef TopBlock < handle
       end
 
     end
-    
-    function lock(obj)
-      % TODO: locks the flowgraph so we can reconfigure it
-    end
-    
-    function unlock(obj)
-      % TODO: unlocks and restarts the flowgraph
-    end
-    
-    % Connect the source block output port at index sourcePort to the sink block
-    % input port at index sinkPort
+
     function connect(~, source, sourcePort, sink, sinkPort)
+      % Connect the source block output port at index sourcePort to the sink block
+      % input port at index sinkPort
       source.outputPorts(sourcePort).connect(sink.inputPorts(sinkPort));
     end
     
@@ -124,15 +115,13 @@ classdef TopBlock < handle
       % Like gnuradio, the graph flows from left to right and each node is
       % represented by a box
       command = 'echo ''strict digraph { rankdir=LR node [shape=box]';
-      % Clear the unique name list
-      runtime.TopBlock.addUniqueName([],true);
       for iBlock = 1:length(obj.blocks)
         % If the block is a sink block, show the path to all its children. This
         % does no error checking to verify if the connections are legitimate.
         % That should probably be handled in the block class itself
         if isa(obj.blocks(iBlock),'runtime.SinkBlock')
           command = [command obj.printGraph(obj.blocks(iBlock))];
-          command = [command runtime.TopBlock.getNodeLabels];
+          command = [command obj.getNodeLabels];
         end
       end
       
@@ -164,14 +153,11 @@ classdef TopBlock < handle
       
       persistent traversalPath
       depthFirstPath = [];
-      
-      blockNames = runtime.TopBlock.addUniqueName(block,false);
-      nNames = length(blockNames);
-      blockID = ['block',num2str(nNames)];
-      
+
+      blockID = ['block',num2str(block.uid)];
       % If the current block is a sink block, don't add an output arrow to it
       if isa(block,'runtime.SinkBlock')
-        traversalPath = [blockID];
+        traversalPath = blockID;
       else
         traversalPath = [blockID ' -> ' traversalPath];
       end
@@ -200,72 +186,28 @@ classdef TopBlock < handle
     end
     
     function delete(obj)
+      % Reset the unique ID counter
       obj.getUID(true);
     end
-    
-    
+
   end
   
-  methods (Static, Access = private)
-    
-    function out = addUniqueName(block,reset)
-      % Append the name of the input block to a list of unique block names.
-      % Used to visualize the flowgraph with graphviz.
-      %
-      % INPUTS:
-      % - block: The runtime.Block object whose name is to be added to the list
-      % - clear: If this value is true, the name array is emptied
-      %
-      % OUTPUTS:
-      % - out: The name array after the new block name has been appended
-      %
-      % TODO:
-      % - Give the block objects a "name" parameter, then use that instead
-      %   of the name of the block class
-      % - Use inputParser object to be smarter about the inputs
-      
-      % Array of names
-      persistent names;
-      
-      
-      % No arguments specified. Return the name array
-      if nargin == 0
-        out = names;
-        return
-      end
-      
-      % Block name given, assume the user wants to append it to the list
-      if nargin == 1
-        reset = false;
-      end
-      
-      % Reset operation specified; clear the array and return
-      if reset
-        clear names
-        out = [];
-        return
-      end
-      
-      % User wants to add block to the list. Add the block name, but not its
-      % qualifier
-      str = split(class(block),'.');
-      names{end+1} = str{end};
-      out = names;
-      
-    end
-    
-    function labelCommand = getNodeLabels()
+  methods (Access = private)
+    function labelCommand = getNodeLabels(obj)
       % Output the graphviz command that allows us to convert from the abstract
       % numbered block names to the actual names of the blocks being used
       
-      names = runtime.TopBlock.addUniqueName;
       labelCommand = [];
-      for iName = 1:length(names)
-        labelCommand = [labelCommand 'block' num2str(iName) '[label="' names{iName} '"];'];
+      for iBlock = 1 : length(obj.blocks)
+        name = split(class(obj.blocks(iBlock)),'.');
+        name = name{end};
+        labelCommand = [labelCommand 'block' num2str(obj.blocks(iBlock).uid) '[label="' name '"];'];
       end
-      
     end
-    
+  end
+  
+  methods (Static, Access = private)
+
     function id = getUID(reset)
       persistent n
       if isempty(n)
