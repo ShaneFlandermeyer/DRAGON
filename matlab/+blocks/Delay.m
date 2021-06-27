@@ -1,11 +1,11 @@
 classdef Delay < runtime.GeneralBlock
   properties 
-    delay
+    delay = 0
     
   end
   
   properties (Access = private)
-    delta
+    delta = 0
   end
   
   methods
@@ -20,8 +20,18 @@ classdef Delay < runtime.GeneralBlock
       p.addParameter('nOutputPorts',1);
       p.parse(varargin{:});
       obj@runtime.GeneralBlock(parent,varargin{:});
-      obj.delta = delay;
-      obj.delay = delay;
+      obj.setDelay(delay);
+      % TODO: Do not allow the user to set a negative delay initially to
+      % avoid violating causality
+      
+    end
+    
+    function setDelay(obj,d)
+      if (d ~= obj.delay)
+        obj.delta = d - obj.delay;
+        obj.delay = d;
+      end
+      
     end
     
     function forecast()
@@ -37,7 +47,14 @@ classdef Delay < runtime.GeneralBlock
         
       elseif obj.delta < 0
         % Skip over obj.delta input items
-        % TODO: Implement me
+        nDelta = -obj.delta;
+        nFromInput = max(0,nOutputItems-nDelta);
+        for iPort = 1 : size(inputItems,2)
+          outputItems(1:nFromInput,iPort) = inputItems(1+nDelta:nDelta+nFromInput,iPort);
+        end
+        cons = nOutputItems;
+        nDelta = nDelta - min(obj.delta,nOutputItems);
+        obj.delta = -nDelta;
       
       else % delta > 0
         nFromInput = max(0,nInputItems-obj.delta);
