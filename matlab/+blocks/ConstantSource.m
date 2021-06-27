@@ -15,7 +15,7 @@ classdef ConstantSource < runtime.SourceBlock
     function outputItems = work(obj,nOutputItems,inputItems)
       
       % enqueue the constant value to the output buffer
-      outputItems = repmat(obj.constant,nOutputItems,1);
+      outputItems = repmat(obj.constant,nOutputItems,length(obj.outputPorts));
       
     end
     

@@ -51,3 +51,6 @@ expected = [zeros(nDelaySamples,1);ones(nSourceSamples,1)];
 testCase.verifyEqual(actual,expected);
 end
 
+function test_general_work_negativeDelay(testCase)
+% TODO: Implement this
+end

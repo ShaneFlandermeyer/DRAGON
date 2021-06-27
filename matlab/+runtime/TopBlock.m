@@ -71,7 +71,7 @@ classdef TopBlock < handle
         % input item limit is less than this, that is the number of items that
         % will be processedd
         for iSource = 1 : length(obj.sources)
-          nItemsWritten = obj.sources(iSource).nItemsWritten;
+          nItemsWritten = min(obj.sources(iSource).nItemsWritten);
           if nItemsWritten >= nItems
             isDone(iSource) = true;
             continue
