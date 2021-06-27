@@ -24,6 +24,11 @@ tb.connect(lfmSource,1,noise,1);
 tb.connect(noise,1,abs,1);
 tb.connect(abs,1,timeSink,1);
 tb.connect(abs,1,dataSink,1);
-tb.showGraph();
+
+try 
+  tb.showGraph();
+catch
+  warning('Could not generate the flow graph visualization')
+end
 
 tb.start();
