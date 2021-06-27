@@ -2,6 +2,19 @@ function tests = test_TopBlock
 tests = functiontests(localfunctions);
 end
 
+function test_uid(testCase)
+tb = runtime.TopBlock();
+
+constant = 0;
+constantSource = blocks.ConstantSource(tb,constant);
+emptyBlock = blocks.EmptyBlock(tb);
+dataSink = blocks.DataSink(tb);
+
+testCase.verifyEqual(constantSource.uid,0);
+testCase.verifyEqual(emptyBlock.uid,1);
+testCase.verifyEqual(dataSink.uid,2);
+end
+
 function test_run(testCase)
 % TODO: Implement this with a vector sink instead of a time sink.
 

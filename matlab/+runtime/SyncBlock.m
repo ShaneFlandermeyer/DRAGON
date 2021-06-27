@@ -18,20 +18,6 @@ classdef (Abstract) SyncBlock < runtime.Block
   %% Constructor
   methods
     
-    function outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems)
-      
-      if nInputItems ~= nOutputItems
-        error('For a sync block, input and output must have the same length')
-      end
-      
-      outputItems = obj.work(nOutputItems,inputItems);
-
-      % Consume items from each input port
-      for iPort = 1 : length(obj.inputPorts)
-        obj.consume(nInputItems,iPort);
-      end
-    end
-    
     function obj = SyncBlock(parent,varargin)
       % Parse parameters needed for runtime.Block superclass
       p = inputParser();
@@ -58,6 +44,20 @@ classdef (Abstract) SyncBlock < runtime.Block
       obj.nOutputItemsMax = p.Results.nOutputItemsMax;
       
       
+    end
+    
+    function outputItems = general_work(obj,nInputItems,nOutputItems,inputItems,outputItems)
+      
+      if nInputItems ~= nOutputItems
+        error('For a sync block, input and output must have the same length')
+      end
+      
+      outputItems = obj.work(nOutputItems,inputItems);
+
+      % Consume items from each input port
+      for iPort = 1 : length(obj.inputPorts)
+        obj.consume(nInputItems,iPort);
+      end
     end
     
   end

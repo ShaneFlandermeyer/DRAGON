@@ -1,6 +1,7 @@
 classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
   
   properties (SetAccess = private)
+    uid
     parent (1,1) runtime.TopBlock
     inputPorts runtime.InputPort
     outputPorts runtime.OutputPort
@@ -42,7 +43,7 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       % Link the block to its parent flowgraph
       validateattributes(parent,{'runtime.TopBlock'},{})
       obj.parent = parent;
-      parent.addBlock(obj);
+      obj.uid = parent.addBlock(obj);
       
       % Create the IO signatures for each port
       obj.inputSignature = runtime.IOSignature('minPorts',p.Results.nInputPortsMin,...

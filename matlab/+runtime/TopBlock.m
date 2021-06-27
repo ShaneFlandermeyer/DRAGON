@@ -8,12 +8,11 @@ classdef TopBlock < handle
     blocks 
     sources 
     sinks 
-    
   end
   
   methods
     
-    function addBlock(obj,block)
+    function id = addBlock(obj,block)
       if ~isa(block,'runtime.Block')
         error('Only runtime.Block objects can be added to a flowgraph')
       end
@@ -30,6 +29,7 @@ classdef TopBlock < handle
       elseif isa(block,'runtime.SinkBlock')
         obj.sinks = [obj.sinks;block];
       end
+      id = obj.getUID();
       
     end
     
@@ -199,6 +199,10 @@ classdef TopBlock < handle
       
     end
     
+    function delete(obj)
+      obj.getUID(true);
+    end
+    
     
   end
   
@@ -260,6 +264,21 @@ classdef TopBlock < handle
         labelCommand = [labelCommand 'block' num2str(iName) '[label="' names{iName} '"];'];
       end
       
+    end
+    
+    function id = getUID(reset)
+      persistent n
+      if isempty(n)
+        n = -1;
+      end
+      
+      if nargin == 1 && reset
+        n = -1;
+        return
+      end
+      
+      n = n + 1;
+      id = n;
     end
     
   end
