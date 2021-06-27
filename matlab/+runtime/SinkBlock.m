@@ -66,7 +66,8 @@ classdef SinkBlock < runtime.Block
       
     end
     
-    function set.nOutputItemsMax(obj,n)
+    function set.nOutputItemsMax(obj,~)
+      % A sink block should always have zero output items
       obj.d_nOutputItemsMax = 0;
     end
     

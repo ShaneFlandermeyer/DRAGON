@@ -35,7 +35,6 @@ classdef TopBlock < handle
     
     function start(obj,n)
       % starts the flow graph running with N as the maximum noutput_items any block can receive.
-      % TODO: Utilize the input argument
       if nargin == 2
         validateattributes(n,{'numeric'},{'scalar','positive','real','integer'});
         for iBlock = 1 : length(obj.blocks)

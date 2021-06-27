@@ -45,11 +45,11 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       parent.addBlock(obj);
       
       % Create the IO signatures for each port
-      obj.inputSignature = runtime.IOSignature(minPorts=p.Results.nInputPortsMin,...
-        maxPorts=p.Results.nInputPortsMax,vectorLength=p.Results.vectorLength);
+      obj.inputSignature = runtime.IOSignature('minPorts',p.Results.nInputPortsMin,...
+        'maxPorts',p.Results.nInputPortsMax,'vectorLength',p.Results.vectorLength);
       
-      obj.outputSignature = runtime.IOSignature(minPorts=p.Results.nOutputPortsMin,...
-        maxPorts=p.Results.nOutputPortsMax,vectorLength=p.Results.vectorLength);
+      obj.outputSignature = runtime.IOSignature('minPorts',p.Results.nOutputPortsMin,...
+        'maxPorts',p.Results.nOutputPortsMax,'vectorLength',p.Results.vectorLength);
       
       % Add input and output ports
       for iPort = 1 : p.Results.nInputPorts
