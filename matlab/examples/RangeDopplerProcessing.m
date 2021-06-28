@@ -17,7 +17,7 @@ range = 1e3;
 time = 2 * range / c;
 nDelaySamps = floor(time*sampleRate);
 
-%% Flowgraph Setup
+%% Flowgraph Setup and Execution
 tb = runtime.TopBlock();
 % Instantiate blocks
 lfmSource = blocks.LinearFMSource(tb,sampleRate,bandwidth,pulsewidth,dutyCycle,'chirpDirection',blocks.LinearFMSource.upchirp);
@@ -40,7 +40,6 @@ catch
   warning('Could not generate the flow graph visualization')
 end
 
-%% Post-processing
 % Simulate nPulses pulses worth of data
 nPulses = 64;
 nSamplesPerPulse = floor(pulsewidth*sampleRate);
@@ -48,6 +47,7 @@ nSamplesPerPRI = nSamplesPerPulse/dutyCycle;
 nSamples = nSamplesPerPRI*nPulses;
 tb.run(nSamples);
 
+%% Post-processing
 % Reshape the flowgraph output into a matrix where each column is a separate PRI
 pulseTrain = dataSink.data(1:nSamples,1);
 fastTimeSlowTime = reshape(pulseTrain,[],nPulses);
