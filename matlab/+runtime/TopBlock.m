@@ -94,7 +94,12 @@ classdef TopBlock < handle
         
         while any(obj.blocks(iBlock).hasInputItems)
           % Process any leftover inputs in the block
-          obj.blocks(iBlock).processData(length(obj.blocks(iBlock).inputPorts.buffer));
+          for jPort = 1 : length(obj.blocks(iBlock).inputPorts)
+            if isempty(obj.blocks(iBlock).inputPorts(jPort).buffer)
+              continue
+            end
+            obj.blocks(iBlock).processData(length(obj.blocks(iBlock).inputPorts(jPort).buffer));
+          end
         end
       end
 
