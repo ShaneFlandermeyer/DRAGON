@@ -86,13 +86,9 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       for iPort = 1 : length(obj.inputPorts)
         % If data exists at the output of the previous block, transfer it to the
         % input port of this block
-        if ~isempty(obj.inputPorts(iPort).connections.buffer)
-          obj.inputPorts(iPort).buffer.enqueue(...
-            obj.inputPorts(iPort).connections.buffer.peek(...
-            length(obj.inputPorts(iPort).connections.buffer)));
-        end
+        port = obj.inputPorts(iPort);
         % Compute the minimum buffer size
-        minBufferSize = min(minBufferSize,length(obj.inputPorts(iPort).buffer));
+        minBufferSize = min(minBufferSize,length(port.buffer));
       end
       nInputItems = min(min(nItems,obj.nInputItemsMax),minBufferSize);
       % Pre-allocate the input items array
@@ -112,28 +108,27 @@ classdef (Abstract) Block < handle & matlab.mixin.Heterogeneous
       
       % Process input data
       nOutputItems = min(nItems,obj.nOutputItemsMax);
+      % TODO: outputItems should probably be a cell array since the different
+      % output port data is not necessarily the same size
       outputItems = obj.general_work(nInputItems,nOutputItems,inputItems);
       
       for iPort = 1 : length(obj.outputPorts)
-        % Update the number of items written
-        obj.nItemsWritten(iPort) = obj.nItemsWritten(iPort) + length(outputItems);
-        
+        nOutputItems = length(outputItems);
+        port = obj.outputPorts(iPort);
         % Process each output connection separately
-        obj.outputPorts(iPort).buffer.enqueue(outputItems(:,iPort));
-        uniqueConnections = [];
-        for iConnection = 1 : length(obj.outputPorts(iPort).connections)
-          % Process the data for each UNIQUE connection in the port.
-          % Duplicate connections are handled in a single call to
-          % processData. For example, if the output port goes to input
-          % ports 1 and 2 of the next block, processData should only be
-          % called once 
-          if ~any(obj.outputPorts(iPort).connections(iConnection).parent.uid == uniqueConnections)
-            obj.outputPorts(iPort).connections(iConnection).parent.processData(nItems);
-            uniqueConnections(end+1) = obj.outputPorts(iPort).connections(iConnection).parent.uid;
-          end
-          
+        port.buffer.enqueue(outputItems(:,iPort));
+        % Update the number of items written
+        obj.nItemsWritten(iPort) = obj.nItemsWritten(iPort) + nOutputItems;
+        
+        for iConnection = 1 : length(port.connections)
+          % Send a copy of the output buffer to the connected input port
+          outData = port.buffer.peek(nOutputItems);
+          port.connections(iConnection).buffer.enqueue(outData);
+          port.connections(iConnection).parent.processData(nItems);
         end
-        obj.outputPorts(iPort).buffer.dequeue(length(outputItems));
+        % Once all outputs have been processed, dequeue the data
+        port.buffer.dequeue(nOutputItems);
+
       end
       
       
